@@ -15,7 +15,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CD12000AF91C46E029222CB8"
+               BlueprintIdentifier = "BF8994985C4FA0679C92C289"
                BuildableName = "KeepAwake.app"
                BlueprintName = "KeepAwake"
                ReferencedContainer = "container:KeepAwake.xcodeproj">
@@ -29,7 +29,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ACBC06F73251EC626050DC91"
+               BlueprintIdentifier = "3E9F4421216D82BC9DE1BB3F"
                BuildableName = "KeepAwakeHelper"
                BlueprintName = "KeepAwakeHelper"
                ReferencedContainer = "container:KeepAwake.xcodeproj">
@@ -47,7 +47,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CD12000AF91C46E029222CB8"
+            BlueprintIdentifier = "BF8994985C4FA0679C92C289"
             BuildableName = "KeepAwake.app"
             BlueprintName = "KeepAwake"
             ReferencedContainer = "container:KeepAwake.xcodeproj">
@@ -59,7 +59,7 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51448EBDA9AB784448EC9946"
+               BlueprintIdentifier = "CEA2BB85F6D54472DB9166E8"
                BuildableName = "KeepAwakeTests.xctest"
                BlueprintName = "KeepAwakeTests"
                ReferencedContainer = "container:KeepAwake.xcodeproj">
@@ -70,7 +70,7 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5952E77C32672FB1AF0CC45F"
+               BlueprintIdentifier = "333BC60B67E2B248B39796E8"
                BuildableName = "KeepAwakeUITests.xctest"
                BlueprintName = "KeepAwakeUITests"
                ReferencedContainer = "container:KeepAwake.xcodeproj">
@@ -94,7 +94,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CD12000AF91C46E029222CB8"
+            BlueprintIdentifier = "BF8994985C4FA0679C92C289"
             BuildableName = "KeepAwake.app"
             BlueprintName = "KeepAwake"
             ReferencedContainer = "container:KeepAwake.xcodeproj">
@@ -111,7 +111,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CD12000AF91C46E029222CB8"
+            BlueprintIdentifier = "BF8994985C4FA0679C92C289"
             BuildableName = "KeepAwake.app"
             BlueprintName = "KeepAwake"
             ReferencedContainer = "container:KeepAwake.xcodeproj">

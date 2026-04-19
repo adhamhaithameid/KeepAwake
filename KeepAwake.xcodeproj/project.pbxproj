@@ -7,310 +7,244 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		030FD5575946E2B54179AD16 /* HelperLaunchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D937346BBC48C60F56CF7AC2 /* HelperLaunchRequest.swift */; };
-		0423DECBC525F329B3D9CA20 /* BuiltInInputTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35C02A602E20151E9693BA4 /* BuiltInInputTarget.swift */; };
-		06FEC10042F495746BEFE51D /* AppViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E2C5FDE6DFD357A8408819C /* AppViewModelTests.swift */; };
-		077C0FDD24B5732C550CD57D /* MockBuiltInInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35B728D356738E23FEF6D5C /* MockBuiltInInputController.swift */; };
-		0F336166243AD818DCD94011 /* HelperLaunchRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B338B5BCF70DF5722CC8AA31 /* HelperLaunchRequestTests.swift */; };
-		1BDA859D5A2C2915A7EA60AE /* HelperProcessLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6871657FF23EFC531C7AB90D /* HelperProcessLauncher.swift */; };
-		20D24130DD1506C1C3F8B756 /* PermissionSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E585E381BF8F88D545E82A49 /* PermissionSetupView.swift */; };
-		2324269B0647535481EB8375 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DB2665DD38884B48BCE3861 /* AppError.swift */; };
-		24E39DD40DA8EE71C30B3F52 /* AppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46996F6F3EC75B313B3E35E /* AppTab.swift */; };
-		2A57F07D19AF72B0E6F49A4D /* LockStateCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F017431F2E8991B003534B7 /* LockStateCoordinatorTests.swift */; };
-		2AA2A9CCF949935403D764FF /* LaunchOverrides.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2FE6F7B9F9EC5F6598BFFEB /* LaunchOverrides.swift */; };
-		309DBC7EED040DA3241965D7 /* KeepAwakeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391ECEDB8E2DBEB344131529 /* KeepAwakeUITests.swift */; };
-		323435A4D240724A2DF46A0B /* BuiltInDeviceMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FB521F23A24AF2D163FAAB /* BuiltInDeviceMatcherTests.swift */; };
-		339A6FB6754F17E0B1291373 /* LockSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A0472C92B098CCF78DC12C /* LockSession.swift */; };
-		3A1394A20623CE32B9599BBC /* LiveBuiltInInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA587553C9332119C83BCE2 /* LiveBuiltInInputController.swift */; };
-		3A823611C38EE84AEF8BC076 /* HIDDeviceSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98985166739836418F6C984B /* HIDDeviceSnapshot.swift */; };
-		4BDFAAE82C3B35EB653E70F1 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DB2665DD38884B48BCE3861 /* AppError.swift */; };
-		4D4508200912BA27EE37055C /* LinkOpening.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C6F5964BC5E482AE4456BA /* LinkOpening.swift */; };
-		4D79F772B54B19F35D7278D6 /* LaunchOverridesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8870F194156EE47BA80EC36 /* LaunchOverridesTests.swift */; };
-		4EE5ECFAE88F820873120AC2 /* TimeProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109F2A78FBA4D3FDF39CF91F /* TimeProviding.swift */; };
-		52C5D5E81BE9EF31A94917CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9FABA54E76E3829F1EAAB9 /* AppDelegate.swift */; };
-		567D6DF7EA53BCA817AFD213 /* KeepAwakeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD27FE218CC3FC76FA4F4C15 /* KeepAwakeApp.swift */; };
-		56921B924D147295D5CBAFF3 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AA9F1C0078DB4BD462756E /* AppSettings.swift */; };
-		62CDC13D9078EE2AB4F7539B /* AppDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45843B570E17EDA10528B0C4 /* AppDelegateTests.swift */; };
-		676D493AA505FB7F002F0FDC /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AA9F1C0078DB4BD462756E /* AppSettings.swift */; };
-		6ACD020040B9814BA8E6AD67 /* KeepAwakeBranding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347A450BFCD9355DE0C06418 /* KeepAwakeBranding.swift */; };
-		6C8DCD9BB506FADF8C9B8400 /* TimeProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109F2A78FBA4D3FDF39CF91F /* TimeProviding.swift */; };
-		73B9050FB649972E3B85CEFF /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EEA09D82A1B9B4CCBA9FD01 /* AppViewModel.swift */; };
-		78D802ACAE5C412B56594AD8 /* KeepAwakeDesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0A71A0E964AABD8A58201F /* KeepAwakeDesignSystem.swift */; };
-		851404E1A9EEAF5A27F55139 /* SystemSettingsLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D233679998269656089ABC /* SystemSettingsLinkTests.swift */; };
-		88D6484C387B79467848F0AB /* LockSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A0472C92B098CCF78DC12C /* LockSession.swift */; };
-		91CFF6197C5306D6A841429A /* AboutTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D07DF242A5E20B98E6696A /* AboutTabView.swift */; };
-		9386B6F243D800831555FB34 /* ExternalLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3722E4D45F35666539F48E /* ExternalLinks.swift */; };
-		951AABC8377507A4ABD7BF5D /* BuiltInInputControlling.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDAB42D63D6145D4DD57ECBF /* BuiltInInputControlling.swift */; };
-		9DBD3307E6ECC51E0DB3589E /* BuiltInInputTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35C02A602E20151E9693BA4 /* BuiltInInputTarget.swift */; };
-		9E59B9613F7CE6CD63A6DB69 /* PermissionSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F242461A0A0CD85AAD6E1A /* PermissionSetupViewModel.swift */; };
-		AAD70A5728A7CBD3BD04457D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE486028336438151FF6FE1 /* main.swift */; };
-		B22B3DD53A11491E1F9A877E /* AppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF4CF3C11E67D921BD7E802 /* AppSettingsTests.swift */; };
-		B40D9CD2ABF68FD4F91541B8 /* SystemSettingsLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A75290A965A0AC9B363DFC4 /* SystemSettingsLink.swift */; };
-		B4954134D87EEDFC5D1AEE7E /* SettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039CCEF8F6D399AF417192D9 /* SettingsTabView.swift */; };
-		B5CD1F4CEF6D174C859CA95C /* ExternalLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD22B449A5FA8F7FF9E6CE6 /* ExternalLinkTests.swift */; };
-		B700C7D4BFA02C9BF872B8CD /* LockStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81508F847FE59965C8AE1BAB /* LockStateCoordinator.swift */; };
-		C115273DA05E15C70C980B39 /* LiveBuiltInInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA587553C9332119C83BCE2 /* LiveBuiltInInputController.swift */; };
-		C28E050632F7DCF096A12FD8 /* HelperProcessLauncherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795CEDC36E6F862FC82268AF /* HelperProcessLauncherTests.swift */; };
-		C8B5837D4A5838920B8B67B5 /* CleanTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920DE68CCB382FD058CD8295 /* CleanTabView.swift */; };
-		D06014ABE6D3E041B0260ED9 /* LockStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81508F847FE59965C8AE1BAB /* LockStateCoordinator.swift */; };
-		D7C8328DDA37446EA75689B3 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE31985105A45FF53270C265 /* AppEnvironment.swift */; };
-		DFCD6C120CD5C896EDCEEE41 /* KeepAwakeHelper in Resources */ = {isa = PBXBuildFile; fileRef = 362B6A4564A050212DA40827 /* KeepAwakeHelper */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		E9A0C54101607E614E1BFAB6 /* HIDDeviceSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98985166739836418F6C984B /* HIDDeviceSnapshot.swift */; };
-		E9F085FA334067A601961C89 /* RootTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400BBF9E44BB9E06D63E2BC4 /* RootTabsView.swift */; };
-		F1E1023D313D144D27FED809 /* BuiltInInputControlling.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDAB42D63D6145D4DD57ECBF /* BuiltInInputControlling.swift */; };
-		FDE822724BCCC5A7A06C7AF1 /* HelperLaunchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D937346BBC48C60F56CF7AC2 /* HelperLaunchRequest.swift */; };
+		10C4CAB6EFDE5C4381636D47 /* ActivationDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F452777BAE42564F577B6DF /* ActivationDuration.swift */; };
+		1856E78E58266EEEB40D183A /* ActivationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360941895F9A0FC4E21F1229 /* ActivationSession.swift */; };
+		1BDCC47D8AE2946EB3A9F614 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85423D273814D69B11EC25A8 /* AppSettings.swift */; };
+		264886B90AA3590098DA830F /* QuickActionsMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5700F7D64C4F16955135E53E /* QuickActionsMenuView.swift */; };
+		2C7B17B4D875FE2C6B076B75 /* ExternalLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B690FEEAF6512B783FDB8B6 /* ExternalLinks.swift */; };
+		303ED7F291777FF46F277251 /* AppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C62BCF6E7A93B0B64AE9C68 /* AppTab.swift */; };
+		3BDBC8AA0601485E70CDCCAF /* AddDurationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673FAB63DC0FCA0F12954B13 /* AddDurationSheet.swift */; };
+		3E56DF6E67E110A1744875D6 /* AboutTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B0F8F5DE54AF95CF094057C /* AboutTabView.swift */; };
+		407455B63D048CE6AC9B6ADB /* StatusItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70CB028633FC7FE8124E964E /* StatusItemController.swift */; };
+		68B5D99185841B0369E526FB /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944C307898AF3E4FD9E04F3F /* AppEnvironment.swift */; };
+		69303A352BB3EB09A595EB30 /* SettingsWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC80C51C6126B7675FBA3A09 /* SettingsWindowView.swift */; };
+		6B2B04770C5F402A8D2E1F8A /* KeepAwakeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBAADE0663E81293FC5E40D3 /* KeepAwakeUITests.swift */; };
+		751D1E650CFF6091A5116B72 /* LinkOpening.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7BDE3671FAACF0F38C03CA /* LinkOpening.swift */; };
+		762F6F8584B61F2E2C0B5B2A /* KeepAwakeHelper in Resources */ = {isa = PBXBuildFile; fileRef = 7FB6BBBABDC125DC52B45127 /* KeepAwakeHelper */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7909CD40C6AAACCE21C074A6 /* PowerStatusProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC57821FE6F3028948059143 /* PowerStatusProviding.swift */; };
+		7E41232493AC1FCA336F58AC /* ActivationDurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D2106EF4441B9F04BA96B4 /* ActivationDurationTests.swift */; };
+		8F36C09D1497352D9B154E24 /* ActivationSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F84B076178B08257F9BB64A /* ActivationSessionController.swift */; };
+		9779269D5E10C17B599785B2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F4A0DC4F3C3DF315B16C68 /* main.swift */; };
+		9989F459084C0B51EF8E9D27 /* LaunchAtLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D8FAE75A6300EAC9E78D1CE /* LaunchAtLoginManager.swift */; };
+		A4E731B92310B5FD71DEBBC1 /* ActivationSessionControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989BDDCC093E5CDA79136CFB /* ActivationSessionControllerTests.swift */; };
+		A74909C03FC17CD617C5A12A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC12FA18D80B2011E62A6585 /* AppDelegate.swift */; };
+		A80ED9FB5AA8763FEFAF9FCB /* WakeAssertionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E983AFAB1D30C2346C7EE54F /* WakeAssertionController.swift */; };
+		B8D62F199D367570A301524B /* KeepAwakeBranding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8536591A127CFACB26B3CC /* KeepAwakeBranding.swift */; };
+		BE96616DB2372E31C165B536 /* ActivationDurationTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBA1D9F50D6E1CB9AE9C02A /* ActivationDurationTabView.swift */; };
+		BF4D7475C188DBB7543B8BEE /* KeepAwakeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC9EA465C907E95FD18F56E /* KeepAwakeController.swift */; };
+		CB8C482AB30BB0B12C051CA5 /* AppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88EB25ECA9DA2CB79022B350 /* AppSettingsTests.swift */; };
+		CCB5C817E765553E81188AB2 /* SettingsWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 602D590F426D617665A83454 /* SettingsWindowManager.swift */; };
+		DC079DA3AB6BC9C06A3A2DC4 /* SettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA39A97BFE0C3F079106225 /* SettingsTabView.swift */; };
+		ED26539156FBF5C444DECD0D /* PowerSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18968446D92629E9BB54AF52 /* PowerSnapshot.swift */; };
+		F2F6FD39DF465BE201992839 /* KeepAwakeControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF11E75A37AF2F31CB75D15 /* KeepAwakeControllerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		71C82B3D86EFCAA5AA75D526 /* PBXContainerItemProxy */ = {
+		08ED64C7C254DFAC9852E0B0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 10CE01417F32EA2EADFEAE97 /* Project object */;
+			containerPortal = 1AB17D92C98942A089D4AC7E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CD12000AF91C46E029222CB8;
+			remoteGlobalIDString = BF8994985C4FA0679C92C289;
 			remoteInfo = KeepAwake;
 		};
-		C8ED143BB152970CD040BCF5 /* PBXContainerItemProxy */ = {
+		272B25535B86FA387D13ECC7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 10CE01417F32EA2EADFEAE97 /* Project object */;
+			containerPortal = 1AB17D92C98942A089D4AC7E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CD12000AF91C46E029222CB8;
+			remoteGlobalIDString = BF8994985C4FA0679C92C289;
 			remoteInfo = KeepAwake;
 		};
-		D82E5D2B03EF27B7261D622D /* PBXContainerItemProxy */ = {
+		F5B7291AB08B786F106B40A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 10CE01417F32EA2EADFEAE97 /* Project object */;
+			containerPortal = 1AB17D92C98942A089D4AC7E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ACBC06F73251EC626050DC91;
+			remoteGlobalIDString = 3E9F4421216D82BC9DE1BB3F;
 			remoteInfo = KeepAwakeHelper;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		039CCEF8F6D399AF417192D9 /* SettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabView.swift; sourceTree = "<group>"; };
-		109F2A78FBA4D3FDF39CF91F /* TimeProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeProviding.swift; sourceTree = "<group>"; };
-		14D233679998269656089ABC /* SystemSettingsLinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsLinkTests.swift; sourceTree = "<group>"; };
-		1EA587553C9332119C83BCE2 /* LiveBuiltInInputController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveBuiltInInputController.swift; sourceTree = "<group>"; };
-		1F3722E4D45F35666539F48E /* ExternalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinks.swift; sourceTree = "<group>"; };
-		20F242461A0A0CD85AAD6E1A /* PermissionSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionSetupViewModel.swift; sourceTree = "<group>"; };
-		2A75290A965A0AC9B363DFC4 /* SystemSettingsLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsLink.swift; sourceTree = "<group>"; };
-		3153E0C2CFF2028376ECE500 /* KeepAwakeHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeepAwakeHelper.entitlements; sourceTree = "<group>"; };
-		347A450BFCD9355DE0C06418 /* KeepAwakeBranding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAwakeBranding.swift; sourceTree = "<group>"; };
-		362B6A4564A050212DA40827 /* KeepAwakeHelper */ = {isa = PBXFileReference; includeInIndex = 0; path = KeepAwakeHelper; sourceTree = BUILT_PRODUCTS_DIR; };
-		37A0472C92B098CCF78DC12C /* LockSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockSession.swift; sourceTree = "<group>"; };
-		391ECEDB8E2DBEB344131529 /* KeepAwakeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAwakeUITests.swift; sourceTree = "<group>"; };
-		400BBF9E44BB9E06D63E2BC4 /* RootTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabsView.swift; sourceTree = "<group>"; };
-		45843B570E17EDA10528B0C4 /* AppDelegateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegateTests.swift; sourceTree = "<group>"; };
-		45C6F5964BC5E482AE4456BA /* LinkOpening.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkOpening.swift; sourceTree = "<group>"; };
-		4B0A71A0E964AABD8A58201F /* KeepAwakeDesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAwakeDesignSystem.swift; sourceTree = "<group>"; };
-		4E2C5FDE6DFD357A8408819C /* AppViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModelTests.swift; sourceTree = "<group>"; };
-		51AA9F1C0078DB4BD462756E /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
-		5C9FABA54E76E3829F1EAAB9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6871657FF23EFC531C7AB90D /* HelperProcessLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperProcessLauncher.swift; sourceTree = "<group>"; };
-		6EEA09D82A1B9B4CCBA9FD01 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
-		6F017431F2E8991B003534B7 /* LockStateCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockStateCoordinatorTests.swift; sourceTree = "<group>"; };
-		795CEDC36E6F862FC82268AF /* HelperProcessLauncherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperProcessLauncherTests.swift; sourceTree = "<group>"; };
-		81508F847FE59965C8AE1BAB /* LockStateCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockStateCoordinator.swift; sourceTree = "<group>"; };
-		81AD6CBB4AB4D8FD272B2F36 /* KeepAwake.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeepAwake.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8DB2665DD38884B48BCE3861 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
-		920DE68CCB382FD058CD8295 /* CleanTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanTabView.swift; sourceTree = "<group>"; };
-		923664A1B47743AC2908709E /* KeepAwakeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeepAwakeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9526E3D509898E6DB9E6A1A4 /* KeepAwakeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeepAwakeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		98985166739836418F6C984B /* HIDDeviceSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HIDDeviceSnapshot.swift; sourceTree = "<group>"; };
-		A35B728D356738E23FEF6D5C /* MockBuiltInInputController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBuiltInInputController.swift; sourceTree = "<group>"; };
-		A35C02A602E20151E9693BA4 /* BuiltInInputTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInInputTarget.swift; sourceTree = "<group>"; };
-		AE31985105A45FF53270C265 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
-		B338B5BCF70DF5722CC8AA31 /* HelperLaunchRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperLaunchRequestTests.swift; sourceTree = "<group>"; };
-		C8870F194156EE47BA80EC36 /* LaunchOverridesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchOverridesTests.swift; sourceTree = "<group>"; };
-		CBE486028336438151FF6FE1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		D937346BBC48C60F56CF7AC2 /* HelperLaunchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperLaunchRequest.swift; sourceTree = "<group>"; };
-		DDAB42D63D6145D4DD57ECBF /* BuiltInInputControlling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInInputControlling.swift; sourceTree = "<group>"; };
-		E0D07DF242A5E20B98E6696A /* AboutTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTabView.swift; sourceTree = "<group>"; };
-		E46996F6F3EC75B313B3E35E /* AppTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTab.swift; sourceTree = "<group>"; };
-		E585E381BF8F88D545E82A49 /* PermissionSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionSetupView.swift; sourceTree = "<group>"; };
-		E9FB521F23A24AF2D163FAAB /* BuiltInDeviceMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuiltInDeviceMatcherTests.swift; sourceTree = "<group>"; };
-		EAD22B449A5FA8F7FF9E6CE6 /* ExternalLinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinkTests.swift; sourceTree = "<group>"; };
-		F2FE6F7B9F9EC5F6598BFFEB /* LaunchOverrides.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchOverrides.swift; sourceTree = "<group>"; };
-		FBF4CF3C11E67D921BD7E802 /* AppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsTests.swift; sourceTree = "<group>"; };
-		FD27FE218CC3FC76FA4F4C15 /* KeepAwakeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAwakeApp.swift; sourceTree = "<group>"; };
+		18968446D92629E9BB54AF52 /* PowerSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerSnapshot.swift; sourceTree = "<group>"; };
+		1CBA1D9F50D6E1CB9AE9C02A /* ActivationDurationTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationDurationTabView.swift; sourceTree = "<group>"; };
+		1DF11E75A37AF2F31CB75D15 /* KeepAwakeControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAwakeControllerTests.swift; sourceTree = "<group>"; };
+		2AC9EA465C907E95FD18F56E /* KeepAwakeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAwakeController.swift; sourceTree = "<group>"; };
+		360941895F9A0FC4E21F1229 /* ActivationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationSession.swift; sourceTree = "<group>"; };
+		3F84B076178B08257F9BB64A /* ActivationSessionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationSessionController.swift; sourceTree = "<group>"; };
+		4C7BDE3671FAACF0F38C03CA /* LinkOpening.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkOpening.swift; sourceTree = "<group>"; };
+		4FEB62EAE484684E3887256F /* KeepAwake.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeepAwake.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5700F7D64C4F16955135E53E /* QuickActionsMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionsMenuView.swift; sourceTree = "<group>"; };
+		5F452777BAE42564F577B6DF /* ActivationDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationDuration.swift; sourceTree = "<group>"; };
+		602D590F426D617665A83454 /* SettingsWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowManager.swift; sourceTree = "<group>"; };
+		673FAB63DC0FCA0F12954B13 /* AddDurationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDurationSheet.swift; sourceTree = "<group>"; };
+		6B0F8F5DE54AF95CF094057C /* AboutTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTabView.swift; sourceTree = "<group>"; };
+		6D8FAE75A6300EAC9E78D1CE /* LaunchAtLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginManager.swift; sourceTree = "<group>"; };
+		70CB028633FC7FE8124E964E /* StatusItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemController.swift; sourceTree = "<group>"; };
+		7FB6BBBABDC125DC52B45127 /* KeepAwakeHelper */ = {isa = PBXFileReference; includeInIndex = 0; path = KeepAwakeHelper; sourceTree = BUILT_PRODUCTS_DIR; };
+		85423D273814D69B11EC25A8 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		88EB25ECA9DA2CB79022B350 /* AppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsTests.swift; sourceTree = "<group>"; };
+		8B690FEEAF6512B783FDB8B6 /* ExternalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinks.swift; sourceTree = "<group>"; };
+		90D2106EF4441B9F04BA96B4 /* ActivationDurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationDurationTests.swift; sourceTree = "<group>"; };
+		944C307898AF3E4FD9E04F3F /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		989BDDCC093E5CDA79136CFB /* ActivationSessionControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationSessionControllerTests.swift; sourceTree = "<group>"; };
+		9C62BCF6E7A93B0B64AE9C68 /* AppTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTab.swift; sourceTree = "<group>"; };
+		9F8536591A127CFACB26B3CC /* KeepAwakeBranding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAwakeBranding.swift; sourceTree = "<group>"; };
+		A5F4A0DC4F3C3DF315B16C68 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		AAA39A97BFE0C3F079106225 /* SettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabView.swift; sourceTree = "<group>"; };
+		BBAADE0663E81293FC5E40D3 /* KeepAwakeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAwakeUITests.swift; sourceTree = "<group>"; };
+		BC12FA18D80B2011E62A6585 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		C68CC4F6F1D1261D1E3646AA /* KeepAwakeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeepAwakeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C82C857A554086FFC76A9D53 /* KeepAwakeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeepAwakeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC57821FE6F3028948059143 /* PowerStatusProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerStatusProviding.swift; sourceTree = "<group>"; };
+		E983AFAB1D30C2346C7EE54F /* WakeAssertionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WakeAssertionController.swift; sourceTree = "<group>"; };
+		FC80C51C6126B7675FBA3A09 /* SettingsWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		17AAFD1BDC506C177C9B00A6 /* KeepAwake */ = {
+		281C4065C575219251FD4F8D /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				19290EB041DEF1574EB827B5 /* App */,
-				C5CB56B21A25A3279B6CF449 /* Models */,
-				52E498D6BD2879DA44598087 /* Services */,
-				FAE29B7BD287CEBB3BAADFAC /* Support */,
-				DBF045B715E30D82D4DD4702 /* Views */,
-			);
-			path = KeepAwake;
-			sourceTree = "<group>";
-		};
-		19290EB041DEF1574EB827B5 /* App */ = {
-			isa = PBXGroup;
-			children = (
-				5C9FABA54E76E3829F1EAAB9 /* AppDelegate.swift */,
-				AE31985105A45FF53270C265 /* AppEnvironment.swift */,
-				6EEA09D82A1B9B4CCBA9FD01 /* AppViewModel.swift */,
-				FD27FE218CC3FC76FA4F4C15 /* KeepAwakeApp.swift */,
-				20F242461A0A0CD85AAD6E1A /* PermissionSetupViewModel.swift */,
-			);
-			path = App;
-			sourceTree = "<group>";
-		};
-		52E498D6BD2879DA44598087 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				DDAB42D63D6145D4DD57ECBF /* BuiltInInputControlling.swift */,
-				6871657FF23EFC531C7AB90D /* HelperProcessLauncher.swift */,
-				45C6F5964BC5E482AE4456BA /* LinkOpening.swift */,
-				1EA587553C9332119C83BCE2 /* LiveBuiltInInputController.swift */,
-				A35B728D356738E23FEF6D5C /* MockBuiltInInputController.swift */,
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
-		643201234C36DF94A9D3603B /* KeepAwakeTests */ = {
-			isa = PBXGroup;
-			children = (
-				45843B570E17EDA10528B0C4 /* AppDelegateTests.swift */,
-				FBF4CF3C11E67D921BD7E802 /* AppSettingsTests.swift */,
-				4E2C5FDE6DFD357A8408819C /* AppViewModelTests.swift */,
-				E9FB521F23A24AF2D163FAAB /* BuiltInDeviceMatcherTests.swift */,
-				EAD22B449A5FA8F7FF9E6CE6 /* ExternalLinkTests.swift */,
-				B338B5BCF70DF5722CC8AA31 /* HelperLaunchRequestTests.swift */,
-				795CEDC36E6F862FC82268AF /* HelperProcessLauncherTests.swift */,
-				C8870F194156EE47BA80EC36 /* LaunchOverridesTests.swift */,
-				6F017431F2E8991B003534B7 /* LockStateCoordinatorTests.swift */,
-				14D233679998269656089ABC /* SystemSettingsLinkTests.swift */,
-			);
-			path = KeepAwakeTests;
-			sourceTree = "<group>";
-		};
-		83602E6A946FF40A2203D7C0 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				81AD6CBB4AB4D8FD272B2F36 /* KeepAwake.app */,
-				362B6A4564A050212DA40827 /* KeepAwakeHelper */,
-				9526E3D509898E6DB9E6A1A4 /* KeepAwakeTests.xctest */,
-				923664A1B47743AC2908709E /* KeepAwakeUITests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		C5CB56B21A25A3279B6CF449 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				51AA9F1C0078DB4BD462756E /* AppSettings.swift */,
-				A35C02A602E20151E9693BA4 /* BuiltInInputTarget.swift */,
-				D937346BBC48C60F56CF7AC2 /* HelperLaunchRequest.swift */,
-				98985166739836418F6C984B /* HIDDeviceSnapshot.swift */,
-				37A0472C92B098CCF78DC12C /* LockSession.swift */,
-				81508F847FE59965C8AE1BAB /* LockStateCoordinator.swift */,
-				109F2A78FBA4D3FDF39CF91F /* TimeProviding.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		D36CCC2257FDCABA3E0B4C98 /* KeepAwakeUITests */ = {
-			isa = PBXGroup;
-			children = (
-				391ECEDB8E2DBEB344131529 /* KeepAwakeUITests.swift */,
-			);
-			path = KeepAwakeUITests;
-			sourceTree = "<group>";
-		};
-		D95CCD3FF5210B5E14773426 = {
-			isa = PBXGroup;
-			children = (
-				17AAFD1BDC506C177C9B00A6 /* KeepAwake */,
-				F43111AC257F01E7EBA574C8 /* KeepAwakeHelper */,
-				643201234C36DF94A9D3603B /* KeepAwakeTests */,
-				D36CCC2257FDCABA3E0B4C98 /* KeepAwakeUITests */,
-				83602E6A946FF40A2203D7C0 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		DBF045B715E30D82D4DD4702 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				E0D07DF242A5E20B98E6696A /* AboutTabView.swift */,
-				920DE68CCB382FD058CD8295 /* CleanTabView.swift */,
-				347A450BFCD9355DE0C06418 /* KeepAwakeBranding.swift */,
-				4B0A71A0E964AABD8A58201F /* KeepAwakeDesignSystem.swift */,
-				E585E381BF8F88D545E82A49 /* PermissionSetupView.swift */,
-				400BBF9E44BB9E06D63E2BC4 /* RootTabsView.swift */,
-				039CCEF8F6D399AF417192D9 /* SettingsTabView.swift */,
+				6B0F8F5DE54AF95CF094057C /* AboutTabView.swift */,
+				1CBA1D9F50D6E1CB9AE9C02A /* ActivationDurationTabView.swift */,
+				673FAB63DC0FCA0F12954B13 /* AddDurationSheet.swift */,
+				9F8536591A127CFACB26B3CC /* KeepAwakeBranding.swift */,
+				5700F7D64C4F16955135E53E /* QuickActionsMenuView.swift */,
+				AAA39A97BFE0C3F079106225 /* SettingsTabView.swift */,
+				FC80C51C6126B7675FBA3A09 /* SettingsWindowView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		F43111AC257F01E7EBA574C8 /* KeepAwakeHelper */ = {
+		2C87B63AED267E2FE0D0CE67 = {
 			isa = PBXGroup;
 			children = (
-				3153E0C2CFF2028376ECE500 /* KeepAwakeHelper.entitlements */,
-				CBE486028336438151FF6FE1 /* main.swift */,
+				6FD848339273CC8F7ABB1D28 /* KeepAwake */,
+				E01835194368336D1267467C /* KeepAwakeHelper */,
+				A8980A9AAFF37DAB1458B19D /* KeepAwakeTests */,
+				73D922768EBD228DAC45B716 /* KeepAwakeUITests */,
+				A9936382A5A4538D3CD21447 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		62F8F1C0E947857E336B19E1 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				9C62BCF6E7A93B0B64AE9C68 /* AppTab.swift */,
+				8B690FEEAF6512B783FDB8B6 /* ExternalLinks.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		6FD848339273CC8F7ABB1D28 /* KeepAwake */ = {
+			isa = PBXGroup;
+			children = (
+				C43DF1FC0C4CDA3B500CE7EF /* App */,
+				9C9D53A56D4641C4471FBAEB /* Models */,
+				E60AE4AD614BB755938FD1A7 /* Services */,
+				62F8F1C0E947857E336B19E1 /* Support */,
+				281C4065C575219251FD4F8D /* Views */,
+			);
+			path = KeepAwake;
+			sourceTree = "<group>";
+		};
+		73D922768EBD228DAC45B716 /* KeepAwakeUITests */ = {
+			isa = PBXGroup;
+			children = (
+				BBAADE0663E81293FC5E40D3 /* KeepAwakeUITests.swift */,
+			);
+			path = KeepAwakeUITests;
+			sourceTree = "<group>";
+		};
+		9C9D53A56D4641C4471FBAEB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5F452777BAE42564F577B6DF /* ActivationDuration.swift */,
+				360941895F9A0FC4E21F1229 /* ActivationSession.swift */,
+				85423D273814D69B11EC25A8 /* AppSettings.swift */,
+				18968446D92629E9BB54AF52 /* PowerSnapshot.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A8980A9AAFF37DAB1458B19D /* KeepAwakeTests */ = {
+			isa = PBXGroup;
+			children = (
+				90D2106EF4441B9F04BA96B4 /* ActivationDurationTests.swift */,
+				989BDDCC093E5CDA79136CFB /* ActivationSessionControllerTests.swift */,
+				88EB25ECA9DA2CB79022B350 /* AppSettingsTests.swift */,
+				1DF11E75A37AF2F31CB75D15 /* KeepAwakeControllerTests.swift */,
+			);
+			path = KeepAwakeTests;
+			sourceTree = "<group>";
+		};
+		A9936382A5A4538D3CD21447 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4FEB62EAE484684E3887256F /* KeepAwake.app */,
+				7FB6BBBABDC125DC52B45127 /* KeepAwakeHelper */,
+				C68CC4F6F1D1261D1E3646AA /* KeepAwakeTests.xctest */,
+				C82C857A554086FFC76A9D53 /* KeepAwakeUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C43DF1FC0C4CDA3B500CE7EF /* App */ = {
+			isa = PBXGroup;
+			children = (
+				BC12FA18D80B2011E62A6585 /* AppDelegate.swift */,
+				944C307898AF3E4FD9E04F3F /* AppEnvironment.swift */,
+				2AC9EA465C907E95FD18F56E /* KeepAwakeController.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		E01835194368336D1267467C /* KeepAwakeHelper */ = {
+			isa = PBXGroup;
+			children = (
+				A5F4A0DC4F3C3DF315B16C68 /* main.swift */,
 			);
 			path = KeepAwakeHelper;
 			sourceTree = "<group>";
 		};
-		FAE29B7BD287CEBB3BAADFAC /* Support */ = {
+		E60AE4AD614BB755938FD1A7 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				8DB2665DD38884B48BCE3861 /* AppError.swift */,
-				E46996F6F3EC75B313B3E35E /* AppTab.swift */,
-				1F3722E4D45F35666539F48E /* ExternalLinks.swift */,
-				F2FE6F7B9F9EC5F6598BFFEB /* LaunchOverrides.swift */,
-				2A75290A965A0AC9B363DFC4 /* SystemSettingsLink.swift */,
+				3F84B076178B08257F9BB64A /* ActivationSessionController.swift */,
+				6D8FAE75A6300EAC9E78D1CE /* LaunchAtLoginManager.swift */,
+				4C7BDE3671FAACF0F38C03CA /* LinkOpening.swift */,
+				CC57821FE6F3028948059143 /* PowerStatusProviding.swift */,
+				602D590F426D617665A83454 /* SettingsWindowManager.swift */,
+				70CB028633FC7FE8124E964E /* StatusItemController.swift */,
+				E983AFAB1D30C2346C7EE54F /* WakeAssertionController.swift */,
 			);
-			path = Support;
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		51448EBDA9AB784448EC9946 /* KeepAwakeTests */ = {
+		333BC60B67E2B248B39796E8 /* KeepAwakeUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 34D223806BB74073241618D0 /* Build configuration list for PBXNativeTarget "KeepAwakeTests" */;
+			buildConfigurationList = 76295E34C0FE9FA03D47E0E8 /* Build configuration list for PBXNativeTarget "KeepAwakeUITests" */;
 			buildPhases = (
-				AAF020D7B2CBEBA2FA6D8993 /* Sources */,
+				211771BC80A41F43AAE822D9 /* Sources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				6BEC35EFFE302E6D177578D5 /* PBXTargetDependency */,
-			);
-			name = KeepAwakeTests;
-			packageProductDependencies = (
-			);
-			productName = KeepAwakeTests;
-			productReference = 9526E3D509898E6DB9E6A1A4 /* KeepAwakeTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		5952E77C32672FB1AF0CC45F /* KeepAwakeUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A38CED98D7BD0FEC0E20A18F /* Build configuration list for PBXNativeTarget "KeepAwakeUITests" */;
-			buildPhases = (
-				450DBC0DFEC298F5199AB0BA /* Sources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A0C3E6C1E98903B656B6A566 /* PBXTargetDependency */,
+				3BD0DFE6848B801747E90A0E /* PBXTargetDependency */,
 			);
 			name = KeepAwakeUITests;
 			packageProductDependencies = (
 			);
 			productName = KeepAwakeUITests;
-			productReference = 923664A1B47743AC2908709E /* KeepAwakeUITests.xctest */;
+			productReference = C82C857A554086FFC76A9D53 /* KeepAwakeUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		ACBC06F73251EC626050DC91 /* KeepAwakeHelper */ = {
+		3E9F4421216D82BC9DE1BB3F /* KeepAwakeHelper */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5B8911E7B563D1245B073626 /* Build configuration list for PBXNativeTarget "KeepAwakeHelper" */;
+			buildConfigurationList = B18AED832A2F0BE0CA574145 /* Build configuration list for PBXNativeTarget "KeepAwakeHelper" */;
 			buildPhases = (
-				DE65D2CD875B4BA61C16107C /* Sources */,
+				B0CB5F023DC29CD8BED46727 /* Sources */,
 			);
 			buildRules = (
 			);
@@ -320,104 +254,103 @@
 			packageProductDependencies = (
 			);
 			productName = KeepAwakeHelper;
-			productReference = 362B6A4564A050212DA40827 /* KeepAwakeHelper */;
+			productReference = 7FB6BBBABDC125DC52B45127 /* KeepAwakeHelper */;
 			productType = "com.apple.product-type.tool";
 		};
-		CD12000AF91C46E029222CB8 /* KeepAwake */ = {
+		BF8994985C4FA0679C92C289 /* KeepAwake */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F4B3E84FBBF7EBDDAF324AD2 /* Build configuration list for PBXNativeTarget "KeepAwake" */;
+			buildConfigurationList = 0765867C3A215FB2F461C26C /* Build configuration list for PBXNativeTarget "KeepAwake" */;
 			buildPhases = (
-				2BB3426B3930873C204D06EC /* Sources */,
-				8DE1BCAB5B8146D86DC945B2 /* Resources */,
-				F450625525A27F00E0697F0E /* Copy App Resources */,
-				85F321A118BF610B7FB42000 /* Embed Helper */,
+				5E18007E7BCD06BD2E63999F /* Sources */,
+				87B025F3B6E438BA7BC908A3 /* Resources */,
+				12A95356426C00CD2ABF9EBC /* Copy App Resources */,
+				4F729B7AC725C6A8EDC5FB81 /* Embed Helper */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				0309A3FA88E8E373B740AA3C /* PBXTargetDependency */,
+				51E923E01F65EBA56483AFA7 /* PBXTargetDependency */,
 			);
 			name = KeepAwake;
 			packageProductDependencies = (
 			);
 			productName = KeepAwake;
-			productReference = 81AD6CBB4AB4D8FD272B2F36 /* KeepAwake.app */;
+			productReference = 4FEB62EAE484684E3887256F /* KeepAwake.app */;
 			productType = "com.apple.product-type.application";
+		};
+		CEA2BB85F6D54472DB9166E8 /* KeepAwakeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 722035C43C648EA07171F2F4 /* Build configuration list for PBXNativeTarget "KeepAwakeTests" */;
+			buildPhases = (
+				4C1595C56FEFA259357B04BE /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				96E43BCA22CB7A9BBF81F88A /* PBXTargetDependency */,
+			);
+			name = KeepAwakeTests;
+			packageProductDependencies = (
+			);
+			productName = KeepAwakeTests;
+			productReference = C68CC4F6F1D1261D1E3646AA /* KeepAwakeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		10CE01417F32EA2EADFEAE97 /* Project object */ = {
+		1AB17D92C98942A089D4AC7E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					5952E77C32672FB1AF0CC45F = {
-						TestTargetID = CD12000AF91C46E029222CB8;
+					333BC60B67E2B248B39796E8 = {
+						TestTargetID = BF8994985C4FA0679C92C289;
 					};
-					ACBC06F73251EC626050DC91 = {
+					3E9F4421216D82BC9DE1BB3F = {
 						ProvisioningStyle = Automatic;
 					};
-					CD12000AF91C46E029222CB8 = {
+					BF8994985C4FA0679C92C289 = {
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = B20D031EF5D397DD31A917F4 /* Build configuration list for PBXProject "KeepAwake" */;
+			buildConfigurationList = 98C4EFBAAD6CE31284A42EE0 /* Build configuration list for PBXProject "KeepAwake" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
 				en,
 			);
-			mainGroup = D95CCD3FF5210B5E14773426;
+			mainGroup = 2C87B63AED267E2FE0D0CE67;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 83602E6A946FF40A2203D7C0 /* Products */;
+			productRefGroup = A9936382A5A4538D3CD21447 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CD12000AF91C46E029222CB8 /* KeepAwake */,
-				ACBC06F73251EC626050DC91 /* KeepAwakeHelper */,
-				51448EBDA9AB784448EC9946 /* KeepAwakeTests */,
-				5952E77C32672FB1AF0CC45F /* KeepAwakeUITests */,
+				BF8994985C4FA0679C92C289 /* KeepAwake */,
+				3E9F4421216D82BC9DE1BB3F /* KeepAwakeHelper */,
+				CEA2BB85F6D54472DB9166E8 /* KeepAwakeTests */,
+				333BC60B67E2B248B39796E8 /* KeepAwakeUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		8DE1BCAB5B8146D86DC945B2 /* Resources */ = {
+		87B025F3B6E438BA7BC908A3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DFCD6C120CD5C896EDCEEE41 /* KeepAwakeHelper in Resources */,
+				762F6F8584B61F2E2C0B5B2A /* KeepAwakeHelper in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		85F321A118BF610B7FB42000 /* Embed Helper */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Helper";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Helpers/KeepAwakeHelper",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -euo pipefail\nDEST=\"$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Helpers\"\nmkdir -p \"$DEST\"\ncp \"$BUILT_PRODUCTS_DIR/KeepAwakeHelper\" \"$DEST/KeepAwakeHelper\"\nchmod +x \"$DEST/KeepAwakeHelper\"\n";
-		};
-		F450625525A27F00E0697F0E /* Copy App Resources */ = {
+		12A95356426C00CD2ABF9EBC /* Copy App Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -438,110 +371,107 @@
 			shellPath = /bin/sh;
 			shellScript = "set -euo pipefail\nDEST=\"$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Resources\"\nPLIST=\"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\nmkdir -p \"$DEST\"\ncp \"$SRCROOT/KeepAwake/Resources/profile.png\" \"$DEST/profile.png\"\ncp \"$SRCROOT/KeepAwake/Resources/KeepAwake.icns\" \"$DEST/KeepAwake.icns\"\ncp \"$SRCROOT/KeepAwake/Resources/brand-mark.png\" \"$DEST/brand-mark.png\"\nif /usr/libexec/PlistBuddy -c \"Print :CFBundleIconFile\" \"$PLIST\" >/dev/null 2>&1; then\n  /usr/libexec/PlistBuddy -c \"Set :CFBundleIconFile KeepAwake.icns\" \"$PLIST\"\nelse\n  /usr/libexec/PlistBuddy -c \"Add :CFBundleIconFile string KeepAwake.icns\" \"$PLIST\"\nfi\n";
 		};
+		4F729B7AC725C6A8EDC5FB81 /* Embed Helper */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Helper";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Helpers/KeepAwakeHelper",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -euo pipefail\nDEST=\"$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Helpers\"\nmkdir -p \"$DEST\"\ncp \"$BUILT_PRODUCTS_DIR/KeepAwakeHelper\" \"$DEST/KeepAwakeHelper\"\nchmod +x \"$DEST/KeepAwakeHelper\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		2BB3426B3930873C204D06EC /* Sources */ = {
+		211771BC80A41F43AAE822D9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				91CFF6197C5306D6A841429A /* AboutTabView.swift in Sources */,
-				52C5D5E81BE9EF31A94917CA /* AppDelegate.swift in Sources */,
-				D7C8328DDA37446EA75689B3 /* AppEnvironment.swift in Sources */,
-				4BDFAAE82C3B35EB653E70F1 /* AppError.swift in Sources */,
-				676D493AA505FB7F002F0FDC /* AppSettings.swift in Sources */,
-				24E39DD40DA8EE71C30B3F52 /* AppTab.swift in Sources */,
-				73B9050FB649972E3B85CEFF /* AppViewModel.swift in Sources */,
-				F1E1023D313D144D27FED809 /* BuiltInInputControlling.swift in Sources */,
-				9DBD3307E6ECC51E0DB3589E /* BuiltInInputTarget.swift in Sources */,
-				C8B5837D4A5838920B8B67B5 /* CleanTabView.swift in Sources */,
-				9386B6F243D800831555FB34 /* ExternalLinks.swift in Sources */,
-				3A823611C38EE84AEF8BC076 /* HIDDeviceSnapshot.swift in Sources */,
-				FDE822724BCCC5A7A06C7AF1 /* HelperLaunchRequest.swift in Sources */,
-				1BDA859D5A2C2915A7EA60AE /* HelperProcessLauncher.swift in Sources */,
-				567D6DF7EA53BCA817AFD213 /* KeepAwakeApp.swift in Sources */,
-				6ACD020040B9814BA8E6AD67 /* KeepAwakeBranding.swift in Sources */,
-				78D802ACAE5C412B56594AD8 /* KeepAwakeDesignSystem.swift in Sources */,
-				2AA2A9CCF949935403D764FF /* LaunchOverrides.swift in Sources */,
-				4D4508200912BA27EE37055C /* LinkOpening.swift in Sources */,
-				C115273DA05E15C70C980B39 /* LiveBuiltInInputController.swift in Sources */,
-				339A6FB6754F17E0B1291373 /* LockSession.swift in Sources */,
-				D06014ABE6D3E041B0260ED9 /* LockStateCoordinator.swift in Sources */,
-				077C0FDD24B5732C550CD57D /* MockBuiltInInputController.swift in Sources */,
-				20D24130DD1506C1C3F8B756 /* PermissionSetupView.swift in Sources */,
-				9E59B9613F7CE6CD63A6DB69 /* PermissionSetupViewModel.swift in Sources */,
-				E9F085FA334067A601961C89 /* RootTabsView.swift in Sources */,
-				B4954134D87EEDFC5D1AEE7E /* SettingsTabView.swift in Sources */,
-				B40D9CD2ABF68FD4F91541B8 /* SystemSettingsLink.swift in Sources */,
-				6C8DCD9BB506FADF8C9B8400 /* TimeProviding.swift in Sources */,
+				6B2B04770C5F402A8D2E1F8A /* KeepAwakeUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		450DBC0DFEC298F5199AB0BA /* Sources */ = {
+		4C1595C56FEFA259357B04BE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				309DBC7EED040DA3241965D7 /* KeepAwakeUITests.swift in Sources */,
+				7E41232493AC1FCA336F58AC /* ActivationDurationTests.swift in Sources */,
+				A4E731B92310B5FD71DEBBC1 /* ActivationSessionControllerTests.swift in Sources */,
+				CB8C482AB30BB0B12C051CA5 /* AppSettingsTests.swift in Sources */,
+				F2F6FD39DF465BE201992839 /* KeepAwakeControllerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AAF020D7B2CBEBA2FA6D8993 /* Sources */ = {
+		5E18007E7BCD06BD2E63999F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				62CDC13D9078EE2AB4F7539B /* AppDelegateTests.swift in Sources */,
-				B22B3DD53A11491E1F9A877E /* AppSettingsTests.swift in Sources */,
-				06FEC10042F495746BEFE51D /* AppViewModelTests.swift in Sources */,
-				323435A4D240724A2DF46A0B /* BuiltInDeviceMatcherTests.swift in Sources */,
-				B5CD1F4CEF6D174C859CA95C /* ExternalLinkTests.swift in Sources */,
-				0F336166243AD818DCD94011 /* HelperLaunchRequestTests.swift in Sources */,
-				C28E050632F7DCF096A12FD8 /* HelperProcessLauncherTests.swift in Sources */,
-				4D79F772B54B19F35D7278D6 /* LaunchOverridesTests.swift in Sources */,
-				2A57F07D19AF72B0E6F49A4D /* LockStateCoordinatorTests.swift in Sources */,
-				851404E1A9EEAF5A27F55139 /* SystemSettingsLinkTests.swift in Sources */,
+				3E56DF6E67E110A1744875D6 /* AboutTabView.swift in Sources */,
+				10C4CAB6EFDE5C4381636D47 /* ActivationDuration.swift in Sources */,
+				BE96616DB2372E31C165B536 /* ActivationDurationTabView.swift in Sources */,
+				1856E78E58266EEEB40D183A /* ActivationSession.swift in Sources */,
+				8F36C09D1497352D9B154E24 /* ActivationSessionController.swift in Sources */,
+				3BDBC8AA0601485E70CDCCAF /* AddDurationSheet.swift in Sources */,
+				A74909C03FC17CD617C5A12A /* AppDelegate.swift in Sources */,
+				68B5D99185841B0369E526FB /* AppEnvironment.swift in Sources */,
+				1BDCC47D8AE2946EB3A9F614 /* AppSettings.swift in Sources */,
+				303ED7F291777FF46F277251 /* AppTab.swift in Sources */,
+				2C7B17B4D875FE2C6B076B75 /* ExternalLinks.swift in Sources */,
+				B8D62F199D367570A301524B /* KeepAwakeBranding.swift in Sources */,
+				BF4D7475C188DBB7543B8BEE /* KeepAwakeController.swift in Sources */,
+				9989F459084C0B51EF8E9D27 /* LaunchAtLoginManager.swift in Sources */,
+				751D1E650CFF6091A5116B72 /* LinkOpening.swift in Sources */,
+				ED26539156FBF5C444DECD0D /* PowerSnapshot.swift in Sources */,
+				7909CD40C6AAACCE21C074A6 /* PowerStatusProviding.swift in Sources */,
+				264886B90AA3590098DA830F /* QuickActionsMenuView.swift in Sources */,
+				DC079DA3AB6BC9C06A3A2DC4 /* SettingsTabView.swift in Sources */,
+				CCB5C817E765553E81188AB2 /* SettingsWindowManager.swift in Sources */,
+				69303A352BB3EB09A595EB30 /* SettingsWindowView.swift in Sources */,
+				407455B63D048CE6AC9B6ADB /* StatusItemController.swift in Sources */,
+				A80ED9FB5AA8763FEFAF9FCB /* WakeAssertionController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DE65D2CD875B4BA61C16107C /* Sources */ = {
+		B0CB5F023DC29CD8BED46727 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2324269B0647535481EB8375 /* AppError.swift in Sources */,
-				56921B924D147295D5CBAFF3 /* AppSettings.swift in Sources */,
-				951AABC8377507A4ABD7BF5D /* BuiltInInputControlling.swift in Sources */,
-				0423DECBC525F329B3D9CA20 /* BuiltInInputTarget.swift in Sources */,
-				E9A0C54101607E614E1BFAB6 /* HIDDeviceSnapshot.swift in Sources */,
-				030FD5575946E2B54179AD16 /* HelperLaunchRequest.swift in Sources */,
-				3A1394A20623CE32B9599BBC /* LiveBuiltInInputController.swift in Sources */,
-				88D6484C387B79467848F0AB /* LockSession.swift in Sources */,
-				B700C7D4BFA02C9BF872B8CD /* LockStateCoordinator.swift in Sources */,
-				4EE5ECFAE88F820873120AC2 /* TimeProviding.swift in Sources */,
-				AAD70A5728A7CBD3BD04457D /* main.swift in Sources */,
+				9779269D5E10C17B599785B2 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0309A3FA88E8E373B740AA3C /* PBXTargetDependency */ = {
+		3BD0DFE6848B801747E90A0E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = ACBC06F73251EC626050DC91 /* KeepAwakeHelper */;
-			targetProxy = D82E5D2B03EF27B7261D622D /* PBXContainerItemProxy */;
+			target = BF8994985C4FA0679C92C289 /* KeepAwake */;
+			targetProxy = 272B25535B86FA387D13ECC7 /* PBXContainerItemProxy */;
 		};
-		6BEC35EFFE302E6D177578D5 /* PBXTargetDependency */ = {
+		51E923E01F65EBA56483AFA7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CD12000AF91C46E029222CB8 /* KeepAwake */;
-			targetProxy = C8ED143BB152970CD040BCF5 /* PBXContainerItemProxy */;
+			target = 3E9F4421216D82BC9DE1BB3F /* KeepAwakeHelper */;
+			targetProxy = F5B7291AB08B786F106B40A9 /* PBXContainerItemProxy */;
 		};
-		A0C3E6C1E98903B656B6A566 /* PBXTargetDependency */ = {
+		96E43BCA22CB7A9BBF81F88A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CD12000AF91C46E029222CB8 /* KeepAwake */;
-			targetProxy = 71C82B3D86EFCAA5AA75D526 /* PBXContainerItemProxy */;
+			target = BF8994985C4FA0679C92C289 /* KeepAwake */;
+			targetProxy = 08ED64C7C254DFAC9852E0B0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0B5B02332A587D76ADEEC791 /* Debug */ = {
+		09E5136813B973597ACCE1AD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = KeepAwakeHelper/KeepAwakeHelper.entitlements;
@@ -558,105 +488,9 @@
 				PRODUCT_NAME = KeepAwakeHelper;
 				SDKROOT = macosx;
 			};
-			name = Debug;
-		};
-		393C17F595D2403ABC266F3C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake.uitests;
-				SDKROOT = macosx;
-				TEST_TARGET_NAME = KeepAwake;
-			};
-			name = Debug;
-		};
-		439B2630550CA36709135469 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake.tests;
-				SDKROOT = macosx;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KeepAwake.app/Contents/MacOS/KeepAwake";
-			};
 			name = Release;
 		};
-		4FC9DA5A658F641505DE1C18 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake.tests;
-				SDKROOT = macosx;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KeepAwake.app/Contents/MacOS/KeepAwake";
-			};
-			name = Debug;
-		};
-		5BB48C8F7B439166E3992715 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = KeepAwake/KeepAwake.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = KeepAwake/Info.plist;
-				INFOPLIST_KEY_CFBundleIconFile = KeepAwake.icns;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake;
-				PRODUCT_NAME = KeepAwake;
-				SDKROOT = macosx;
-			};
-			name = Debug;
-		};
-		6599A97B35EA6C7C7C2FE377 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = KeepAwake/KeepAwake.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = KeepAwake/Info.plist;
-				INFOPLIST_KEY_CFBundleIconFile = KeepAwake.icns;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake;
-				PRODUCT_NAME = KeepAwake;
-				SDKROOT = macosx;
-			};
-			name = Release;
-		};
-		6EB3BBAB4C1C4F39A19B3E7C /* Release */ = {
+		0D4EB045FC3A3061823316FA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -715,26 +549,25 @@
 			};
 			name = Release;
 		};
-		7C495F7071B57DB7E805DBC3 /* Release */ = {
+		78B1637E1C3AEB0AA58DBFB8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = KeepAwakeHelper/KeepAwakeHelper.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
-				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
-					"@executable_path/../Frameworks",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				OTHER_SWIFT_FLAGS = "-parse-as-library";
-				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake.helper;
-				PRODUCT_NAME = KeepAwakeHelper;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake.uitests;
 				SDKROOT = macosx;
+				TEST_TARGET_NAME = KeepAwake;
 			};
-			name = Release;
+			name = Debug;
 		};
-		DE9C0EC30BBDFFD52FB43258 /* Release */ = {
+		903F4ECB94901943FE04FB43 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -752,7 +585,86 @@
 			};
 			name = Release;
 		};
-		FDE577F262540B00470F17DD /* Debug */ = {
+		A05183B404B3D473B8B3F9DB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = KeepAwake/KeepAwake.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = KeepAwake/Info.plist;
+				INFOPLIST_KEY_CFBundleIconFile = KeepAwake.icns;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake;
+				PRODUCT_NAME = KeepAwake;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BFD26409BFF67D4C4DCE5029 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = KeepAwake/KeepAwake.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = KeepAwake/Info.plist;
+				INFOPLIST_KEY_CFBundleIconFile = KeepAwake.icns;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake;
+				PRODUCT_NAME = KeepAwake;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		D2423A2E26CDE4B5608B6AEA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KeepAwake.app/Contents/MacOS/KeepAwake";
+			};
+			name = Debug;
+		};
+		DAE4EDB85B01563BB613BC1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = KeepAwakeHelper/KeepAwakeHelper.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				OTHER_SWIFT_FLAGS = "-parse-as-library";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake.helper;
+				PRODUCT_NAME = KeepAwakeHelper;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		DFDC33528B833FEB3C4DE51F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -818,55 +730,73 @@
 			};
 			name = Debug;
 		};
+		F7F708E7EC12BA0AF8D250C1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adhamhaithameid.keepawake.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KeepAwake.app/Contents/MacOS/KeepAwake";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		34D223806BB74073241618D0 /* Build configuration list for PBXNativeTarget "KeepAwakeTests" */ = {
+		0765867C3A215FB2F461C26C /* Build configuration list for PBXNativeTarget "KeepAwake" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4FC9DA5A658F641505DE1C18 /* Debug */,
-				439B2630550CA36709135469 /* Release */,
+				A05183B404B3D473B8B3F9DB /* Debug */,
+				BFD26409BFF67D4C4DCE5029 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		5B8911E7B563D1245B073626 /* Build configuration list for PBXNativeTarget "KeepAwakeHelper" */ = {
+		722035C43C648EA07171F2F4 /* Build configuration list for PBXNativeTarget "KeepAwakeTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0B5B02332A587D76ADEEC791 /* Debug */,
-				7C495F7071B57DB7E805DBC3 /* Release */,
+				D2423A2E26CDE4B5608B6AEA /* Debug */,
+				F7F708E7EC12BA0AF8D250C1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		A38CED98D7BD0FEC0E20A18F /* Build configuration list for PBXNativeTarget "KeepAwakeUITests" */ = {
+		76295E34C0FE9FA03D47E0E8 /* Build configuration list for PBXNativeTarget "KeepAwakeUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				393C17F595D2403ABC266F3C /* Debug */,
-				DE9C0EC30BBDFFD52FB43258 /* Release */,
+				78B1637E1C3AEB0AA58DBFB8 /* Debug */,
+				903F4ECB94901943FE04FB43 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		B20D031EF5D397DD31A917F4 /* Build configuration list for PBXProject "KeepAwake" */ = {
+		98C4EFBAAD6CE31284A42EE0 /* Build configuration list for PBXProject "KeepAwake" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				FDE577F262540B00470F17DD /* Debug */,
-				6EB3BBAB4C1C4F39A19B3E7C /* Release */,
+				DFDC33528B833FEB3C4DE51F /* Debug */,
+				0D4EB045FC3A3061823316FA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		F4B3E84FBBF7EBDDAF324AD2 /* Build configuration list for PBXNativeTarget "KeepAwake" */ = {
+		B18AED832A2F0BE0CA574145 /* Build configuration list for PBXNativeTarget "KeepAwakeHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5BB48C8F7B439166E3992715 /* Debug */,
-				6599A97B35EA6C7C7C2FE377 /* Release */,
+				DAE4EDB85B01563BB613BC1D /* Debug */,
+				09E5136813B973597ACCE1AD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 10CE01417F32EA2EADFEAE97 /* Project object */;
+	rootObject = 1AB17D92C98942A089D4AC7E /* Project object */;
 }

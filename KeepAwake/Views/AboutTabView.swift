@@ -2,42 +2,38 @@ import AppKit
 import SwiftUI
 
 struct AboutTabView: View {
-    @ObservedObject var model: AppViewModel
+    @ObservedObject var controller: KeepAwakeController
 
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
 
             VStack(spacing: 20) {
-                // App icon
                 KeepAwakeBrandMark(size: 80)
 
-                // App name and version
                 VStack(spacing: 4) {
                     Text("KeepAwake")
                         .font(.system(size: 22, weight: .bold))
                         .foregroundStyle(KeepAwakePalette.ink)
 
-                    Text("Version 1.0.0")
+                    Text("Version \(appVersion)")
                         .font(.system(size: 13))
                         .foregroundStyle(KeepAwakePalette.mutedInk)
                 }
 
-                // Description
-                Text("Temporarily disable your MacBook's built-in keyboard and trackpad for cleaning.")
+                Text("Keep your Mac and display awake for the duration you choose, with menu bar controls built for quick toggling.")
                     .font(.system(size: 13))
                     .foregroundStyle(KeepAwakePalette.mutedInk)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 360)
 
-                // Links
                 HStack(spacing: 12) {
                     linkButton(
                         title: "GitHub",
                         icon: "chevron.left.forwardslash.chevron.right",
                         identifier: "about.repo"
                     ) {
-                        model.open(.repository)
+                        controller.open(.repository)
                     }
 
                     linkButton(
@@ -45,17 +41,16 @@ struct AboutTabView: View {
                         icon: "cup.and.saucer.fill",
                         identifier: "about.donate"
                     ) {
-                        model.open(.donation)
+                        controller.open(.donation)
                     }
                 }
             }
 
             Spacer()
 
-            // Footer
             VStack(spacing: 4) {
                 Button {
-                    model.open(.profile)
+                    controller.open(.profile)
                 } label: {
                     Text("Made by Adham Haitham")
                         .font(.system(size: 12, weight: .medium))
@@ -71,6 +66,10 @@ struct AboutTabView: View {
             .padding(.bottom, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0.0"
     }
 
     private func linkButton(

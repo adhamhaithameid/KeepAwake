@@ -1,34 +1,57 @@
 import Foundation
 
+@MainActor
+final class KeepAwakeAppEnvironment {
+    let controller: KeepAwakeController
+    let settingsWindowManager: SettingsWindowManager
+    let statusItemController: StatusItemController
+
+    init(
+        controller: KeepAwakeController,
+        settingsWindowManager: SettingsWindowManager,
+        statusItemController: StatusItemController
+    ) {
+        self.controller = controller
+        self.settingsWindowManager = settingsWindowManager
+        self.statusItemController = statusItemController
+    }
+}
+
 enum AppEnvironment {
     @MainActor
-    static func makeViewModel() -> AppViewModel {
-        let overrides = LaunchOverrides.current
-        let userDefaults: UserDefaults
-
-        if overrides.useMockInputController {
-            let suiteName = "KeepAwake.UITests"
-            let defaults = UserDefaults(suiteName: suiteName) ?? .standard
-            defaults.removePersistentDomain(forName: suiteName)
-            userDefaults = defaults
-        } else {
-            userDefaults = .standard
-        }
-
-        let settings = AppSettings(userDefaults: userDefaults)
-        let inputController: any BuiltInInputControlling = overrides.useMockInputController
-            ? MockBuiltInInputController()
-            : LiveBuiltInInputController()
-        let linkOpener: any LinkOpening = overrides.useMockInputController
-            ? NoOpLinkOpener()
-            : WorkspaceLinkOpener()
-
-        return AppViewModel(
-            settings: settings,
-            inputController: inputController,
-            helperLauncher: HelperProcessLauncher(),
-            linkOpener: linkOpener,
-            launchOverrides: overrides
+    static func makeEnvironment() -> KeepAwakeAppEnvironment {
+        let settings = AppSettings()
+        let sessionController = ActivationSessionController(
+            assertions: LiveWakeAssertionController(),
+            powerStatusProvider: LivePowerStatusProvider()
         )
+        let bridgeWindowManager = BridgeSettingsWindowManager()
+        let controller = KeepAwakeController(
+            settings: settings,
+            sessionController: sessionController,
+            windowManager: bridgeWindowManager,
+            launchAtLoginManager: LiveLaunchAtLoginManager(),
+            linkOpener: WorkspaceLinkOpener()
+        )
+        let settingsWindowManager = SettingsWindowManager {
+            SettingsWindowView(controller: controller)
+        }
+        bridgeWindowManager.base = settingsWindowManager
+        let statusItemController = StatusItemController(controller: controller)
+
+        return KeepAwakeAppEnvironment(
+            controller: controller,
+            settingsWindowManager: settingsWindowManager,
+            statusItemController: statusItemController
+        )
+    }
+}
+
+@MainActor
+private final class BridgeSettingsWindowManager: SettingsWindowManaging {
+    var base: SettingsWindowManaging?
+
+    func show(selectedTab: AppTab) {
+        base?.show(selectedTab: selectedTab)
     }
 }

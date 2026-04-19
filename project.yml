@@ -24,11 +24,29 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: KeepAwake/App
-      - path: KeepAwake/Models
-      - path: KeepAwake/Services
-      - path: KeepAwake/Views
-      - path: KeepAwake/Support
+      - path: KeepAwake/App/AppDelegate.swift
+      - path: KeepAwake/App/AppEnvironment.swift
+      - path: KeepAwake/App/KeepAwakeController.swift
+      - path: KeepAwake/Models/ActivationDuration.swift
+      - path: KeepAwake/Models/ActivationSession.swift
+      - path: KeepAwake/Models/AppSettings.swift
+      - path: KeepAwake/Models/PowerSnapshot.swift
+      - path: KeepAwake/Services/ActivationSessionController.swift
+      - path: KeepAwake/Services/LaunchAtLoginManager.swift
+      - path: KeepAwake/Services/LinkOpening.swift
+      - path: KeepAwake/Services/PowerStatusProviding.swift
+      - path: KeepAwake/Services/SettingsWindowManager.swift
+      - path: KeepAwake/Services/StatusItemController.swift
+      - path: KeepAwake/Services/WakeAssertionController.swift
+      - path: KeepAwake/Views/AboutTabView.swift
+      - path: KeepAwake/Views/ActivationDurationTabView.swift
+      - path: KeepAwake/Views/AddDurationSheet.swift
+      - path: KeepAwake/Views/KeepAwakeBranding.swift
+      - path: KeepAwake/Views/QuickActionsMenuView.swift
+      - path: KeepAwake/Views/SettingsTabView.swift
+      - path: KeepAwake/Views/SettingsWindowView.swift
+      - path: KeepAwake/Support/AppTab.swift
+      - path: KeepAwake/Support/ExternalLinks.swift
     resources:
       - path: KeepAwake/Resources/profile.png
       - path: KeepAwake/Resources/KeepAwake.icns
@@ -80,11 +98,7 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: KeepAwakeHelper
-      - path: KeepAwake/Models
-      - path: KeepAwake/Support/AppError.swift
-      - path: KeepAwake/Services/BuiltInInputControlling.swift
-      - path: KeepAwake/Services/LiveBuiltInInputController.swift
+      - path: KeepAwakeHelper/main.swift
     settings:
       base:
         OTHER_SWIFT_FLAGS: -parse-as-library
@@ -99,7 +113,10 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: KeepAwakeTests
+      - path: KeepAwakeTests/ActivationDurationTests.swift
+      - path: KeepAwakeTests/ActivationSessionControllerTests.swift
+      - path: KeepAwakeTests/AppSettingsTests.swift
+      - path: KeepAwakeTests/KeepAwakeControllerTests.swift
     dependencies:
       - target: KeepAwake
     settings:
@@ -114,7 +131,7 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: KeepAwakeUITests
+      - path: KeepAwakeUITests/KeepAwakeUITests.swift
     dependencies:
       - target: KeepAwake
     settings:
