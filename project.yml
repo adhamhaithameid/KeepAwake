@@ -1,0 +1,135 @@
+name: KeepAwake
+
+options:
+  createIntermediateGroups: true
+  defaultConfig: Debug
+  deploymentTarget:
+    macOS: "13.0"
+
+configs:
+  Debug: debug
+  Release: release
+
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    MARKETING_VERSION: 1.0.0
+    CURRENT_PROJECT_VERSION: 1
+    GENERATE_INFOPLIST_FILE: NO
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+
+targets:
+  KeepAwake:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: KeepAwake/App
+      - path: KeepAwake/Models
+      - path: KeepAwake/Services
+      - path: KeepAwake/Views
+      - path: KeepAwake/Support
+    resources:
+      - path: KeepAwake/Resources/profile.png
+      - path: KeepAwake/Resources/KeepAwake.icns
+      - path: KeepAwake/Resources/brand-mark.png
+      - path: KeepAwake/Resources/Assets.xcassets
+    info:
+      path: KeepAwake/Info.plist
+    settings:
+      base:
+        INFOPLIST_KEY_CFBundleIconFile: KeepAwake.icns
+        PRODUCT_BUNDLE_IDENTIFIER: com.adhamhaithameid.keepawake
+        PRODUCT_NAME: KeepAwake
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_ENTITLEMENTS: KeepAwake/KeepAwake.entitlements
+        CODE_SIGN_STYLE: Automatic
+    dependencies:
+      - target: KeepAwakeHelper
+    postBuildScripts:
+      - name: Copy App Resources
+        script: |
+          set -euo pipefail
+          DEST="$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Resources"
+          PLIST="$TARGET_BUILD_DIR/$INFOPLIST_PATH"
+          mkdir -p "$DEST"
+          cp "$SRCROOT/KeepAwake/Resources/profile.png" "$DEST/profile.png"
+          cp "$SRCROOT/KeepAwake/Resources/KeepAwake.icns" "$DEST/KeepAwake.icns"
+          cp "$SRCROOT/KeepAwake/Resources/brand-mark.png" "$DEST/brand-mark.png"
+          if /usr/libexec/PlistBuddy -c "Print :CFBundleIconFile" "$PLIST" >/dev/null 2>&1; then
+            /usr/libexec/PlistBuddy -c "Set :CFBundleIconFile KeepAwake.icns" "$PLIST"
+          else
+            /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string KeepAwake.icns" "$PLIST"
+          fi
+        outputFiles:
+          - $(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Resources/profile.png
+          - $(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Resources/KeepAwake.icns
+          - $(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Resources/brand-mark.png
+      - name: Embed Helper
+        script: |
+          set -euo pipefail
+          DEST="$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Helpers"
+          mkdir -p "$DEST"
+          cp "$BUILT_PRODUCTS_DIR/KeepAwakeHelper" "$DEST/KeepAwakeHelper"
+          chmod +x "$DEST/KeepAwakeHelper"
+        outputFiles:
+          - $(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Helpers/KeepAwakeHelper
+
+  KeepAwakeHelper:
+    type: tool
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: KeepAwakeHelper
+      - path: KeepAwake/Models
+      - path: KeepAwake/Support/AppError.swift
+      - path: KeepAwake/Services/BuiltInInputControlling.swift
+      - path: KeepAwake/Services/LiveBuiltInInputController.swift
+    settings:
+      base:
+        OTHER_SWIFT_FLAGS: -parse-as-library
+        PRODUCT_BUNDLE_IDENTIFIER: com.adhamhaithameid.keepawake.helper
+        PRODUCT_NAME: KeepAwakeHelper
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_ENTITLEMENTS: KeepAwakeHelper/KeepAwakeHelper.entitlements
+        CODE_SIGN_STYLE: Automatic
+
+  KeepAwakeTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: KeepAwakeTests
+    dependencies:
+      - target: KeepAwake
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.adhamhaithameid.keepawake.tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/KeepAwake.app/Contents/MacOS/KeepAwake"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+
+  KeepAwakeUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: KeepAwakeUITests
+    dependencies:
+      - target: KeepAwake
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.adhamhaithameid.keepawake.uitests
+
+schemes:
+  KeepAwake:
+    build:
+      targets:
+        KeepAwake: all
+        KeepAwakeHelper: run
+    test:
+      gatherCoverageData: true
+      targets:
+        - name: KeepAwakeTests
+        - name: KeepAwakeUITests
