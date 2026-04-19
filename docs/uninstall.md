@@ -1,41 +1,12 @@
-# Uninstall KeepAwake
+# Uninstall
 
-If you decide to remove KeepAwake, it takes about 30 seconds.
+## Remove The App
 
-## 1. Quit the App
+1. Quit KeepAwake from the menu bar.
+2. Move `KeepAwake.app` to the Trash.
 
-If KeepAwake is open, close the window. It fully quits automatically.
+## Optional Cleanup
 
-## 2. Delete the App
+If you enabled **Start at Login**, disable it first from Settings before removing the app.
 
-Drag `KeepAwake.app` from your **Applications** folder to the Trash.
-
-## 3. Remove Permissions (Optional)
-
-If you want to clean up the permission entries:
-
-1. Open **System Settings → Privacy & Security → Accessibility**.
-2. Select KeepAwake and click the **−** button.
-3. Repeat in **Input Monitoring**.
-
-## 4. Remove Preferences (Optional)
-
-KeepAwake stores a small preferences file with your timer duration and auto-start setting. To remove it:
-
-```bash
-defaults delete com.adhamhaithameid.keepawake
-```
-
-## 5. Remove Build Artifacts (If You Built From Source)
-
-If you cloned the repository and built locally, you can delete these generated folders:
-
-```
-release/
-.release-checks/
-.derived-data/
-.derived-data-release/
-dist/
-```
-
-That's it — KeepAwake leaves nothing else behind.
+Your saved settings are local to your Mac. If you want to remove them too, use your preferred app-cleanup workflow after deleting the app.

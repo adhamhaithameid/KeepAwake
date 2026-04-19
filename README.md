@@ -5,90 +5,88 @@
 <h1 align="center">KeepAwake</h1>
 
 <p align="center">
-  <strong>Temporarily disable your MacBook's keyboard and trackpad so you can clean it without accidental input.</strong>
+  <strong>A native macOS menu bar app for keeping your Mac and display awake for the exact duration you choose.</strong>
 </p>
 
 <p align="center">
-  <a href="https://adhamhaithameid.github.io/KeepAwake/">Website</a> · <a href="https://github.com/adhamhaithameid/KeepAwake/releases">Download</a> · <a href="docs/install-from-github.md">Install Guide</a> · <a href="docs/faq.md">FAQ</a>
+  <a href="https://github.com/adhamhaithameid/KeepAwake/releases">Download</a> ·
+  <a href="docs/install-from-github.md">Install Guide</a> ·
+  <a href="docs/faq.md">FAQ</a> ·
+  <a href="docs/privacy.md">Privacy</a>
 </p>
 
 ---
 
 ## Why KeepAwake?
 
-Every time you wipe down your MacBook, stray keypresses open apps, move windows, and type gibberish. KeepAwake solves this in one click — disable the built-in keyboard (and optionally the trackpad), clean your Mac, then re-enable everything instantly.
+KeepAwake is built for the moments when you want your Mac to stay awake without opening System Settings, Terminal, or a full desktop app window.
 
-- **No accounts, no analytics, no internet required.** Runs entirely offline.
-- **Lightweight and native.** Built with Swift and SwiftUI.
-- **Safe by design.** Keyboard-only mode keeps the trackpad active, and timed mode always auto-recovers.
+- **Menu bar first.** Left-click toggles your saved default duration. Right-click opens quick actions and the full duration list.
+- **Built for real sessions.** Choose `15m`, `30m`, `1h`, `2h`, `3h`, `5h`, `8h`, `12h`, `1 day`, or `Indefinitely`, and add your own custom durations.
+- **Battery-aware.** Optionally stop when battery drops below a chosen threshold or when Low Power Mode turns on.
+- **Native and lightweight.** Built with Swift, SwiftUI, AppKit interop, and macOS power assertions.
+- **No special permissions.** KeepAwake does not require Accessibility or Input Monitoring access.
 
 ## Quick Start
 
-1. Download the latest [release](https://github.com/adhamhaithameid/KeepAwake/releases) (`.dmg` or `.zip`).
+1. Download the latest [release](https://github.com/adhamhaithameid/KeepAwake/releases).
 2. Move `KeepAwake.app` to your Applications folder.
-3. Open it — the one-time setup screen guides you through granting two permissions:
-   - **Accessibility** — lets the app intercept keyboard events.
-   - **Input Monitoring** — lets the app actually block them.
-4. Click **Disable Keyboard** and start cleaning.
+3. Open it once. The coffee cup icon appears in the menu bar.
+4. Left-click the icon to start the saved default duration.
+5. Right-click the icon for quick actions, settings, and the full duration list.
 
 > [!TIP]
-> If macOS warns about an unsigned app: right-click `KeepAwake.app` → **Open** → click **Open** in the dialog.
+> If macOS warns about an unsigned app, right-click `KeepAwake.app`, choose **Open**, then confirm **Open** in the dialog.
 
 ## Features
 
-### 🧹 Disable Keyboard
+### Menu Bar Control
 
-Turns off only the built-in keyboard. The trackpad stays fully active, so you can click **Re-enable Keyboard** at any time. This is the safest mode and the recommended starting point.
+- **Left click:** start or stop the saved default duration.
+- **Right click:** use the quick buttons (`15m`, `1h`, `∞`), open the full duration submenu, open Settings, or quit the app.
+- **Status icon:** outline coffee when inactive, filled coffee when active.
 
-### 🧼 Disable Keyboard + Trackpad
+### Settings
 
-Turns off both for a configurable timer (15–180 seconds). Everything is restored automatically when the countdown finishes. Perfect for a thorough screen and keyboard wipe.
+- **Start at login**
+- **Activate on launch**
+- **Deactivate below battery threshold**
+- **Deactivate in Low Power Mode**
+- **Allow Display Sleep**
 
-### ⚙️ Settings
+### Activation Duration
 
-- Choose your preferred timer duration.
-- Toggle **auto-start** to begin keyboard-only cleaning the moment you open the app.
+- Add custom durations with hours, minutes, and seconds
+- Remove custom durations
+- Reset the duration list
+- Set any available duration as the saved default
 
-### ℹ️ About
+### About
 
-Quick links to the GitHub repository and your support options.
+The About page keeps the same simple link-focused structure with GitHub, donation, and author profile actions.
 
-## Permissions
+## No Special Permissions
 
-KeepAwake needs two macOS permissions to work. Both are requested through a guided setup screen that appears the first time you open the app:
+KeepAwake uses macOS power-management assertions to keep the system awake. It does not need:
 
-| Permission | Why | What happens without it |
-|---|---|---|
-| **Accessibility** | Create event taps to intercept keyboard events | The app can't disable the keyboard at all |
-| **Input Monitoring** | Actually block events from reaching other apps | Events are intercepted but not blocked — keys still type |
+- Accessibility
+- Input Monitoring
+- Screen Recording
 
-If either permission is revoked later, the app automatically returns to the setup screen. You can also re-grant permissions from the banners shown in the main interface.
-
-→ [Full permissions guide](docs/permissions.md)
-
-## Safety
-
-KeepAwake is deliberately conservative:
-
-- **Keyboard-only mode** keeps the trackpad active — you always have a way to interact.
-- **Timed mode** always has a deadline and auto-recovers.
-- **Closing the window quits the app** — it never lingers in the background.
-- **Only built-in devices** are affected — external keyboards and mice are never touched.
-
-→ [Safety notes](docs/safety.md)
+The only OS-managed prompt you may see is the normal login-item approval flow if you enable **Start at login**.
 
 ## Documentation
 
 | Guide | What it covers |
 |---|---|
-| [Install Guide](docs/install-from-github.md) | Download, install, and first launch |
-| [Permissions](docs/permissions.md) | What the app needs and why |
-| [Post-Install Checklist](docs/manual-testing.md) | 5-minute walkthrough to verify everything works |
-| [Safety Notes](docs/safety.md) | How the app keeps you safe |
-| [FAQ](docs/faq.md) | Common questions answered |
-| [Troubleshooting](docs/troubleshooting.md) | What to do when something goes wrong |
-| [Privacy](docs/privacy.md) | What data the app does (and doesn't) collect |
-| [Uninstall](docs/uninstall.md) | How to fully remove KeepAwake |
+| [Install Guide](docs/install-from-github.md) | Install and first launch |
+| [FAQ](docs/faq.md) | Common questions |
+| [Manual Testing](docs/manual-testing.md) | Quick verification checklist |
+| [Safety](docs/safety.md) | How auto-stop options protect battery life |
+| [Troubleshooting](docs/troubleshooting.md) | Common fixes |
+| [Privacy](docs/privacy.md) | Data and permissions |
+| [Architecture](docs/architecture.md) | How the app works |
+| [Uninstall](docs/uninstall.md) | Full removal steps |
 
 ## Build From Source
 
@@ -99,11 +97,11 @@ xcodegen generate
 xcodebuild -project KeepAwake.xcodeproj -scheme KeepAwake -configuration Release build
 ```
 
-**Requirements:** macOS 13.0 (Ventura) or later · Xcode 15+ · [XcodeGen](https://github.com/yonaskolb/XcodeGen)
+**Requirements:** macOS 13.0 or later · Xcode 15+ · [XcodeGen](https://github.com/yonaskolb/XcodeGen)
 
 ## Support
 
-If KeepAwake saves you from accidental typing, consider buying me a coffee:
+If KeepAwake is useful, you can support the project here:
 
 <a href="https://buymeacoffee.com/adhamhaithameid">
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="48" />

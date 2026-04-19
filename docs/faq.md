@@ -1,42 +1,35 @@
 # FAQ
 
-## Is KeepAwake safe to use?
+## Does KeepAwake keep only the display awake?
 
-Yes. Keyboard-only mode keeps the trackpad active at all times, so you can always re-enable the keyboard. Timed mode auto-recovers when the countdown finishes. External keyboards and mice are never affected.
+By default, no. KeepAwake keeps **both the Mac and the display awake**.
 
-## What permissions does it need?
+If you enable **Allow Display Sleep** in Settings, the Mac stays awake while the display is allowed to sleep normally.
 
-KeepAwake needs **Accessibility** and **Input Monitoring**. Both are requested through a guided setup screen the first time you open the app. See [Permissions](permissions.md) for details.
+## Does it need Accessibility or Input Monitoring?
 
-## Does it disable external keyboards or mice?
+No. KeepAwake does not block input devices, so those permissions are not needed.
 
-No. KeepAwake only works with the built-in keyboard and built-in trackpad on your MacBook.
+## Can I choose my own default duration?
 
-## Does it run in the background?
+Yes. Open **Settings → Activation Duration**, select a duration, then click **Set as Default**.
 
-No. Closing the main window fully quits the app and restores all input immediately.
+## Can I add my own durations?
 
-## Does it connect to the internet?
+Yes. The Activation Duration page lets you add durations using hours, minutes, and seconds.
 
-No. KeepAwake has no analytics, no sync, and no network activity. The only web actions are links you choose to open from the About tab.
+## What happens if my battery gets low?
 
-## What happens if macOS denies a permission?
+If you enable **Deactivate Below Battery Threshold**, KeepAwake stops the active session automatically when the battery falls below your chosen threshold.
 
-KeepAwake shows a clear message and guides you to System Settings. Your Mac stays fully usable — the app never leaves input partially disabled.
+## What happens in Low Power Mode?
 
-## What's the auto-start feature?
+If you enable **Deactivate in Low Power Mode**, the app stops the active session automatically when Low Power Mode turns on.
 
-If enabled in Settings, KeepAwake automatically disables the keyboard 3 seconds after opening. A visible countdown lets you cancel if you opened the app by mistake. Useful if you always open the app right before cleaning.
+## Can it start automatically when I log in?
 
-## Which mode should I use?
+Yes. Enable **Start at Login** in Settings.
 
-- **Disable Keyboard** — for quick wipes and everyday cleaning. Fastest and safest.
-- **Disable Keyboard + Trackpad** — for thorough cleans where you don't want accidental trackpad taps.
+## Does it stay in the Dock?
 
-## Can I get locked out of my Mac?
-
-No. External devices always work. The power button and Force Quit (⌘⌥⎋) always work. Closing the app restores everything. Timed mode has a hard deadline that always fires.
-
-## What macOS versions are supported?
-
-macOS 13.0 (Ventura) and later.
+No. KeepAwake is designed as a menu bar utility and normally runs without a Dock icon.

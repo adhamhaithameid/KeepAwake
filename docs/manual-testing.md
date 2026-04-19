@@ -1,52 +1,42 @@
-# Post-Install Checklist
+# Manual Testing
 
-Run through this in about 5 minutes to confirm everything works on your Mac.
+## Menu Bar Basics
 
-## 1. Open the App
+1. Launch `KeepAwake.app`.
+2. Confirm the coffee icon appears in the menu bar.
+3. Left-click the icon.
+4. Confirm the icon switches to the filled state.
+5. Left-click again.
+6. Confirm the icon returns to the outline state.
 
-- Open `KeepAwake.app`.
-- The one-time setup screen should appear.
-- Grant both **Accessibility** and **Input Monitoring** when prompted.
-- Click **Continue to KeepAwake**.
+## Right-Click Menu
 
-## 2. Test Keyboard-Only Mode
+1. Right-click the menu bar icon.
+2. Confirm the quick buttons show `15m`, `1h`, and `∞`.
+3. Confirm **Activate for Duration** opens a submenu with the remaining durations.
+4. Choose a duration such as `2h`.
+5. Confirm the icon switches to the active state.
 
-- Go to the **Clean** tab.
-- Click **Disable Keyboard**.
-- Try typing — nothing should happen.
-- Confirm the trackpad still works normally.
-- Click **Re-enable Keyboard**.
-- Confirm typing works again.
+## Settings Window
 
-## 3. Set a Short Timer
+1. Right-click the icon and choose **Settings**.
+2. Confirm the window opens with centered tabs:
+   - Settings
+   - Activation Duration
+   - About
+3. Toggle each checkbox setting once.
+4. If **Deactivate Below Battery Threshold** is enabled, confirm the slider appears and snaps to the available stops.
 
-- Go to **Settings**.
-- Change the timer to **15 seconds**.
-- Go back to **Clean**.
+## Activation Duration
 
-## 4. Test Timed Mode
+1. Open the **Activation Duration** tab.
+2. Add a custom duration.
+3. Confirm it appears in the list.
+4. Set it as the default.
+5. Remove it.
+6. Reset the options.
 
-- Click **Disable Keyboard + Trackpad**.
-- A countdown appears.
-- Wait for it to finish.
-- Confirm both the keyboard and trackpad are restored automatically.
+## About
 
-## 5. Test Auto-Start (Optional)
-
-- In **Settings**, turn on **"Auto-start keyboard disable on launch"**.
-- Quit KeepAwake.
-- Reopen it.
-- A 3-second countdown appears — click **Cancel** to stop it.
-- Confirm the keyboard stays enabled.
-
-## 6. Confirm the About Tab
-
-- Open **About**.
-- Verify the GitHub and support links work.
-
-## 7. Confirm Close = Quit
-
-- Close the KeepAwake window.
-- Confirm the app fully quits (no icon in the Dock or menu bar).
-
-If anything doesn't work as expected, see [Troubleshooting](troubleshooting.md).
+1. Open the **About** tab.
+2. Confirm the GitHub and Donate buttons open the correct links.

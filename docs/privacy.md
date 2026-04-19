@@ -1,33 +1,35 @@
 # Privacy
 
-KeepAwake is designed to stay small, local, and easy to trust.
+KeepAwake runs locally on your Mac.
 
-## What KeepAwake Does NOT Do
+## What It Collects
 
-- ❌ No user accounts
-- ❌ No analytics or telemetry
-- ❌ No cloud sync or storage
-- ❌ No background networking
-- ❌ No data collection of any kind
-- ❌ No auto-update framework
+Nothing.
 
-## What KeepAwake Does
+The app does not collect, upload, sell, or share:
 
-- ✅ Runs entirely on your Mac
-- ✅ Uses Apple's native frameworks (Swift, SwiftUI, ApplicationServices)
-- ✅ Stores only your chosen settings (timer duration, auto-start preference) in local UserDefaults
-- ✅ The About tab has links to GitHub and support pages — these only open if you click them
+- usage analytics
+- crash analytics
+- account data
+- personal data
+- browsing data
 
-## Why It Needs Permissions
+## What It Reads Locally
 
-KeepAwake requests **Accessibility** and **Input Monitoring** permissions so it can intercept and block built-in keyboard events during cleaning. These permissions are:
+KeepAwake stores your preferences locally, including:
 
-- Granted through macOS System Settings
-- Revocable at any time
-- Only used while the app is open and actively blocking input
+- start at login
+- activate on launch
+- battery threshold preferences
+- Low Power Mode auto-stop preference
+- Allow Display Sleep preference
+- your saved duration list
+- your saved default duration
 
-The app never reads what you type. It only suppresses keyboard/trackpad events — it doesn't log, store, or transmit them.
+If battery-aware rules are enabled, the app also reads current battery percentage and Low Power Mode state while it is running.
 
-## Open Source
+## Network Access
 
-KeepAwake's source code is publicly available on [GitHub](https://github.com/adhamhaithameid/KeepAwake) under the [PolyForm Noncommercial 1.0.0](../LICENSE.md) license. You can read every line of code to verify these claims.
+The app itself does not need network access to keep your Mac awake.
+
+Links in the About page may open external websites if you click them.
