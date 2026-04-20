@@ -8,14 +8,19 @@ struct SettingsTabView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
+
+                // MARK: General
+
                 KeepAwakePanel {
                     Text("General Settings")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(KeepAwakePalette.ink)
+                        .accessibilityAddTraits(.isHeader)
 
                     clickableToggleRow(
                         title: "Start at Login",
                         detail: "Launch KeepAwake automatically when you sign in.",
+                        hint: "When enabled, KeepAwake appears in the menu bar every time you log in.",
                         isOn: Binding(
                             get: { controller.startAtLoginEnabled },
                             set: { controller.startAtLoginEnabled = $0 }
@@ -26,6 +31,7 @@ struct SettingsTabView: View {
                     clickableToggleRow(
                         title: "Activate on Launch",
                         detail: "Begin the saved default duration as soon as KeepAwake launches.",
+                        hint: "Automatically starts a session using your default duration at app launch.",
                         isOn: $settings.activateOnLaunch,
                         identifier: "settings.activateOnLaunch"
                     )
@@ -33,19 +39,24 @@ struct SettingsTabView: View {
                     clickableToggleRow(
                         title: "Show Countdown in Menu Bar",
                         detail: "Display a live glanceable label (e.g. ☕ 42m) next to the icon while a session is active.",
+                        hint: "Shows a live time countdown in the menu bar so you can see the remaining session time at a glance.",
                         isOn: $settings.showStatusLabel,
                         identifier: "settings.showStatusLabel"
                     )
                 }
 
+                // MARK: Battery
+
                 KeepAwakePanel {
                     Text("Battery Settings")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(KeepAwakePalette.ink)
+                        .accessibilityAddTraits(.isHeader)
 
                     clickableToggleRow(
                         title: "Deactivate Below Battery Threshold",
                         detail: "Stop the active session automatically once battery drops under the set level.",
+                        hint: "Protects battery life by ending a session when charge falls below your chosen percentage.",
                         isOn: $settings.deactivateBelowThreshold,
                         identifier: "settings.deactivateBelowThreshold"
                     )
@@ -54,37 +65,56 @@ struct SettingsTabView: View {
                         BatteryThresholdControl(threshold: $settings.batteryThreshold)
                             .padding(.leading, 26)
                             .transition(.opacity.combined(with: .move(edge: .top)))
+                            .accessibilityLabel("Battery threshold slider, current value \(settings.batteryThreshold) percent")
+                            .accessibilityHint("Drag to set the battery percentage at which the session stops. Snaps to common values.")
                     }
 
                     clickableToggleRow(
                         title: "Deactivate in Low Power Mode",
                         detail: "Stop any active session the moment Low Power Mode turns on.",
+                        hint: "When macOS Low Power Mode activates, any running KeepAwake session is stopped immediately.",
                         isOn: $settings.deactivateOnLowPowerMode,
                         identifier: "settings.lowPowerMode"
                     )
                 }
 
+                // MARK: Display & Sleep
+
                 KeepAwakePanel {
-                    Text("Display")
+                    Text("Display & Sleep")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(KeepAwakePalette.ink)
+                        .accessibilityAddTraits(.isHeader)
 
-                 clickableToggleRow(
+                    clickableToggleRow(
                         title: "Allow Display Sleep",
                         detail: "Keep the Mac awake while still letting the display sleep normally.",
+                        hint: "The Mac stays active for background tasks, but the screen can dim and turn off.",
                         isOn: $settings.allowDisplaySleep,
                         identifier: "settings.allowDisplaySleep"
                     )
+
+                    clickableToggleRow(
+                        title: "Allow Power Nap",
+                        detail: "Let Time Machine, push email, and background syncs run during your session.",
+                        hint: "Uses a lighter IOKit assertion that allows Power Nap — background activity like Time Machine and iCloud sync can still run while the session is active. When off, a stricter assertion blocks all idle activity.",
+                        isOn: $settings.allowPowerNap,
+                        identifier: "settings.allowPowerNap"
+                    )
                 }
+
+                // MARK: Automation
 
                 KeepAwakePanel {
                     Text("Automation")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(KeepAwakePalette.ink)
+                        .accessibilityAddTraits(.isHeader)
 
                     clickableToggleRow(
                         title: "Activate When Focus Mode Is On",
                         detail: "Automatically start the default duration when macOS Focus (Do Not Disturb) turns on.",
+                        hint: "KeepAwake starts a session automatically whenever you enable Focus Mode or Do Not Disturb.",
                         isOn: $settings.autoActivateOnFocus,
                         identifier: "settings.autoActivateOnFocus"
                     )
@@ -93,6 +123,7 @@ struct SettingsTabView: View {
                         clickableToggleRow(
                             title: "Deactivate When Focus Mode Ends",
                             detail: "Stop the session automatically when Focus Mode turns off (only if KeepAwake started it).",
+                            hint: "Only applies to sessions that were started automatically by Focus Mode. Manually started sessions are not affected.",
                             isOn: $settings.deactivateWhenFocusEnds,
                             identifier: "settings.deactivateWhenFocusEnds"
                         )
@@ -103,6 +134,7 @@ struct SettingsTabView: View {
                     clickableToggleRow(
                         title: "Activate When Screen Sharing",
                         detail: "Automatically start the default duration when Screen Sharing (or AirPlay) begins.",
+                        hint: "Prevents your Mac from sleeping mid-presentation or during a screen share session.",
                         isOn: $settings.autoActivateOnScreenSharing,
                         identifier: "settings.autoActivateOnScreenSharing"
                     )
@@ -114,14 +146,15 @@ struct SettingsTabView: View {
         .animation(.easeInOut(duration: 0.18), value: settings.autoActivateOnFocus)
     }
 
-
     // MARK: - Fully-clickable toggle row
 
-    /// The entire row is a Button that toggles `isOn`. The `Toggle` inside
-    /// has `allowsHitTesting(false)` so all clicks route through the outer button.
+    /// The entire row is a `Button` that toggles `isOn`. The `Toggle` inside
+    /// has `allowsHitTesting(false)` so all taps route through the outer button.
+    /// The `hint` parameter is surfaced to VoiceOver as an `accessibilityHint`.
     private func clickableToggleRow(
         title: String,
         detail: String,
+        hint: String = "",
         isOn: Binding<Bool>,
         identifier: String
     ) -> some View {
@@ -154,6 +187,11 @@ struct SettingsTabView: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier(identifier)
+        // Combine the entire row into one VoiceOver element labelled by title + state.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(title), \(isOn.wrappedValue ? "on" : "off")")
+        .accessibilityHint(hint.isEmpty ? detail : hint)
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -179,11 +217,15 @@ private struct BatteryThresholdControl: View {
                     .monospacedDigit()
                     .contentTransition(.numericText())
                     .animation(.easeOut(duration: 0.1), value: threshold)
+                    .accessibilityLabel("\(threshold) percent")
             }
 
             // Magnetic continuous slider
             MagneticBatterySlider(value: $threshold)
                 .frame(height: 24)
+                .accessibilityLabel("Battery threshold")
+                .accessibilityValue("\(threshold) percent")
+                .accessibilityHint("Drag left or right to set the battery level at which the session stops")
 
             // Snap-point labels beneath the slider
             GeometryReader { geo in
@@ -201,6 +243,7 @@ private struct BatteryThresholdControl: View {
                             y: geo.size.height / 2
                         )
                         .animation(.easeOut(duration: 0.1), value: threshold)
+                        .accessibilityHidden(true)  // Slider value label covers this
                 }
             }
             .frame(height: 14)
@@ -231,7 +274,7 @@ private struct MagneticBatterySlider: NSViewRepresentable {
         slider.target = context.coordinator
         slider.action = #selector(Coordinator.sliderChanged(_:))
         slider.isContinuous = true
-        // Remove discrete tick marks — slider is now free-range.
+        // Remove discrete tick marks — slider is now free-range with magnetic snapping.
         slider.numberOfTickMarks = 0
         slider.allowsTickMarkValuesOnly = false
         slider.sliderType = .linear
@@ -239,7 +282,7 @@ private struct MagneticBatterySlider: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSSlider, context: Context) {
-        // Only update the slider if not currently dragging (to avoid fighting).
+        // Only update the slider if not currently dragging (to avoid fighting the user).
         if !context.coordinator.isDragging {
             nsView.doubleValue = Double(value)
         }
