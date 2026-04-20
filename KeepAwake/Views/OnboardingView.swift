@@ -77,6 +77,20 @@ struct OnboardingView: View {
                     if page > 0 {
                         Button("Back") { page -= 1 }
                             .buttonStyle(.bordered)
+                            .accessibilityLabel("Back")
+                            .accessibilityHint("Go to the previous onboarding step")
+                    }
+
+                    // Skip — always visible, marks onboarding complete without
+                    // completing all slides, preventing the window from
+                    // re-appearing on every launch.
+                    if page < pages.count - 1 {
+                        Button("Skip") { onComplete() }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(.secondary)
+                            .font(.system(size: 12))
+                            .accessibilityLabel("Skip onboarding")
+                            .accessibilityHint("Close this welcome screen and go straight to the app")
                     }
 
                     Spacer()
@@ -85,12 +99,16 @@ struct OnboardingView: View {
                         Button("Next") { page += 1 }
                             .buttonStyle(.borderedProminent)
                             .keyboardShortcut(.defaultAction)
+                            .accessibilityLabel("Next")
+                            .accessibilityHint("Go to the next onboarding step")
                     } else {
                         Button("Get Started") {
                             onComplete()
                         }
                         .buttonStyle(.borderedProminent)
                         .keyboardShortcut(.defaultAction)
+                        .accessibilityLabel("Get Started")
+                        .accessibilityHint("Finish setup and start using KeepAwake")
                     }
                 }
                 .padding(.horizontal, 40)
@@ -120,11 +138,13 @@ struct OnboardingView: View {
                     .font(.system(size: 40, weight: .medium))
                     .foregroundStyle(page.imageColor)
             }
+            .accessibilityHidden(true)   // Decorative; title provides the context
 
             // Title
             Text(page.title)
                 .font(.system(size: 22, weight: .bold))
                 .multilineTextAlignment(.center)
+                .accessibilityAddTraits(.isHeader)
 
             // Body or bullets
             if !page.bullets.isEmpty {
@@ -139,6 +159,7 @@ struct OnboardingView: View {
                                     .font(.system(size: 15, weight: .semibold))
                                     .foregroundStyle(Color.accentColor)
                             }
+                            .accessibilityHidden(true)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(bullet.1)
                                     .font(.system(size: 13, weight: .semibold))
@@ -146,6 +167,8 @@ struct OnboardingView: View {
                                     .font(.system(size: 12))
                                     .foregroundStyle(.secondary)
                             }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel("\(bullet.1): \(bullet.2)")
                             Spacer()
                         }
                     }
