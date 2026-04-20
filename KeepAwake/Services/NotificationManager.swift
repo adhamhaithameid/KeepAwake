@@ -4,6 +4,14 @@ import UserNotifications
 /// Manages user-facing notifications for KeepAwake.
 /// Handles permission, schedules alerts for auto-stop events,
 /// and provides expiry-warning notifications with an "Extend +30m" action.
+///
+/// ## Compatibility
+/// This class uses `UNUserNotificationCenter` (introduced macOS 10.14) which
+/// supersedes the deprecated `NSUserNotificationCenter` removed in macOS 14.
+/// `UNNotificationPresentationOptions.banner` and `.sound` require macOS 11+.
+/// KeepAwake targets **macOS 13**, so all options used here are fully available.
+///
+/// `UNNotificationAction` and `UNNotificationCategory` are available macOS 10.14+.
 @MainActor
 final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationManager()
@@ -121,11 +129,14 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     }
 
     /// Show banners even when the app is in the foreground (menu bar app).
+    /// `.banner` and `.sound` require macOS 11+ — satisfied by our macOS 13 target.
     nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
+        // .banner is the modern replacement for .alert (deprecated macOS 12).
+        // Both are valid on macOS 11–14, but .banner is preferred.
         completionHandler([.banner, .sound])
     }
 }
