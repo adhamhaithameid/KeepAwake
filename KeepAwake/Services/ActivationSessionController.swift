@@ -17,6 +17,8 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
     private let powerStatusProvider: PowerStatusProviding
     private var expirationTask: Task<Void, Never>?
     private var monitorTask: Task<Void, Never>?
+    /// Observes Low Power Mode changes in real time via NSNotification.
+    private var powerStateObserver: Task<Void, Never>?
 
     init(assertions: WakeAssertionControlling, powerStatusProvider: PowerStatusProviding) {
         self.assertions = assertions
@@ -26,6 +28,13 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
     func start(duration: ActivationDuration, options: SessionOptions) async {
         if activeSession != nil {
             await stop(reason: .replaced)
+        }
+
+        // Refuse to start if Low Power Mode is on and the option is set.
+        let currentSnapshot = powerStatusProvider.currentSnapshot()
+        if options.stopOnLowPowerMode && currentSnapshot.isLowPowerModeEnabled {
+            lastStopReason = .lowPowerMode
+            return
         }
 
         do {
@@ -40,6 +49,7 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
         activeSession = ActivationSession(duration: duration, startedAt: now, endsAt: endsAt, options: options)
         lastStopReason = nil
 
+        // ── Session expiration timer ────────────────────────────────────────
         if let interval = duration.timeInterval {
             expirationTask = Task { [weak self] in
                 try? await Task.sleep(for: .seconds(interval))
@@ -48,15 +58,20 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
             }
         }
 
+        // ── Periodic battery/power poll (every 30 s) ───────────────────────
         monitorTask = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(30))
-                guard let self else { return }
+                guard let self, !Task.isCancelled else { return }
                 await self.evaluatePowerRules(using: self.powerStatusProvider.currentSnapshot())
             }
         }
 
-        await evaluatePowerRules(using: powerStatusProvider.currentSnapshot())
+        // ── Reactive Low Power Mode observation ────────────────────────────
+        // NSProcessInfoPowerStateDidChange fires immediately when the user
+        // toggles Low Power Mode, giving sub-second response instead of
+        // waiting for the next 30-second poll.
+        startPowerStateObserver(options: options)
     }
 
     func stop(reason: StopReason) async {
@@ -64,10 +79,14 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
         expirationTask = nil
         monitorTask?.cancel()
         monitorTask = nil
+        powerStateObserver?.cancel()
+        powerStateObserver = nil
         assertions.deactivate()
         activeSession = nil
         lastStopReason = reason
     }
+
+    // MARK: - Power rule evaluation
 
     func evaluatePowerRules(using snapshot: PowerSnapshot) async {
         guard let activeSession else { return }
@@ -82,6 +101,26 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
         if activeSession.options.stopOnLowPowerMode,
            snapshot.isLowPowerModeEnabled {
             await stop(reason: .lowPowerMode)
+        }
+    }
+
+    // MARK: - Private
+
+    private func startPowerStateObserver(options: SessionOptions) {
+        guard options.stopOnLowPowerMode else { return }  // Nothing to observe
+
+        powerStateObserver = Task { [weak self] in
+            // Observe ProcessInfo power state change notifications.
+            let notifications = NotificationCenter.default.notifications(
+                named: .NSProcessInfoPowerStateDidChange
+            )
+            for await _ in notifications {
+                guard let self, !Task.isCancelled else { return }
+                // Evaluate immediately when the notification fires.
+                await self.evaluatePowerRules(
+                    using: self.powerStatusProvider.currentSnapshot()
+                )
+            }
         }
     }
 }
