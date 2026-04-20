@@ -69,18 +69,51 @@ struct SettingsTabView: View {
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(KeepAwakePalette.ink)
 
-                    clickableToggleRow(
+                 clickableToggleRow(
                         title: "Allow Display Sleep",
                         detail: "Keep the Mac awake while still letting the display sleep normally.",
                         isOn: $settings.allowDisplaySleep,
                         identifier: "settings.allowDisplaySleep"
                     )
                 }
+
+                KeepAwakePanel {
+                    Text("Automation")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(KeepAwakePalette.ink)
+
+                    clickableToggleRow(
+                        title: "Activate When Focus Mode Is On",
+                        detail: "Automatically start the default duration when macOS Focus (Do Not Disturb) turns on.",
+                        isOn: $settings.autoActivateOnFocus,
+                        identifier: "settings.autoActivateOnFocus"
+                    )
+
+                    if settings.autoActivateOnFocus {
+                        clickableToggleRow(
+                            title: "Deactivate When Focus Mode Ends",
+                            detail: "Stop the session automatically when Focus Mode turns off (only if KeepAwake started it).",
+                            isOn: $settings.deactivateWhenFocusEnds,
+                            identifier: "settings.deactivateWhenFocusEnds"
+                        )
+                        .padding(.leading, 26)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+
+                    clickableToggleRow(
+                        title: "Activate When Screen Sharing",
+                        detail: "Automatically start the default duration when Screen Sharing (or AirPlay) begins.",
+                        isOn: $settings.autoActivateOnScreenSharing,
+                        identifier: "settings.autoActivateOnScreenSharing"
+                    )
+                }
             }
             .padding(.bottom, 8)
         }
         .animation(.easeInOut(duration: 0.18), value: settings.deactivateBelowThreshold)
+        .animation(.easeInOut(duration: 0.18), value: settings.autoActivateOnFocus)
     }
+
 
     // MARK: - Fully-clickable toggle row
 
