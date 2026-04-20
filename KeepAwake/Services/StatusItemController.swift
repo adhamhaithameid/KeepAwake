@@ -32,12 +32,25 @@ final class StatusItemController: NSObject {
         _ = button.sendAction(on: [.leftMouseUp, .rightMouseUp])
     }
 
+    private var wasActive: Bool = false
+
     private func observeController() {
         controller.objectWillChange
             .sink { [weak self] _ in
-                DispatchQueue.main.async {
-                    self?.refreshAppearance()
-                    self?.syncLabelTimer()
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    let nowActive = self.controller.isActive
+
+                    // Timer overlap fix: kill the timer in the SAME tick that
+                    // isActive becomes false — not waiting for the next 1-sec fire.
+                    self.syncLabelTimer()
+                    self.refreshAppearance()
+
+                    // Icon animation: pulse on transition in either direction.
+                    if nowActive != self.wasActive {
+                        self.animateIconTransition(becameActive: nowActive)
+                        self.wasActive = nowActive
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -69,10 +82,28 @@ final class StatusItemController: NSObject {
             button.imagePosition = .imageLeft
             statusItem.length = NSStatusItem.variableLength
         } else {
+            // Clear label immediately — don't wait for timer's next tick.
             button.title = ""
             button.imagePosition = .imageOnly
             statusItem.length = NSStatusItem.squareLength
         }
+    }
+
+    /// CAKeyframeAnimation scale flash on the status bar button's layer.
+    /// Active start: 1.0 → 1.35 → 1.0. Deactivate: 1.0 → 0.8 → 1.0.
+    private func animateIconTransition(becameActive: Bool) {
+        guard let layer = statusItem.button?.layer else { return }
+        let anim = CAKeyframeAnimation(keyPath: "transform.scale")
+        if becameActive {
+            anim.values   = [1.0, 1.35, 0.95, 1.0]
+            anim.keyTimes = [0, 0.35, 0.65, 1]
+        } else {
+            anim.values   = [1.0, 0.75, 1.05, 1.0]
+            anim.keyTimes = [0, 0.4, 0.7, 1]
+        }
+        anim.duration = 0.45
+        anim.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        layer.add(anim, forKey: "iconPulse")
     }
 
     private func makeStatusImage() -> NSImage? {
@@ -234,9 +265,15 @@ final class StatusItemController: NSObject {
 
 // MARK: - MenuHeaderView
 
-/// Live header view embedded in the NSMenu. Because it uses @ObservedObject,
-/// it updates in real-time as the session state changes — including showing
-/// and hiding the Stop button without requiring a menu rebuild.
+/// Live header view embedded in the NSMenu.
+/// Uses @ObservedObject so it updates in real-time as the session state changes —
+/// including showing/hiding the Stop button without rebuilding the NSMenu.
+///
+/// ## Accessibility
+/// - Status text ("Active"/"Inactive") is marked as a header trait.
+/// - Countdown text ("14m 51s remaining") is read verbatim by VoiceOver.
+/// - The pulsing dot + ring are hidden from VoiceOver (decorative).
+/// - Stop button has a label + hint describing the destructive action.
 private struct MenuHeaderView: View {
     @ObservedObject var controller: KeepAwakeController
     let onStop: () -> Void
@@ -247,9 +284,9 @@ private struct MenuHeaderView: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { timeline in
             VStack(spacing: 0) {
-                // ── Status row ─────────────────────────────────────────
+                // ── Status row ───────────────────────────────────────────
                 HStack(spacing: 12) {
-                    // Animated pulse dot + progress ring
+                    // Pulsing dot + progress ring (decorative — hidden from VoiceOver)
                     ZStack {
                         if let progress = sessionProgress(at: timeline.date) {
                             Circle()
@@ -268,12 +305,14 @@ private struct MenuHeaderView: View {
                         PulsingDot(isActive: isActive)
                     }
                     .frame(width: 30)
+                    .accessibilityHidden(true) // Status text is the primary VoiceOver source
 
                     // Text block
                     VStack(alignment: .leading, spacing: 1) {
                         Text(isActive ? "Active" : "Inactive")
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(isActive ? Color.green : Color.secondary)
+                            .accessibilityAddTraits(.isHeader)
 
                         if let detail = detailText(at: timeline.date) {
                             Text(detail)
@@ -281,6 +320,7 @@ private struct MenuHeaderView: View {
                                 .foregroundStyle(Color.secondary)
                                 .contentTransition(.numericText())
                                 .animation(.easeInOut(duration: 0.15), value: detail)
+                                .accessibilityLabel(detail) // already reads "14m 51s remaining"
                         }
 
                         if controller.settings.deactivateBelowThreshold,
@@ -291,6 +331,7 @@ private struct MenuHeaderView: View {
                                     batt <= controller.settings.batteryThreshold + 5
                                         ? Color.orange : Color.secondary.opacity(0.7)
                                 )
+                                .accessibilityLabel("Battery at \(batt) percent. Session stops at \(controller.settings.batteryThreshold) percent.")
                         }
                     }
 
@@ -300,7 +341,7 @@ private struct MenuHeaderView: View {
                 .padding(.top, 9)
                 .padding(.bottom, isActive ? 7 : 9)
 
-                // ── Stop button row (live — appears when active) ───────
+                // ── Stop button row (live — appears when active) ─────────
                 if isActive {
                     Divider()
                         .opacity(0.4)
@@ -319,6 +360,8 @@ private struct MenuHeaderView: View {
                         .background(Color.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("Stop session")
+                    .accessibilityHint("Ends the current KeepAwake session and allows your Mac to sleep normally")
                     .padding(.horizontal, 14)
                     .padding(.bottom, 7)
                     .transition(.opacity.combined(with: .move(edge: .top)))
@@ -352,6 +395,7 @@ private struct MenuHeaderView: View {
         return "\(sc)s remaining"
     }
 }
+
 
 // MARK: - PulsingDot
 
