@@ -13,7 +13,7 @@ struct SettingsTabView: View {
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(KeepAwakePalette.ink)
 
-                    settingsToggle(
+                    clickableToggleRow(
                         title: "Start at Login",
                         detail: "Launch KeepAwake automatically when you sign in.",
                         isOn: Binding(
@@ -23,7 +23,7 @@ struct SettingsTabView: View {
                         identifier: "settings.startAtLogin"
                     )
 
-                    settingsToggle(
+                    clickableToggleRow(
                         title: "Activate on Launch",
                         detail: "Begin the saved default duration as soon as KeepAwake launches.",
                         isOn: $settings.activateOnLaunch,
@@ -36,44 +36,22 @@ struct SettingsTabView: View {
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(KeepAwakePalette.ink)
 
-                    settingsToggle(
+                    clickableToggleRow(
                         title: "Deactivate Below Battery Threshold",
-                        detail: "Stop the active session automatically once the battery drops under the chosen level.",
+                        detail: "Stop the active session automatically once battery drops under the set level.",
                         isOn: $settings.deactivateBelowThreshold,
                         identifier: "settings.deactivateBelowThreshold"
                     )
 
                     if settings.deactivateBelowThreshold {
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack {
-                                Text("Threshold")
-                                    .font(.system(size: 13, weight: .medium))
-                                    .foregroundStyle(KeepAwakePalette.ink)
-                                Spacer()
-                                Text("\(settings.batteryThreshold)%")
-                                    .font(.system(size: 13, weight: .semibold, design: .rounded))
-                                    .foregroundStyle(KeepAwakePalette.ink)
-                            }
-
-                            BatteryThresholdSlider(value: $settings.batteryThreshold)
-                                .frame(height: 24)
-
-                            HStack {
-                                ForEach(AppSettings.thresholdStops, id: \.self) { value in
-                                    Text("\(value)%")
-                                        .font(.system(size: 11))
-                                        .foregroundStyle(KeepAwakePalette.mutedInk)
-                                        .frame(maxWidth: .infinity)
-                                }
-                            }
-                        }
-                        .padding(.leading, 26)
-                        .transition(.opacity.combined(with: .move(edge: .top)))
+                        BatteryThresholdControl(threshold: $settings.batteryThreshold)
+                            .padding(.leading, 26)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
-                    settingsToggle(
+                    clickableToggleRow(
                         title: "Deactivate in Low Power Mode",
-                        detail: "Stop the active session when Low Power Mode turns on.",
+                        detail: "Stop any active session the moment Low Power Mode turns on.",
                         isOn: $settings.deactivateOnLowPowerMode,
                         identifier: "settings.lowPowerMode"
                     )
@@ -84,7 +62,7 @@ struct SettingsTabView: View {
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(KeepAwakePalette.ink)
 
-                    settingsToggle(
+                    clickableToggleRow(
                         title: "Allow Display Sleep",
                         detail: "Keep the Mac awake while still letting the display sleep normally.",
                         isOn: $settings.allowDisplaySleep,
@@ -97,73 +75,154 @@ struct SettingsTabView: View {
         .animation(.easeInOut(duration: 0.18), value: settings.deactivateBelowThreshold)
     }
 
-    private func settingsToggle(
+    // MARK: - Fully-clickable toggle row
+
+    /// The entire row is a Button that toggles `isOn`. The `Toggle` inside
+    /// has `allowsHitTesting(false)` so all clicks route through the outer button.
+    private func clickableToggleRow(
         title: String,
         detail: String,
         isOn: Binding<Bool>,
         identifier: String
     ) -> some View {
-        Toggle(isOn: isOn) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(KeepAwakePalette.ink)
-
-                Text(detail)
-                    .font(.system(size: 12))
-                    .foregroundStyle(KeepAwakePalette.mutedInk)
-                    .fixedSize(horizontal: false, vertical: true)
+        Button {
+            withAnimation(.easeInOut(duration: 0.15)) {
+                isOn.wrappedValue.toggle()
             }
+        } label: {
+            HStack(alignment: .top, spacing: 10) {
+                Toggle("", isOn: isOn)
+                    .toggleStyle(.checkbox)
+                    .labelsHidden()
+                    .allowsHitTesting(false)  // Outer button handles the tap
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(KeepAwakePalette.ink)
+
+                    Text(detail)
+                        .font(.system(size: 12))
+                        .foregroundStyle(KeepAwakePalette.mutedInk)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer()
+            }
+            .contentShape(Rectangle())
+            .padding(.vertical, 4)
         }
-        .toggleStyle(.checkbox)
+        .buttonStyle(.plain)
         .accessibilityIdentifier(identifier)
     }
 }
 
-private struct BatteryThresholdSlider: NSViewRepresentable {
-    @Binding var value: Int
+// MARK: - Battery threshold control
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(value: $value)
+/// A continuous NSSlider (1–100 %) with magnetic snap points at the
+/// predefined stops (10, 20, 50, 70, 90). The slider animates to the
+/// nearest snap point when within ±4 %, but any value is valid.
+private struct BatteryThresholdControl: View {
+    @Binding var threshold: Int
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Value readout
+            HStack {
+                Text("Deactivate below")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(KeepAwakePalette.ink)
+                Spacer()
+                Text("\(threshold)%")
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(thresholdColor)
+                    .monospacedDigit()
+                    .contentTransition(.numericText())
+                    .animation(.easeOut(duration: 0.1), value: threshold)
+            }
+
+            // Magnetic continuous slider
+            MagneticBatterySlider(value: $threshold)
+                .frame(height: 24)
+
+            // Snap-point labels beneath the slider
+            GeometryReader { geo in
+                let snapPoints = AppSettings.batterySnapPoints
+                let total = Double(AppSettings.batteryRange.upperBound - AppSettings.batteryRange.lowerBound)
+                ForEach(snapPoints, id: \.self) { stop in
+                    let fraction = Double(stop - AppSettings.batteryRange.lowerBound) / total
+                    Text("\(stop)%")
+                        .font(.system(size: 9))
+                        .foregroundStyle(threshold == stop
+                            ? Color.accentColor
+                            : KeepAwakePalette.mutedInk.opacity(0.7))
+                        .position(
+                            x: fraction * geo.size.width,
+                            y: geo.size.height / 2
+                        )
+                        .animation(.easeOut(duration: 0.1), value: threshold)
+                }
+            }
+            .frame(height: 14)
+        }
     }
 
+    private var thresholdColor: Color {
+        switch threshold {
+        case ..<21: return .red
+        case 21..<51: return KeepAwakePalette.orange
+        default: return .green
+        }
+    }
+}
+
+// MARK: - NSSlider wrapper with magnetic behaviour
+
+private struct MagneticBatterySlider: NSViewRepresentable {
+    @Binding var value: Int
+
+    func makeCoordinator() -> Coordinator { Coordinator(value: $value) }
+
     func makeNSView(context: Context) -> NSSlider {
-        let slider = NSSlider(
-            value: Double(index(for: value)),
-            minValue: 0,
-            maxValue: Double(AppSettings.thresholdStops.count - 1),
-            target: context.coordinator,
-            action: #selector(Coordinator.sliderChanged(_:))
-        )
-        slider.numberOfTickMarks = AppSettings.thresholdStops.count
-        slider.allowsTickMarkValuesOnly = true
+        let slider = NSSlider()
+        slider.minValue = Double(AppSettings.batteryRange.lowerBound)
+        slider.maxValue = Double(AppSettings.batteryRange.upperBound)
+        slider.doubleValue = Double(value)
+        slider.target = context.coordinator
+        slider.action = #selector(Coordinator.sliderChanged(_:))
         slider.isContinuous = true
+        // Remove discrete tick marks — slider is now free-range.
+        slider.numberOfTickMarks = 0
+        slider.allowsTickMarkValuesOnly = false
+        slider.sliderType = .linear
         return slider
     }
 
     func updateNSView(_ nsView: NSSlider, context: Context) {
-        let index = Double(index(for: value))
-        if nsView.doubleValue != index {
-            nsView.doubleValue = index
+        // Only update the slider if not currently dragging (to avoid fighting).
+        if !context.coordinator.isDragging {
+            nsView.doubleValue = Double(value)
         }
-    }
-
-    private func index(for threshold: Int) -> Int {
-        AppSettings.thresholdStops.firstIndex(of: AppSettings.snapThreshold(threshold)) ?? 1
     }
 
     @MainActor
     final class Coordinator: NSObject {
-        @Binding private var value: Int
+        @Binding var value: Int
+        var isDragging = false
 
-        init(value: Binding<Int>) {
-            _value = value
-        }
+        init(value: Binding<Int>) { _value = value }
 
-        @objc
-        func sliderChanged(_ sender: NSSlider) {
-            let index = min(max(Int(sender.doubleValue.rounded()), 0), AppSettings.thresholdStops.count - 1)
-            value = AppSettings.thresholdStops[index]
+        @objc func sliderChanged(_ sender: NSSlider) {
+            isDragging = true
+            let rawValue = Int(sender.doubleValue.rounded())
+            let snapped = AppSettings.applyMagneticSnap(rawValue)
+
+            if snapped != rawValue {
+                // Move the thumb visually to the snap point.
+                sender.doubleValue = Double(snapped)
+            }
+            value = snapped
+            isDragging = false
         }
     }
 }
