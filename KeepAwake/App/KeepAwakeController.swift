@@ -16,9 +16,11 @@ final class KeepAwakeController: ObservableObject {
     private let launchAtLoginManager: LaunchAtLoginManaging
     private let linkOpener: LinkOpening
     private let notifications: NotificationManager
+    private let focusService: FocusDetectionService
     private var cancellables: Set<AnyCancellable> = []
-    /// Tracks the reason of the previous stop to fire notifications only once.
     private var lastHandledStopReason: StopReason?
+    /// True when the session was auto-started by a Focus Mode trigger.
+    private var sessionStartedByFocus = false
 
     init(
         settings: AppSettings,
@@ -26,7 +28,8 @@ final class KeepAwakeController: ObservableObject {
         windowManager: SettingsWindowManaging,
         launchAtLoginManager: LaunchAtLoginManaging,
         linkOpener: LinkOpening,
-        notifications: NotificationManager = .shared
+        notifications: NotificationManager = .shared,
+        focusService: FocusDetectionService
     ) {
         self.settings = settings
         self.sessionController = sessionController
@@ -34,6 +37,7 @@ final class KeepAwakeController: ObservableObject {
         self.launchAtLoginManager = launchAtLoginManager
         self.linkOpener = linkOpener
         self.notifications = notifications
+        self.focusService = focusService
         self.selectedDurationID = settings.defaultDurationID
 
         settings.objectWillChange
@@ -48,6 +52,13 @@ final class KeepAwakeController: ObservableObject {
                 }
                 .store(in: &cancellables)
         }
+
+        // Wire the "Extend +30m" notification action.
+        notifications.onExtendRequested = { [weak self] in
+            Task { await self?.extendSession(by: 30 * 60) }
+        }
+
+        setupFocusDetection()
     }
 
     // MARK: - Computed properties
@@ -69,7 +80,6 @@ final class KeepAwakeController: ObservableObject {
     }
 
     /// Current device battery level (nil when on AC with no battery info).
-    /// Reads live from IOKit — cheap enough for periodic UI polling.
     var currentBatteryLevel: Int? {
         let info = IOPSCopyPowerSourcesInfo().takeRetainedValue()
         let list = IOPSCopyPowerSourcesList(info).takeRetainedValue() as Array
@@ -83,15 +93,11 @@ final class KeepAwakeController: ObservableObject {
 
     func handleLaunch() async {
         notifications.requestPermissionIfNeeded()
+        focusService.start()
 
         if settings.startAtLogin != launchAtLoginManager.isEnabled {
             launchAtLoginManager.isEnabled = settings.startAtLogin
             objectWillChange.send()
-        }
-
-        if !settings.hasPresentedInitialSettingsWindow {
-            settings.hasPresentedInitialSettingsWindow = true
-            openSettings(selectedTab: .settings)
         }
 
         guard settings.activateOnLaunch else { return }
@@ -99,6 +105,7 @@ final class KeepAwakeController: ObservableObject {
     }
 
     func handleTermination() async {
+        focusService.stop()
         guard isActive else { return }
         await sessionController.stop(reason: .appTermination)
         statusMessage = "Stopped"
@@ -128,9 +135,27 @@ final class KeepAwakeController: ObservableObject {
 
     /// Manually stop the active session.
     func stopActiveSession() async {
+        sessionStartedByFocus = false
         await sessionController.stop(reason: .manual)
         statusMessage = "Stopped"
         objectWillChange.send()
+    }
+
+    /// Extend the current session by `seconds` seconds.
+    func extendSession(by extraSeconds: TimeInterval) async {
+        guard let current = activeSession else { return }
+        let remaining = current.endsAt.map { max($0.timeIntervalSinceNow, 0) } ?? 0
+        let total = Int(remaining + extraSeconds)
+        let h = total / 3600
+        let m = (total % 3600) / 60
+        let s = total % 60
+        let extendedDuration = ActivationDuration(
+            id: current.duration.id,
+            hours: h,
+            minutes: m,
+            seconds: s
+        )
+        await activate(duration: extendedDuration)
     }
 
     func openSettings(selectedTab: AppTab = .settings) {
@@ -142,20 +167,52 @@ final class KeepAwakeController: ObservableObject {
         linkOpener.open(link.url)
     }
 
-    // MARK: - Private
+    // MARK: - Focus Detection
 
-    /// Called every time the session controller publishes a change.
-    /// Fires a notification when an auto-stop is detected.
+    private func setupFocusDetection() {
+        focusService.onFocusEnabled = { [weak self] in
+            guard let self, self.settings.autoActivateOnFocus, !self.isActive else { return }
+            self.sessionStartedByFocus = true
+            Task { await self.activate(duration: self.settings.defaultDuration) }
+        }
+
+        focusService.onFocusDisabled = { [weak self] in
+            guard let self,
+                  self.settings.autoActivateOnFocus,
+                  self.settings.deactivateWhenFocusEnds,
+                  self.isActive,
+                  self.sessionStartedByFocus else { return }
+            self.sessionStartedByFocus = false
+            Task { await self.stopActiveSession() }
+        }
+
+        focusService.onScreenSharingStarted = { [weak self] in
+            guard let self, self.settings.autoActivateOnScreenSharing, !self.isActive else { return }
+            Task { await self.activate(duration: self.settings.defaultDuration) }
+        }
+
+        // Screen sharing stop doesn't auto-deactivate (screen sharing ends happen
+        // more unexpectedly than Focus mode, so we leave it running).
+    }
+
+    // MARK: - Helpers
+
+    private func timeLabel(seconds: TimeInterval) -> String {
+        let s = Int(seconds)
+        let h = s / 3600
+        let m = (s % 3600) / 60
+        if h > 0 { return m > 0 ? "\(h)h \(m)m" : "\(h)h" }
+        return "\(m)m"
+    }
+
     private func handleSessionChange(_ obs: ActivationSessionController) {
-        guard obs.activeSession == nil else { return }  // Session is still running
-
+        guard obs.activeSession == nil else { return }
         let reason = obs.lastStopReason
         guard reason != nil,
               reason != lastHandledStopReason,
               reason != .manual,
               reason != .appTermination,
               reason != .replaced else { return }
-
         lastHandledStopReason = reason
         if let autoReason = reason {
             notifications.notifyAutoStop(reason: autoReason)
@@ -166,8 +223,7 @@ final class KeepAwakeController: ObservableObject {
                 statusMessage = "Stopped — battery below threshold"
             case .expired:
                 statusMessage = "Session ended"
-            default:
-                break
+            default: break
             }
             objectWillChange.send()
         }
