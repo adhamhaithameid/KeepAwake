@@ -12,9 +12,16 @@ final class AppSettings: ObservableObject {
         static let hasPresentedInitialSettingsWindow = "hasPresentedInitialSettingsWindow"
         static let durations = "durations"
         static let defaultDurationID = "defaultDurationID"
+        static let pinnedDurationIDs = "pinnedDurationIDs"
     }
 
-    nonisolated static let thresholdStops = [10, 20, 50, 70, 90]
+    // MARK: - Snap points for the battery slider
+    /// These act as "magnetic" anchor points — the slider snaps to them
+    /// when the user drags within ±magnetRadius of one. Free values are
+    /// still stored and displayed between snap points.
+    nonisolated static let batterySnapPoints = [10, 20, 50, 70, 90]
+    nonisolated static let batteryMagnetRadius = 4  // %
+    nonisolated static let batteryRange = 1...100
 
     private let userDefaults: UserDefaults
     private let encoder = JSONEncoder()
@@ -32,14 +39,13 @@ final class AppSettings: ObservableObject {
         didSet { userDefaults.set(deactivateBelowThreshold, forKey: Keys.deactivateBelowThreshold) }
     }
 
+    /// Battery threshold in percent (1–100). Stored as-is; UI applies
+    /// magnetic snapping but any value in range is valid.
     @Published var batteryThreshold: Int {
         didSet {
-            let snapped = Self.snapThreshold(batteryThreshold)
-            if snapped != batteryThreshold {
-                batteryThreshold = snapped
-                return
-            }
-            userDefaults.set(snapped, forKey: Keys.batteryThreshold)
+            let clamped = batteryThreshold.clamped(to: AppSettings.batteryRange)
+            if clamped != batteryThreshold { batteryThreshold = clamped; return }
+            userDefaults.set(clamped, forKey: Keys.batteryThreshold)
         }
     }
 
@@ -63,6 +69,18 @@ final class AppSettings: ObservableObject {
         didSet { userDefaults.set(defaultDurationID, forKey: Keys.defaultDurationID) }
     }
 
+    /// IDs of durations pinned as quick-access buttons in the menu bar popover.
+    /// Maximum 3 items. Always ordered by the user's chosen sequence.
+    @Published var pinnedDurationIDs: [String] {
+        didSet { userDefaults.set(pinnedDurationIDs, forKey: Keys.pinnedDurationIDs) }
+    }
+
+    nonisolated static let defaultPinnedIDs: [String] = [
+        ActivationDuration.minutes(15).id,
+        ActivationDuration.hours(1).id,
+        ActivationDuration.indefinite.id,
+    ]
+
     var defaultDuration: ActivationDuration {
         availableDurations.first(where: { $0.id == defaultDurationID }) ?? ActivationDuration.minutes(15)
     }
@@ -75,16 +93,20 @@ final class AppSettings: ObservableObject {
         )
     }
 
+    // MARK: - Init
+
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
 
         let durations = Self.loadDurations(from: userDefaults)
         let savedDefaultID = userDefaults.string(forKey: Keys.defaultDurationID) ?? ActivationDuration.minutes(15).id
+        let savedPinnedIDs = userDefaults.stringArray(forKey: Keys.pinnedDurationIDs) ?? Self.defaultPinnedIDs
 
         self.startAtLogin = userDefaults.bool(forKey: Keys.startAtLogin)
         self.activateOnLaunch = userDefaults.bool(forKey: Keys.activateOnLaunch)
         self.deactivateBelowThreshold = userDefaults.bool(forKey: Keys.deactivateBelowThreshold)
-        self.batteryThreshold = Self.snapThreshold(userDefaults.object(forKey: Keys.batteryThreshold) as? Int ?? 20)
+        let rawThreshold = userDefaults.object(forKey: Keys.batteryThreshold) as? Int ?? 20
+        self.batteryThreshold = rawThreshold.clamped(to: Self.batteryRange)
         self.deactivateOnLowPowerMode = userDefaults.bool(forKey: Keys.deactivateOnLowPowerMode)
         self.allowDisplaySleep = userDefaults.bool(forKey: Keys.allowDisplaySleep)
         self.hasPresentedInitialSettingsWindow = userDefaults.bool(forKey: Keys.hasPresentedInitialSettingsWindow)
@@ -92,7 +114,15 @@ final class AppSettings: ObservableObject {
         self.defaultDurationID = durations.contains(where: { $0.id == savedDefaultID })
             ? savedDefaultID
             : ActivationDuration.minutes(15).id
+        self.pinnedDurationIDs = savedPinnedIDs.filter { id in
+            durations.contains(where: { $0.id == id })
+        }
+        if self.pinnedDurationIDs.isEmpty {
+            self.pinnedDurationIDs = Self.defaultPinnedIDs
+        }
     }
+
+    // MARK: - Duration management
 
     func addDuration(_ duration: ActivationDuration) {
         guard duration.totalSeconds > 0, !duration.isIndefinite else { return }
@@ -105,6 +135,7 @@ final class AppSettings: ObservableObject {
         guard let duration = availableDurations.first(where: { $0.id == id }) else { return }
         guard !duration.isIndefinite else { return }
         availableDurations.removeAll { $0.id == id }
+        pinnedDurationIDs.removeAll { $0 == id }
         if defaultDurationID == id {
             defaultDurationID = ActivationDuration.minutes(15).id
         }
@@ -113,6 +144,7 @@ final class AppSettings: ObservableObject {
     func resetDurations() {
         availableDurations = ActivationDuration.defaultDurations
         defaultDurationID = ActivationDuration.minutes(15).id
+        pinnedDurationIDs = Self.defaultPinnedIDs
     }
 
     func setDefaultDuration(_ id: ActivationDuration.ID) {
@@ -120,9 +152,45 @@ final class AppSettings: ObservableObject {
         defaultDurationID = id
     }
 
-    nonisolated static func snapThreshold(_ value: Int) -> Int {
-        thresholdStops.min(by: { abs($0 - value) < abs($1 - value) }) ?? 20
+    // MARK: - Pinned duration management
+
+    func isPinned(_ id: String) -> Bool {
+        pinnedDurationIDs.contains(id)
     }
+
+    /// Pin a duration as a quick-access button. Max 3 pins — if already at max,
+    /// the oldest pin is removed to make room.
+    func pin(_ id: String) {
+        guard availableDurations.contains(where: { $0.id == id }) else { return }
+        guard !pinnedDurationIDs.contains(id) else { return }
+        if pinnedDurationIDs.count >= 3 {
+            pinnedDurationIDs.removeFirst()
+        }
+        pinnedDurationIDs.append(id)
+    }
+
+    func unpin(_ id: String) {
+        pinnedDurationIDs.removeAll { $0 == id }
+    }
+
+    func togglePin(_ id: String) {
+        isPinned(id) ? unpin(id) : pin(id)
+    }
+
+    // MARK: - Magnetic snap helper
+
+    /// Returns the snap-point value if `value` is within the magnetic radius
+    /// of one, otherwise returns `value` unchanged.
+    nonisolated static func applyMagneticSnap(_ value: Int) -> Int {
+        for snap in batterySnapPoints {
+            if abs(snap - value) <= batteryMagnetRadius {
+                return snap
+            }
+        }
+        return value.clamped(to: batteryRange)
+    }
+
+    // MARK: - Private persistence
 
     private func persistDurations() {
         guard let data = try? encoder.encode(availableDurations) else { return }
@@ -135,20 +203,22 @@ final class AppSettings: ObservableObject {
               !durations.isEmpty else {
             return ActivationDuration.defaultDurations
         }
-
         return durations.sorted(by: sortDurations)
     }
 
     private static func sortDurations(lhs: ActivationDuration, rhs: ActivationDuration) -> Bool {
         switch (lhs.isIndefinite, rhs.isIndefinite) {
-        case (true, true):
-            return false
-        case (true, false):
-            return false
-        case (false, true):
-            return true
-        case (false, false):
-            return lhs.totalSeconds < rhs.totalSeconds
+        case (true, _): return false
+        case (_, true): return true
+        case (false, false): return lhs.totalSeconds < rhs.totalSeconds
         }
+    }
+}
+
+// MARK: - Comparable extension
+
+private extension Comparable {
+    func clamped(to range: ClosedRange<Self>) -> Self {
+        max(range.lowerBound, min(range.upperBound, self))
     }
 }
