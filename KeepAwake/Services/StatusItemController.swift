@@ -33,6 +33,9 @@ final class StatusItemController: NSObject {
     }
 
     private var wasActive: Bool = false
+    /// True while a CATransition is animating the icon — prevents refreshAppearance
+    /// from overwriting the image and cancelling the in-flight animation.
+    private var isTransitioningIcon: Bool = false
 
     private func observeController() {
         controller.objectWillChange
@@ -41,16 +44,24 @@ final class StatusItemController: NSObject {
                     guard let self else { return }
                     let nowActive = self.controller.isActive
 
+                    // Animate FIRST — the CATransition must be queued on the layer
+                    // before anything changes the button.image, otherwise the
+                    // transition misses its window and the image updates instantly.
+                    if nowActive != self.wasActive {
+                        self.isTransitioningIcon = true
+                        self.animateIconTransition(becameActive: nowActive)
+                        self.wasActive = nowActive
+                        // Clear flag after the animation duration (0.22 s)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+                            self?.isTransitioningIcon = false
+                        }
+                    }
+
                     // Timer overlap fix: kill the timer in the SAME tick that
                     // isActive becomes false — not waiting for the next 1-sec fire.
                     self.syncLabelTimer()
+                    // refreshAppearance will skip the image update during a transition.
                     self.refreshAppearance()
-
-                    // Icon animation: pulse on transition in either direction.
-                    if nowActive != self.wasActive {
-                        self.animateIconTransition(becameActive: nowActive)
-                        self.wasActive = nowActive
-                    }
                 }
             }
             .store(in: &cancellables)
@@ -74,7 +85,12 @@ final class StatusItemController: NSObject {
 
     private func refreshAppearance() {
         guard let button = statusItem.button else { return }
-        button.image = makeStatusImage()
+
+        // Don't overwrite the image while a CATransition is in flight —
+        // animateIconTransition already set the new image as part of the animation.
+        if !isTransitioningIcon {
+            button.image = makeStatusImage()
+        }
 
         let showLabel = controller.isActive && controller.settings.showStatusLabel
         if showLabel, let text = glanceableLabel() {
@@ -89,21 +105,28 @@ final class StatusItemController: NSObject {
         }
     }
 
-    /// CAKeyframeAnimation scale flash on the status bar button's layer.
-    /// Active start: 1.0 → 1.35 → 1.0. Deactivate: 1.0 → 0.8 → 1.0.
+    /// Vertical-push icon transition that mirrors `.contentTransition(.numericText())`.
+    ///
+    /// `numericText` slides digits **up** when a value increases and **down** when
+    /// it decreases. We apply the same metaphor to the status icon:
+    /// - **Activating**  → icon slides in from **below** ("going up", like a rising number)
+    /// - **Deactivating** → icon slides in from **above** ("going down", like a falling number)
+    ///
+    /// The transition is added to the button layer *before* the image is updated so
+    /// Core Animation intercepts the change and animates between the two icon states.
     private func animateIconTransition(becameActive: Bool) {
         guard let layer = statusItem.button?.layer else { return }
-        let anim = CAKeyframeAnimation(keyPath: "transform.scale")
-        if becameActive {
-            anim.values   = [1.0, 1.35, 0.95, 1.0]
-            anim.keyTimes = [0, 0.35, 0.65, 1]
-        } else {
-            anim.values   = [1.0, 0.75, 1.05, 1.0]
-            anim.keyTimes = [0, 0.4, 0.7, 1]
-        }
-        anim.duration = 0.45
-        anim.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        layer.add(anim, forKey: "iconPulse")
+
+        let transition = CATransition()
+        transition.type        = .push
+        transition.subtype     = becameActive ? .fromBottom : .fromTop
+        transition.duration    = 0.22
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        layer.add(transition, forKey: "iconSlide")
+
+        // Assign the new image immediately after queuing the transition —
+        // Core Animation will interpolate between the old and new layer contents.
+        statusItem.button?.image = makeStatusImage()
     }
 
     private func makeStatusImage() -> NSImage? {
