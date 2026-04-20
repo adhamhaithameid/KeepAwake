@@ -5,9 +5,8 @@
 	<!--
 	    KeepAwakeHelper (command-line tool) is not sandboxed.
 	    It inherits TCC permissions from the parent app bundle.
-	    Hardened Runtime is required. The helper seizes the built-in
-	    trackpad via IOHIDDeviceOpen and blocks keyboard events
-	    via CGEvent tap, both gated by TCC.
+	    Hardened Runtime is required. The helper is a placeholder
+	    kept for build/release flow compatibility.
 	-->
 	<key>com.apple.security.app-sandbox</key>
 	<false/>
