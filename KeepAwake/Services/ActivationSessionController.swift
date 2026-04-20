@@ -37,17 +37,23 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
             return
         }
 
-        do {
-            try assertions.activate(allowDisplaySleep: options.allowDisplaySleep)
-        } catch {
-            lastStopReason = .manual
-            return
-        }
-
+        // Set activeSession BEFORE the IOKit call so isActive becomes true
+        // synchronously — buildMenu() will see the active state immediately
+        // on the very next menu open, even within milliseconds.
         let now = Date()
         let endsAt = duration.timeInterval.map { now.addingTimeInterval($0) }
         activeSession = ActivationSession(duration: duration, startedAt: now, endsAt: endsAt, options: options)
         lastStopReason = nil
+
+        // Create IOKit power assertions (synchronous, never actually suspends).
+        do {
+            try assertions.activate(allowDisplaySleep: options.allowDisplaySleep)
+        } catch {
+            // Roll back the optimistic session creation on failure.
+            activeSession = nil
+            lastStopReason = .manual
+            return
+        }
 
         // ── Session expiration timer ────────────────────────────────────────
         if let interval = duration.timeInterval {
@@ -68,9 +74,6 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
         }
 
         // ── Reactive Low Power Mode observation ────────────────────────────
-        // NSProcessInfoPowerStateDidChange fires immediately when the user
-        // toggles Low Power Mode, giving sub-second response instead of
-        // waiting for the next 30-second poll.
         startPowerStateObserver(options: options)
     }
 
