@@ -5,11 +5,11 @@
 <h1 align="center">KeepAwake</h1>
 
 <p align="center">
-  <strong>A native macOS menu bar app for keeping your Mac and display awake for the exact duration you choose.</strong>
+  <strong>Your Mac, wide awake — for exactly as long as you need.</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/adhamhaithameid/KeepAwake/releases">Download</a> ·
+  <a href="https://github.com/adhamhaithameid/KeepAwake/releases">⬇ Download</a> ·
   <a href="docs/install-from-github.md">Install Guide</a> ·
   <a href="docs/faq.md">FAQ</a> ·
   <a href="docs/privacy.md">Privacy</a>
@@ -17,95 +17,131 @@
 
 ---
 
-## Why KeepAwake?
+## What is KeepAwake?
 
-KeepAwake is built for the moments when you want your Mac to stay awake without opening System Settings, Terminal, or a full desktop app window.
+KeepAwake is a tiny macOS app that lives in your menu bar. One click keeps your Mac awake for as long as you choose — no fiddling with System Settings, no idle caffeine scripts, no full app windows cluttering your screen.
 
-- **Menu bar first.** Left-click toggles your saved default duration. Right-click opens quick actions and the full duration list.
-- **Built for real sessions.** Choose `15m`, `30m`, `1h`, `2h`, `3h`, `5h`, `8h`, `12h`, `1 day`, or `Indefinitely`, and add your own custom durations.
-- **Battery-aware.** Optionally stop when battery drops below a chosen threshold or when Low Power Mode turns on.
-- **Native and lightweight.** Built with Swift, SwiftUI, AppKit interop, and macOS power assertions.
-- **No special permissions.** KeepAwake does not require Accessibility or Input Monitoring access.
+It's for the moments that matter:
 
-## Quick Start
+- Your **presentation** is running and you can't have the screen go dark mid-slide.
+- A **large file upload or download** is running and you need the Mac to stay on.
+- You're **screen sharing** and macOS keeps dimming your display at the worst time.
+- You stepped away and need Time Machine or a sync job to **finish uninterrupted**.
+
+When your session ends, KeepAwake gets out of the way. Your Mac goes back to its normal sleep schedule automatically.
+
+---
+
+## How to use it
+
+### Starting a session
+
+| Action | What happens |
+|---|---|
+| **Left click** the ☕ icon | Starts your default duration instantly |
+| **⌥ Option + click** the icon | Same as left click — fastest way to start |
+| **Right click** the icon | Opens the menu with duration buttons and all options |
+| **Click a duration button** (15m, 1h, ∞ …) | Starts a session for that exact duration |
+
+### Stopping a session
+
+- Click the red **Stop Session** button inside the menu, or
+- Left click the icon again (when a session is already running), or
+- Wait — KeepAwake stops automatically when the time is up.
+
+### Reading the status at a glance
+
+The menu bar icon tells you everything:
+
+| Icon | Meaning |
+|---|---|
+| ☕ (outline) | Inactive — your Mac sleeps normally |
+| ☕ (filled) | Active — your Mac is being kept awake |
+| ☕ **42m** | Active, 42 minutes left in this session |
+
+Open the menu and you'll see a live countdown with a depleting progress ring, the remaining time down to the second, and your current battery level if a threshold is set.
+
+---
+
+## Key features
+
+### ⏱ Flexible session lengths
+Choose from built-in options: `15m`, `30m`, `1h`, `2h`, `3h`, `5h`, `8h`, `12h`, `1 day`, or `Indefinitely`. Add your own custom durations in Settings anytime.
+
+### 🔋 Battery-aware
+Set a battery percentage threshold and KeepAwake will stop automatically when your battery drops below it. Optionally, it also stops the moment **Low Power Mode** turns on.
+
+### 🌙 Automation — hands-free activation
+- **Focus Mode** — KeepAwake can activate automatically whenever you turn on Focus or Do Not Disturb, so presentations and deep-work sessions always stay awake.
+- **Screen Sharing** — detects when you start screen sharing (or AirPlay mirroring) and activates immediately. No clicks needed.
+
+### 💤 Allow Power Nap
+Running a long backup or iCloud sync? Enable **Allow Power Nap** and KeepAwake keeps your Mac awake without blocking background tasks like Time Machine, push email, and iCloud Drive.
+
+### 🖥 Optional display control
+By default, KeepAwake keeps the system awake but lets the display sleep normally. Turn off **Allow Display Sleep** if you need the screen to stay on too.
+
+### 🔔 Notifications
+KeepAwake taps you on the shoulder 5 minutes before a session ends, with an **Extend +30m** button right in the notification. Auto-stop events (Low Power Mode, battery threshold) also send a notification explaining why the session ended.
+
+### 🛡 Quit protection
+If you accidentally press ⌘Q while a session is running, KeepAwake asks you to confirm before quitting. Your presentation won't drop mid-slide.
+
+---
+
+## Getting started
 
 1. Download the latest [release](https://github.com/adhamhaithameid/KeepAwake/releases).
-2. Move `KeepAwake.app` to your Applications folder.
-3. Open it once. The coffee cup icon appears in the menu bar.
-4. Left-click the icon to start the saved default duration.
-5. Right-click the icon for quick actions, settings, and the full duration list.
+2. Drag `KeepAwake.app` into your **Applications** folder.
+3. Open it — the ☕ icon appears in your menu bar.
+4. Left-click to start your first session.
 
 > [!TIP]
-> If macOS warns about an unsigned app, right-click `KeepAwake.app`, choose **Open**, then confirm **Open** in the dialog.
+> macOS may warn about an unidentified developer on first launch. Right-click `KeepAwake.app`, choose **Open**, then confirm **Open** in the dialog that appears. You only need to do this once.
 
-## Features
+> [!TIP]
+> To have KeepAwake start every time you log in, open Settings (right-click the icon → Settings…) and turn on **Start at Login**.
 
-### Menu Bar Control
+---
 
-- **Left click:** start or stop the saved default duration.
-- **Right click:** use the quick buttons (`15m`, `1h`, `∞`), open the full duration submenu, open Settings, or quit the app.
-- **Status icon:** outline coffee when inactive, filled coffee when active.
+## Privacy
 
-### Settings
+KeepAwake has no internet connection, no analytics, no tracking, and no accounts.
 
-- **Start at login**
-- **Activate on launch**
-- **Deactivate below battery threshold**
-- **Deactivate in Low Power Mode**
-- **Allow Display Sleep**
-
-### Activation Duration
-
-- Add custom durations with hours, minutes, and seconds
-- Remove custom durations
-- Reset the duration list
-- Set any available duration as the saved default
-
-### About
-
-The About page keeps the same simple link-focused structure with GitHub, donation, and author profile actions.
-
-## No Special Permissions
-
-KeepAwake uses macOS power-management assertions to keep the system awake. It does not need:
-
-- Accessibility
+It does **not** require:
+- Accessibility access
 - Input Monitoring
 - Screen Recording
 
-The only OS-managed prompt you may see is the normal login-item approval flow if you enable **Start at login**.
+The only permission it may ask for is **notifications** (optional), so it can alert you when a session is ending.
+
+The only OS prompt you'll see otherwise is the standard login-item approval if you enable **Start at Login**.
+
+---
 
 ## Documentation
 
-| Guide | What it covers |
+| Guide | What's inside |
 |---|---|
-| [Install Guide](docs/install-from-github.md) | Install and first launch |
-| [FAQ](docs/faq.md) | Common questions |
-| [Manual Testing](docs/manual-testing.md) | Quick verification checklist |
-| [Safety](docs/safety.md) | How auto-stop options protect battery life |
-| [Troubleshooting](docs/troubleshooting.md) | Common fixes |
-| [Privacy](docs/privacy.md) | Data and permissions |
-| [Architecture](docs/architecture.md) | How the app works |
-| [Uninstall](docs/uninstall.md) | Full removal steps |
+| [Install Guide](docs/install-from-github.md) | Download, install, and first launch |
+| [FAQ](docs/faq.md) | Common questions answered |
+| [Safety](docs/safety.md) | How auto-stop protects your battery |
+| [Troubleshooting](docs/troubleshooting.md) | Fixes for common issues |
+| [Privacy](docs/privacy.md) | Full data and permissions statement |
+| [Manual Testing](docs/manual-testing.md) | Verify the app is working correctly |
+| [Uninstall](docs/uninstall.md) | Fully remove KeepAwake |
 
-## Build From Source
+---
 
-```bash
-git clone https://github.com/adhamhaithameid/KeepAwake.git
-cd KeepAwake
-xcodegen generate
-xcodebuild -project KeepAwake.xcodeproj -scheme KeepAwake -configuration Release build
-```
+## Support the project
 
-**Requirements:** macOS 13.0 or later · Xcode 15+ · [XcodeGen](https://github.com/yonaskolb/XcodeGen)
-
-## Support
-
-If KeepAwake is useful, you can support the project here:
+If KeepAwake saves you time, consider buying me a coffee ☕
 
 <a href="https://buymeacoffee.com/adhamhaithameid">
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="48" />
 </a>
+
+---
 
 ## License
 
