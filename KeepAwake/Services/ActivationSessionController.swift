@@ -15,15 +15,22 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
 
     private let assertions: WakeAssertionControlling
     private let powerStatusProvider: PowerStatusProviding
+
+    // Tasks
     private var expirationTask: Task<Void, Never>?
+    private var warningTask: Task<Void, Never>?   // fires at session - 5 min
     private var monitorTask: Task<Void, Never>?
-    /// Observes Low Power Mode changes in real time via NSNotification.
     private var powerStateObserver: Task<Void, Never>?
+
+    // Push-based battery monitor (replaces 30 s poll for battery checks)
+    private let batteryMonitor = BatteryMonitor()
 
     init(assertions: WakeAssertionControlling, powerStatusProvider: PowerStatusProviding) {
         self.assertions = assertions
         self.powerStatusProvider = powerStatusProvider
     }
+
+    // MARK: - Start
 
     func start(duration: ActivationDuration, options: SessionOptions) async {
         if activeSession != nil {
@@ -37,53 +44,64 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
             return
         }
 
-        // Set activeSession BEFORE the IOKit call so isActive becomes true
-        // synchronously — buildMenu() will see the active state immediately
-        // on the very next menu open, even within milliseconds.
+        // Set activeSession optimistically so isActive flips synchronously —
+        // ensuring the Stop button appears on the very next menu open.
         let now = Date()
         let endsAt = duration.timeInterval.map { now.addingTimeInterval($0) }
         activeSession = ActivationSession(duration: duration, startedAt: now, endsAt: endsAt, options: options)
         lastStopReason = nil
 
-        // Create IOKit power assertions (synchronous, never actually suspends).
+        // IOKit assertion (synchronous, never suspends on MainActor).
         do {
             try assertions.activate(allowDisplaySleep: options.allowDisplaySleep)
         } catch {
-            // Roll back the optimistic session creation on failure.
             activeSession = nil
             lastStopReason = .manual
             return
         }
 
-        // ── Session expiration timer ────────────────────────────────────────
+        // ── Expiration timer ──────────────────────────────────────────────
         if let interval = duration.timeInterval {
             expirationTask = Task { [weak self] in
                 try? await Task.sleep(for: .seconds(interval))
                 guard !Task.isCancelled else { return }
                 await self?.stop(reason: .expired)
             }
-        }
 
-        // ── Periodic battery/power poll (every 30 s) ───────────────────────
-        monitorTask = Task { [weak self] in
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(30))
-                guard let self, !Task.isCancelled else { return }
-                await self.evaluatePowerRules(using: self.powerStatusProvider.currentSnapshot())
+            // ── Auto-extend warning (fires 5 min before end) ──────────────
+            let warningInterval = max(interval - 5 * 60, 0)
+            if interval > 5 * 60 {   // only if session is longer than 5 min
+                warningTask = Task { [weak self] in
+                    try? await Task.sleep(for: .seconds(warningInterval))
+                    guard !Task.isCancelled, let self else { return }
+                    await self.fireExpiryWarning(duration: duration)
+                }
             }
         }
 
-        // ── Reactive Low Power Mode observation ────────────────────────────
+        // ── Push-based battery monitoring ─────────────────────────────────
+        // IOPSNotificationCreateRunLoopSource fires the moment charge changes —
+        // same mechanism as the system battery icon. Replaces the 30-second poll.
+        batteryMonitor.onBatteryChange = { [weak self] in
+            guard let self else { return }
+            Task { @MainActor in
+                await self.evaluatePowerRules(using: self.powerStatusProvider.currentSnapshot())
+            }
+        }
+        batteryMonitor.start()
+
+        // ── Reactive Low Power Mode observer ───────────────────────────────
         startPowerStateObserver(options: options)
     }
 
+    // MARK: - Stop
+
     func stop(reason: StopReason) async {
-        expirationTask?.cancel()
-        expirationTask = nil
-        monitorTask?.cancel()
-        monitorTask = nil
-        powerStateObserver?.cancel()
-        powerStateObserver = nil
+        expirationTask?.cancel(); expirationTask = nil
+        warningTask?.cancel();    warningTask = nil
+        monitorTask?.cancel();    monitorTask = nil
+        powerStateObserver?.cancel(); powerStateObserver = nil
+        batteryMonitor.stop()
         assertions.deactivate()
         activeSession = nil
         lastStopReason = reason
@@ -101,8 +119,7 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
             return
         }
 
-        if activeSession.options.stopOnLowPowerMode,
-           snapshot.isLowPowerModeEnabled {
+        if activeSession.options.stopOnLowPowerMode, snapshot.isLowPowerModeEnabled {
             await stop(reason: .lowPowerMode)
         }
     }
@@ -110,20 +127,20 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
     // MARK: - Private
 
     private func startPowerStateObserver(options: SessionOptions) {
-        guard options.stopOnLowPowerMode else { return }  // Nothing to observe
-
+        guard options.stopOnLowPowerMode else { return }
         powerStateObserver = Task { [weak self] in
-            // Observe ProcessInfo power state change notifications.
             let notifications = NotificationCenter.default.notifications(
                 named: .NSProcessInfoPowerStateDidChange
             )
             for await _ in notifications {
                 guard let self, !Task.isCancelled else { return }
-                // Evaluate immediately when the notification fires.
-                await self.evaluatePowerRules(
-                    using: self.powerStatusProvider.currentSnapshot()
-                )
+                await self.evaluatePowerRules(using: self.powerStatusProvider.currentSnapshot())
             }
         }
+    }
+
+    private func fireExpiryWarning(duration: ActivationDuration) async {
+        guard activeSession != nil else { return }
+        NotificationManager.shared.notifyExpiryWarning(duration: duration)
     }
 }
