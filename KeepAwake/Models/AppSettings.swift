@@ -9,6 +9,7 @@ final class AppSettings: ObservableObject {
         static let batteryThreshold = "batteryThreshold"
         static let deactivateOnLowPowerMode = "deactivateOnLowPowerMode"
         static let allowDisplaySleep = "allowDisplaySleep"
+        static let hasPresentedInitialSettingsWindow = "hasPresentedInitialSettingsWindow"
         static let durations = "durations"
         static let defaultDurationID = "defaultDurationID"
     }
@@ -50,6 +51,10 @@ final class AppSettings: ObservableObject {
         didSet { userDefaults.set(allowDisplaySleep, forKey: Keys.allowDisplaySleep) }
     }
 
+    @Published var hasPresentedInitialSettingsWindow: Bool {
+        didSet { userDefaults.set(hasPresentedInitialSettingsWindow, forKey: Keys.hasPresentedInitialSettingsWindow) }
+    }
+
     @Published private(set) var availableDurations: [ActivationDuration] {
         didSet { persistDurations() }
     }
@@ -82,6 +87,7 @@ final class AppSettings: ObservableObject {
         self.batteryThreshold = Self.snapThreshold(userDefaults.object(forKey: Keys.batteryThreshold) as? Int ?? 20)
         self.deactivateOnLowPowerMode = userDefaults.bool(forKey: Keys.deactivateOnLowPowerMode)
         self.allowDisplaySleep = userDefaults.bool(forKey: Keys.allowDisplaySleep)
+        self.hasPresentedInitialSettingsWindow = userDefaults.bool(forKey: Keys.hasPresentedInitialSettingsWindow)
         self.availableDurations = durations
         self.defaultDurationID = durations.contains(where: { $0.id == savedDefaultID })
             ? savedDefaultID

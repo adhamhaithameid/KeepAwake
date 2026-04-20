@@ -68,6 +68,11 @@ final class KeepAwakeController: ObservableObject {
             objectWillChange.send()
         }
 
+        if !settings.hasPresentedInitialSettingsWindow {
+            settings.hasPresentedInitialSettingsWindow = true
+            openSettings(selectedTab: .settings)
+        }
+
         guard settings.activateOnLaunch else { return }
         await activate(duration: settings.defaultDuration)
     }

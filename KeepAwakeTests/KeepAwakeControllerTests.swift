@@ -9,6 +9,10 @@ final class KeepAwakeControllerTests: XCTestCase {
         XCTAssertEqual(controller.selectedTab, .settings)
     }
 
+    func test_app_bundle_is_configured_as_menu_bar_utility() {
+        XCTAssertEqual(Bundle.main.object(forInfoDictionaryKey: "LSUIElement") as? Bool, true)
+    }
+
     func test_primary_click_starts_and_stops_the_default_duration() async {
         let sessionController = SessionControllerSpy()
         let controller = makeController(sessionController: sessionController)
@@ -50,6 +54,26 @@ final class KeepAwakeControllerTests: XCTestCase {
         XCTAssertEqual(sessionController.startedDurations, [.minutes(15)])
     }
 
+    func test_first_launch_opens_settings_window() async {
+        let defaults = UserDefaults(suiteName: #function)!
+        defaults.removePersistentDomain(forName: #function)
+        let settings = AppSettings(userDefaults: defaults)
+        let windowManager = WindowManagerSpy()
+
+        let controller = KeepAwakeController(
+            settings: settings,
+            sessionController: SessionControllerSpy(),
+            windowManager: windowManager,
+            launchAtLoginManager: LaunchAtLoginManagerSpy(),
+            linkOpener: NoOpLinkOpener()
+        )
+
+        await controller.handleLaunch()
+
+        XCTAssertEqual(windowManager.openCalls, 1)
+        XCTAssertEqual(windowManager.selectedTabs, [.settings])
+    }
+
     private func makeController(
         sessionController: SessionControllerSpy = SessionControllerSpy()
     ) -> KeepAwakeController {
@@ -88,8 +112,11 @@ private final class SessionControllerSpy: ActivationSessionManaging {
 
 private final class WindowManagerSpy: SettingsWindowManaging {
     var openCalls = 0
+    var selectedTabs: [AppTab] = []
+
     func show(selectedTab: AppTab) {
         openCalls += 1
+        selectedTabs.append(selectedTab)
     }
 }
 
