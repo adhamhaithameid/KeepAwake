@@ -38,6 +38,9 @@ struct QuickActionsMenuView: View {
     private func quickButton(for duration: ActivationDuration) -> some View {
         let isDefault = duration.id == defaultDurationID
         let title = shortTitle(for: duration)
+        let a11yLabel = isDefault
+            ? "\(duration.menuTitle), default duration"
+            : duration.menuTitle
 
         return Button {
             activate(duration)
@@ -67,6 +70,8 @@ struct QuickActionsMenuView: View {
         }
         // Spring bounce — 1.0 → 0.88 → 1.0 with a springy overshoot
         .buttonStyle(BounceButtonStyle())
+        .accessibilityLabel(a11yLabel)
+        .accessibilityHint("Activate a KeepAwake session for \(duration.menuTitle)")
     }
 
     private func shortTitle(for duration: ActivationDuration) -> String {
