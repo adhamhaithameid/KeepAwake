@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A1B2C3D4E5F6A7B8C9D0E1F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A1B2C3D4E5F6A7B8C9D0E10 /* Assets.xcassets */; };
+		BB0011223344AABB /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0011223344AABC /* main.swift */; };
 		10C4CAB6EFDE5C4381636D47 /* ActivationDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F452777BAE42564F577B6DF /* ActivationDuration.swift */; };
 		1856E78E58266EEEB40D183A /* ActivationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360941895F9A0FC4E21F1229 /* ActivationSession.swift */; };
 		1BDCC47D8AE2946EB3A9F614 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85423D273814D69B11EC25A8 /* AppSettings.swift */; };
@@ -16,6 +18,11 @@
 		3BDBC8AA0601485E70CDCCAF /* AddDurationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673FAB63DC0FCA0F12954B13 /* AddDurationSheet.swift */; };
 		3E56DF6E67E110A1744875D6 /* AboutTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B0F8F5DE54AF95CF094057C /* AboutTabView.swift */; };
 		407455B63D048CE6AC9B6ADB /* StatusItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70CB028633FC7FE8124E964E /* StatusItemController.swift */; };
+		BB1122334455AABB /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1122334455AABC /* NotificationManager.swift */; };
+		CC0011AABB220001 /* BatteryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0011AABB220002 /* BatteryMonitor.swift */; };
+		CC0011AABB220003 /* FocusDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0011AABB220004 /* FocusDetectionService.swift */; };
+		CC0011AABB220005 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0011AABB220006 /* OnboardingView.swift */; };
+		CC0011AABB220007 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0011AABB220008 /* SettingsStore.swift */; };
 		68B5D99185841B0369E526FB /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944C307898AF3E4FD9E04F3F /* AppEnvironment.swift */; };
 		69303A352BB3EB09A595EB30 /* SettingsWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC80C51C6126B7675FBA3A09 /* SettingsWindowView.swift */; };
 		6B2B04770C5F402A8D2E1F8A /* KeepAwakeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBAADE0663E81293FC5E40D3 /* KeepAwakeUITests.swift */; };
@@ -64,6 +71,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A1B2C3D4E5F6A7B8C9D0E10 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BB0011223344AABC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		18968446D92629E9BB54AF52 /* PowerSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerSnapshot.swift; sourceTree = "<group>"; };
 		1CBA1D9F50D6E1CB9AE9C02A /* ActivationDurationTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationDurationTabView.swift; sourceTree = "<group>"; };
 		1DF11E75A37AF2F31CB75D15 /* KeepAwakeControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAwakeControllerTests.swift; sourceTree = "<group>"; };
@@ -75,6 +84,11 @@
 		5700F7D64C4F16955135E53E /* QuickActionsMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionsMenuView.swift; sourceTree = "<group>"; };
 		5F452777BAE42564F577B6DF /* ActivationDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationDuration.swift; sourceTree = "<group>"; };
 		602D590F426D617665A83454 /* SettingsWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowManager.swift; sourceTree = "<group>"; };
+		BB1122334455AABC /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		CC0011AABB220002 /* BatteryMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryMonitor.swift; sourceTree = "<group>"; };
+		CC0011AABB220004 /* FocusDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusDetectionService.swift; sourceTree = "<group>"; };
+		CC0011AABB220006 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		CC0011AABB220008 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		673FAB63DC0FCA0F12954B13 /* AddDurationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDurationSheet.swift; sourceTree = "<group>"; };
 		6B0F8F5DE54AF95CF094057C /* AboutTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTabView.swift; sourceTree = "<group>"; };
 		6D8FAE75A6300EAC9E78D1CE /* LaunchAtLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginManager.swift; sourceTree = "<group>"; };
@@ -110,6 +124,7 @@
 				5700F7D64C4F16955135E53E /* QuickActionsMenuView.swift */,
 				AAA39A97BFE0C3F079106225 /* SettingsTabView.swift */,
 				FC80C51C6126B7675FBA3A09 /* SettingsWindowView.swift */,
+				CC0011AABB220006 /* OnboardingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -142,8 +157,17 @@
 				E60AE4AD614BB755938FD1A7 /* Services */,
 				62F8F1C0E947857E336B19E1 /* Support */,
 				281C4065C575219251FD4F8D /* Views */,
+				FB1234567890ABCDEF123456 /* Resources */,
 			);
 			path = KeepAwake;
+			sourceTree = "<group>";
+		};
+		FB1234567890ABCDEF123456 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0A1B2C3D4E5F6A7B8C9D0E10 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		73D922768EBD228DAC45B716 /* KeepAwakeUITests */ = {
@@ -190,6 +214,7 @@
 		C43DF1FC0C4CDA3B500CE7EF /* App */ = {
 			isa = PBXGroup;
 			children = (
+				BB0011223344AABC /* main.swift */,
 				BC12FA18D80B2011E62A6585 /* AppDelegate.swift */,
 				944C307898AF3E4FD9E04F3F /* AppEnvironment.swift */,
 				2AC9EA465C907E95FD18F56E /* KeepAwakeController.swift */,
@@ -213,6 +238,10 @@
 				4C7BDE3671FAACF0F38C03CA /* LinkOpening.swift */,
 				CC57821FE6F3028948059143 /* PowerStatusProviding.swift */,
 				602D590F426D617665A83454 /* SettingsWindowManager.swift */,
+				BB1122334455AABC /* NotificationManager.swift */,
+				CC0011AABB220002 /* BatteryMonitor.swift */,
+				CC0011AABB220004 /* FocusDetectionService.swift */,
+				CC0011AABB220008 /* SettingsStore.swift */,
 				70CB028633FC7FE8124E964E /* StatusItemController.swift */,
 				E983AFAB1D30C2346C7EE54F /* WakeAssertionController.swift */,
 			);
@@ -343,6 +372,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A1B2C3D4E5F6A7B8C9D0E1F /* Assets.xcassets in Resources */,
 				762F6F8584B61F2E2C0B5B2A /* KeepAwakeHelper in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -422,6 +452,7 @@
 				1856E78E58266EEEB40D183A /* ActivationSession.swift in Sources */,
 				8F36C09D1497352D9B154E24 /* ActivationSessionController.swift in Sources */,
 				3BDBC8AA0601485E70CDCCAF /* AddDurationSheet.swift in Sources */,
+				BB0011223344AABB /* main.swift in Sources */,
 				A74909C03FC17CD617C5A12A /* AppDelegate.swift in Sources */,
 				68B5D99185841B0369E526FB /* AppEnvironment.swift in Sources */,
 				1BDCC47D8AE2946EB3A9F614 /* AppSettings.swift in Sources */,
@@ -437,6 +468,11 @@
 				DC079DA3AB6BC9C06A3A2DC4 /* SettingsTabView.swift in Sources */,
 				CCB5C817E765553E81188AB2 /* SettingsWindowManager.swift in Sources */,
 				69303A352BB3EB09A595EB30 /* SettingsWindowView.swift in Sources */,
+				BB1122334455AABB /* NotificationManager.swift in Sources */,
+				CC0011AABB220001 /* BatteryMonitor.swift in Sources */,
+				CC0011AABB220003 /* FocusDetectionService.swift in Sources */,
+				CC0011AABB220007 /* SettingsStore.swift in Sources */,
+				CC0011AABB220005 /* OnboardingView.swift in Sources */,
 				407455B63D048CE6AC9B6ADB /* StatusItemController.swift in Sources */,
 				A80ED9FB5AA8763FEFAF9FCB /* WakeAssertionController.swift in Sources */,
 			);

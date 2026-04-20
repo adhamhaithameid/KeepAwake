@@ -121,6 +121,8 @@ build_with_swiftc() {
   <string>1.0.0</string>
   <key>CFBundleVersion</key>
   <string>1</string>
+  <key>LSUIElement</key>
+  <true/>
   <key>LSMinimumSystemVersion</key>
   <string>13.0</string>
   <key>NSPrincipalClass</key>

@@ -4,9 +4,8 @@
 <dict>
 	<!--
 	    KeepAwake is NOT sandboxed so it can:
-	      1. Create a CGEvent tap to suppress keyboard events (requires Accessibility TCC)
-	      2. Seize the built-in trackpad via IOHIDDeviceOpen (requires Input Monitoring TCC)
-	    Both permissions are requested at runtime via the Privacy & Security pane.
+	      1. Create IOPMAssertion to prevent system and display sleep
+	      2. Use ServiceManagement to register for launch-at-login
 	    Hardened Runtime is enabled in the build settings which is why this file exists.
 	-->
 	<key>com.apple.security.app-sandbox</key>

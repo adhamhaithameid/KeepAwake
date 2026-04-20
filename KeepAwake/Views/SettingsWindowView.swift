@@ -16,13 +16,7 @@ struct SettingsWindowView: View {
                     case .settings:
                         SettingsTabView(
                             controller: controller,
-                            settings: controller.settings,
-                            quitApp: {
-                                Task {
-                                    await controller.handleTermination()
-                                    NSApp.terminate(nil)
-                                }
-                            }
+                            settings: controller.settings
                         )
                     case .activationDuration:
                         ActivationDurationTabView(
@@ -35,11 +29,30 @@ struct SettingsWindowView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
-                HStack {
-                    Text(controller.statusMessage)
-                        .font(.system(size: 12))
-                        .foregroundStyle(KeepAwakePalette.mutedInk)
-                    Spacer()
+                // Bottom bar: status message + Quit button (hidden on About tab)
+                if controller.selectedTab != .about {
+                    HStack {
+                        Text(controller.statusMessage)
+                            .font(.system(size: 12))
+                            .foregroundStyle(KeepAwakePalette.mutedInk)
+
+                        Spacer()
+
+                        Button(role: .destructive) {
+                            Task {
+                                await controller.handleTermination()
+                                NSApp.terminate(nil)
+                            }
+                        } label: {
+                            Label("Quit", systemImage: "power")
+                                .font(.system(size: 12, weight: .medium))
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(Color.red.opacity(0.7))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 6))
+                    }
                 }
             }
             .padding(.horizontal, 24)
