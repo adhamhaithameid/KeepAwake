@@ -2,11 +2,13 @@ import Foundation
 
 struct SessionOptions: Equatable {
     var allowDisplaySleep: Bool
+    var allowPowerNap: Bool
     var batteryThreshold: Int?
     var stopOnLowPowerMode: Bool
 
     static let `default` = SessionOptions(
         allowDisplaySleep: false,
+        allowPowerNap: false,
         batteryThreshold: nil,
         stopOnLowPowerMode: false
     )

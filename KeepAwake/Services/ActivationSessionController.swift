@@ -53,7 +53,8 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
 
         // IOKit assertion (synchronous, never suspends on MainActor).
         do {
-            try assertions.activate(allowDisplaySleep: options.allowDisplaySleep)
+            try assertions.activate(allowDisplaySleep: options.allowDisplaySleep,
+                                    allowPowerNap: options.allowPowerNap)
         } catch {
             activeSession = nil
             lastStopReason = .manual
