@@ -10,6 +10,10 @@ final class AppSettings: ObservableObject {
         static let deactivateOnLowPowerMode = "deactivateOnLowPowerMode"
         static let allowDisplaySleep = "allowDisplaySleep"
         static let showStatusLabel = "showStatusLabel"
+        static let autoActivateOnFocus = "autoActivateOnFocus"
+        static let autoActivateOnScreenSharing = "autoActivateOnScreenSharing"
+        static let deactivateWhenFocusEnds = "deactivateWhenFocusEnds"
+        static let hasCompletedOnboarding = "hasCompletedOnboarding"
         static let hasPresentedInitialSettingsWindow = "hasPresentedInitialSettingsWindow"
         static let durations = "durations"
         static let defaultDurationID = "defaultDurationID"
@@ -64,9 +68,32 @@ final class AppSettings: ObservableObject {
         didSet { userDefaults.set(showStatusLabel, forKey: Keys.showStatusLabel) }
     }
 
+    // MARK: - Automation
+
+    /// Automatically activate the default duration when Focus Mode turns on.
+    @Published var autoActivateOnFocus: Bool {
+        didSet { userDefaults.set(autoActivateOnFocus, forKey: Keys.autoActivateOnFocus) }
+    }
+
+    /// Automatically activate the default duration when Screen Sharing begins.
+    @Published var autoActivateOnScreenSharing: Bool {
+        didSet { userDefaults.set(autoActivateOnScreenSharing, forKey: Keys.autoActivateOnScreenSharing) }
+    }
+
+    /// Deactivate automatically when Focus Mode turns off (only if it was auto-activated by KeepAwake).
+    @Published var deactivateWhenFocusEnds: Bool {
+        didSet { userDefaults.set(deactivateWhenFocusEnds, forKey: Keys.deactivateWhenFocusEnds) }
+    }
+
+    /// True once the user has completed the first-run onboarding flow.
+    @Published var hasCompletedOnboarding: Bool {
+        didSet { userDefaults.set(hasCompletedOnboarding, forKey: Keys.hasCompletedOnboarding) }
+    }
+
     @Published var hasPresentedInitialSettingsWindow: Bool {
         didSet { userDefaults.set(hasPresentedInitialSettingsWindow, forKey: Keys.hasPresentedInitialSettingsWindow) }
     }
+
 
     @Published private(set) var availableDurations: [ActivationDuration] {
         didSet { persistDurations() }
@@ -117,6 +144,10 @@ final class AppSettings: ObservableObject {
         self.deactivateOnLowPowerMode = userDefaults.bool(forKey: Keys.deactivateOnLowPowerMode)
         self.allowDisplaySleep = userDefaults.bool(forKey: Keys.allowDisplaySleep)
         self.showStatusLabel = userDefaults.bool(forKey: Keys.showStatusLabel)
+        self.autoActivateOnFocus = userDefaults.bool(forKey: Keys.autoActivateOnFocus)
+        self.autoActivateOnScreenSharing = userDefaults.bool(forKey: Keys.autoActivateOnScreenSharing)
+        self.deactivateWhenFocusEnds = userDefaults.bool(forKey: Keys.deactivateWhenFocusEnds)
+        self.hasCompletedOnboarding = userDefaults.bool(forKey: Keys.hasCompletedOnboarding)
         self.hasPresentedInitialSettingsWindow = userDefaults.bool(forKey: Keys.hasPresentedInitialSettingsWindow)
         self.availableDurations = durations
         self.defaultDurationID = durations.contains(where: { $0.id == savedDefaultID })
