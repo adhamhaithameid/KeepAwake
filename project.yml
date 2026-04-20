@@ -33,8 +33,11 @@ targets:
       - path: KeepAwake/Models/AppSettings.swift
       - path: KeepAwake/Models/PowerSnapshot.swift
       - path: KeepAwake/Services/ActivationSessionController.swift
+      - path: KeepAwake/Services/BatteryMonitor.swift
+      - path: KeepAwake/Services/FocusDetectionService.swift
       - path: KeepAwake/Services/LaunchAtLoginManager.swift
       - path: KeepAwake/Services/LinkOpening.swift
+      - path: KeepAwake/Services/NotificationManager.swift
       - path: KeepAwake/Services/PowerStatusProviding.swift
       - path: KeepAwake/Services/SettingsWindowManager.swift
       - path: KeepAwake/Services/StatusItemController.swift
@@ -43,6 +46,7 @@ targets:
       - path: KeepAwake/Views/ActivationDurationTabView.swift
       - path: KeepAwake/Views/AddDurationSheet.swift
       - path: KeepAwake/Views/KeepAwakeBranding.swift
+      - path: KeepAwake/Views/OnboardingView.swift
       - path: KeepAwake/Views/QuickActionsMenuView.swift
       - path: KeepAwake/Views/SettingsTabView.swift
       - path: KeepAwake/Views/SettingsWindowView.swift
