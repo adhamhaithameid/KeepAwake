@@ -18,6 +18,7 @@
 		3BDBC8AA0601485E70CDCCAF /* AddDurationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673FAB63DC0FCA0F12954B13 /* AddDurationSheet.swift */; };
 		3E56DF6E67E110A1744875D6 /* AboutTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B0F8F5DE54AF95CF094057C /* AboutTabView.swift */; };
 		407455B63D048CE6AC9B6ADB /* StatusItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70CB028633FC7FE8124E964E /* StatusItemController.swift */; };
+		BB1122334455AABB /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1122334455AABC /* NotificationManager.swift */; };
 		68B5D99185841B0369E526FB /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944C307898AF3E4FD9E04F3F /* AppEnvironment.swift */; };
 		69303A352BB3EB09A595EB30 /* SettingsWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC80C51C6126B7675FBA3A09 /* SettingsWindowView.swift */; };
 		6B2B04770C5F402A8D2E1F8A /* KeepAwakeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBAADE0663E81293FC5E40D3 /* KeepAwakeUITests.swift */; };
@@ -79,6 +80,7 @@
 		5700F7D64C4F16955135E53E /* QuickActionsMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionsMenuView.swift; sourceTree = "<group>"; };
 		5F452777BAE42564F577B6DF /* ActivationDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationDuration.swift; sourceTree = "<group>"; };
 		602D590F426D617665A83454 /* SettingsWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowManager.swift; sourceTree = "<group>"; };
+		BB1122334455AABC /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		673FAB63DC0FCA0F12954B13 /* AddDurationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDurationSheet.swift; sourceTree = "<group>"; };
 		6B0F8F5DE54AF95CF094057C /* AboutTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTabView.swift; sourceTree = "<group>"; };
 		6D8FAE75A6300EAC9E78D1CE /* LaunchAtLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginManager.swift; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 				4C7BDE3671FAACF0F38C03CA /* LinkOpening.swift */,
 				CC57821FE6F3028948059143 /* PowerStatusProviding.swift */,
 				602D590F426D617665A83454 /* SettingsWindowManager.swift */,
+				BB1122334455AABC /* NotificationManager.swift */,
 				70CB028633FC7FE8124E964E /* StatusItemController.swift */,
 				E983AFAB1D30C2346C7EE54F /* WakeAssertionController.swift */,
 			);
@@ -453,6 +456,7 @@
 				DC079DA3AB6BC9C06A3A2DC4 /* SettingsTabView.swift in Sources */,
 				CCB5C817E765553E81188AB2 /* SettingsWindowManager.swift in Sources */,
 				69303A352BB3EB09A595EB30 /* SettingsWindowView.swift in Sources */,
+				BB1122334455AABB /* NotificationManager.swift in Sources */,
 				407455B63D048CE6AC9B6ADB /* StatusItemController.swift in Sources */,
 				A80ED9FB5AA8763FEFAF9FCB /* WakeAssertionController.swift in Sources */,
 			);
