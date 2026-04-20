@@ -29,6 +29,13 @@ struct SettingsTabView: View {
                         isOn: $settings.activateOnLaunch,
                         identifier: "settings.activateOnLaunch"
                     )
+
+                    clickableToggleRow(
+                        title: "Show Countdown in Menu Bar",
+                        detail: "Display a live glanceable label (e.g. ☕ 42m) next to the icon while a session is active.",
+                        isOn: $settings.showStatusLabel,
+                        identifier: "settings.showStatusLabel"
+                    )
                 }
 
                 KeepAwakePanel {
