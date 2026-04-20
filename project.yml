@@ -24,6 +24,7 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
+      - path: KeepAwake/App/main.swift
       - path: KeepAwake/App/AppDelegate.swift
       - path: KeepAwake/App/AppEnvironment.swift
       - path: KeepAwake/App/KeepAwakeController.swift

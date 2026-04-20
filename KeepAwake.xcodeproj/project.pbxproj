@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A1B2C3D4E5F6A7B8C9D0E1F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A1B2C3D4E5F6A7B8C9D0E10 /* Assets.xcassets */; };
+		BB0011223344AABB /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0011223344AABC /* main.swift */; };
 		10C4CAB6EFDE5C4381636D47 /* ActivationDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F452777BAE42564F577B6DF /* ActivationDuration.swift */; };
 		1856E78E58266EEEB40D183A /* ActivationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360941895F9A0FC4E21F1229 /* ActivationSession.swift */; };
 		1BDCC47D8AE2946EB3A9F614 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85423D273814D69B11EC25A8 /* AppSettings.swift */; };
@@ -64,6 +66,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A1B2C3D4E5F6A7B8C9D0E10 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BB0011223344AABC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		18968446D92629E9BB54AF52 /* PowerSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerSnapshot.swift; sourceTree = "<group>"; };
 		1CBA1D9F50D6E1CB9AE9C02A /* ActivationDurationTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationDurationTabView.swift; sourceTree = "<group>"; };
 		1DF11E75A37AF2F31CB75D15 /* KeepAwakeControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeepAwakeControllerTests.swift; sourceTree = "<group>"; };
@@ -142,8 +146,17 @@
 				E60AE4AD614BB755938FD1A7 /* Services */,
 				62F8F1C0E947857E336B19E1 /* Support */,
 				281C4065C575219251FD4F8D /* Views */,
+				FB1234567890ABCDEF123456 /* Resources */,
 			);
 			path = KeepAwake;
+			sourceTree = "<group>";
+		};
+		FB1234567890ABCDEF123456 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0A1B2C3D4E5F6A7B8C9D0E10 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		73D922768EBD228DAC45B716 /* KeepAwakeUITests */ = {
@@ -190,6 +203,7 @@
 		C43DF1FC0C4CDA3B500CE7EF /* App */ = {
 			isa = PBXGroup;
 			children = (
+				BB0011223344AABC /* main.swift */,
 				BC12FA18D80B2011E62A6585 /* AppDelegate.swift */,
 				944C307898AF3E4FD9E04F3F /* AppEnvironment.swift */,
 				2AC9EA465C907E95FD18F56E /* KeepAwakeController.swift */,
@@ -343,6 +357,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A1B2C3D4E5F6A7B8C9D0E1F /* Assets.xcassets in Resources */,
 				762F6F8584B61F2E2C0B5B2A /* KeepAwakeHelper in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -422,6 +437,7 @@
 				1856E78E58266EEEB40D183A /* ActivationSession.swift in Sources */,
 				8F36C09D1497352D9B154E24 /* ActivationSessionController.swift in Sources */,
 				3BDBC8AA0601485E70CDCCAF /* AddDurationSheet.swift in Sources */,
+				BB0011223344AABB /* main.swift in Sources */,
 				A74909C03FC17CD617C5A12A /* AppDelegate.swift in Sources */,
 				68B5D99185841B0369E526FB /* AppEnvironment.swift in Sources */,
 				1BDCC47D8AE2946EB3A9F614 /* AppSettings.swift in Sources */,

@@ -1,21 +1,36 @@
 import AppKit
 import Foundation
 
-@main
+@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    @MainActor
     private var environment: KeepAwakeAppEnvironment?
 
+    // Set accessory policy as early as possible — before the run loop begins —
+    // so RunningBoard never waits for a window that will never appear.
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        NSApp.setActivationPolicy(.accessory)
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
-        Task { @MainActor in
-            NSApp.setActivationPolicy(.accessory)
-            let environment = AppEnvironment.makeEnvironment()
-            self.environment = environment
-            await environment.controller.handleLaunch()
+        let env = AppEnvironment.makeEnvironment()
+        self.environment = env
+        Task {
+            await env.controller.handleLaunch()
         }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         false
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        if let controller = environment?.controller {
+            let sema = DispatchSemaphore(value: 0)
+            Task {
+                await controller.handleTermination()
+                sema.signal()
+            }
+            sema.wait()
+        }
     }
 }
