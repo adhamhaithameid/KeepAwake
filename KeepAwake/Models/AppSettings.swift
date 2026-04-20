@@ -9,6 +9,7 @@ final class AppSettings: ObservableObject {
         static let batteryThreshold = "batteryThreshold"
         static let deactivateOnLowPowerMode = "deactivateOnLowPowerMode"
         static let allowDisplaySleep = "allowDisplaySleep"
+        static let allowPowerNap = "allowPowerNap"
         static let showStatusLabel = "showStatusLabel"
         static let autoActivateOnFocus = "autoActivateOnFocus"
         static let autoActivateOnScreenSharing = "autoActivateOnScreenSharing"
@@ -28,7 +29,9 @@ final class AppSettings: ObservableObject {
     nonisolated static let batteryMagnetRadius = 4  // %
     nonisolated static let batteryRange = 1...100
 
-    private let userDefaults: UserDefaults
+    /// The persistence backend. Defaults to `UserDefaults.standard`;
+    /// pass an `iCloudFallbackStore()` for transparent iCloud sync.
+    private let userDefaults: any SettingsStore
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
 
@@ -60,6 +63,14 @@ final class AppSettings: ObservableObject {
 
     @Published var allowDisplaySleep: Bool {
         didSet { userDefaults.set(allowDisplaySleep, forKey: Keys.allowDisplaySleep) }
+    }
+
+    /// When `true`, uses `kIOPMAssertionTypePreventSystemSleep` so Power Nap
+    /// (background syncs, Time Machine, push email) can still run while
+    /// your session is active. When `false`, uses `PreventUserIdleSystemSleep`
+    /// for stricter idle-sleep prevention.
+    @Published var allowPowerNap: Bool {
+        didSet { userDefaults.set(allowPowerNap, forKey: Keys.allowPowerNap) }
     }
 
     /// When on, a live glanceable countdown (e.g. "☕ 42m") is shown next to
@@ -122,6 +133,7 @@ final class AppSettings: ObservableObject {
     var sessionOptions: SessionOptions {
         SessionOptions(
             allowDisplaySleep: allowDisplaySleep,
+            allowPowerNap: allowPowerNap,
             batteryThreshold: deactivateBelowThreshold ? batteryThreshold : nil,
             stopOnLowPowerMode: deactivateOnLowPowerMode
         )
@@ -129,10 +141,14 @@ final class AppSettings: ObservableObject {
 
     // MARK: - Init
 
-    init(userDefaults: UserDefaults = .standard) {
-        self.userDefaults = userDefaults
+    /// Designated initialiser.
+    /// - Parameter store: The key-value store to persist settings in.
+    ///   Pass `iCloudFallbackStore()` to opt in to transparent iCloud sync;
+    ///   leave blank to use `UserDefaults.standard`.
+    init(store: any SettingsStore = UserDefaults.standard) {
+        self.userDefaults = store
 
-        let durations = Self.loadDurations(from: userDefaults)
+        let durations = Self.loadDurations(from: store)
         let savedDefaultID = userDefaults.string(forKey: Keys.defaultDurationID) ?? ActivationDuration.minutes(15).id
         let savedPinnedIDs = userDefaults.stringArray(forKey: Keys.pinnedDurationIDs) ?? Self.defaultPinnedIDs
 
@@ -143,6 +159,7 @@ final class AppSettings: ObservableObject {
         self.batteryThreshold = rawThreshold.clamped(to: Self.batteryRange)
         self.deactivateOnLowPowerMode = userDefaults.bool(forKey: Keys.deactivateOnLowPowerMode)
         self.allowDisplaySleep = userDefaults.bool(forKey: Keys.allowDisplaySleep)
+        self.allowPowerNap = userDefaults.bool(forKey: Keys.allowPowerNap)
         self.showStatusLabel = userDefaults.bool(forKey: Keys.showStatusLabel)
         self.autoActivateOnFocus = userDefaults.bool(forKey: Keys.autoActivateOnFocus)
         self.autoActivateOnScreenSharing = userDefaults.bool(forKey: Keys.autoActivateOnScreenSharing)
@@ -236,8 +253,8 @@ final class AppSettings: ObservableObject {
         userDefaults.set(data, forKey: Keys.durations)
     }
 
-    private static func loadDurations(from defaults: UserDefaults) -> [ActivationDuration] {
-        guard let data = defaults.data(forKey: Keys.durations),
+    private static func loadDurations(from store: any SettingsStore) -> [ActivationDuration] {
+        guard let data = store.object(forKey: Keys.durations) as? Data,
               let durations = try? JSONDecoder().decode([ActivationDuration].self, from: data),
               !durations.isEmpty else {
             return ActivationDuration.defaultDurations

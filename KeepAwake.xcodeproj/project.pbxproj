@@ -22,6 +22,7 @@
 		CC0011AABB220001 /* BatteryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0011AABB220002 /* BatteryMonitor.swift */; };
 		CC0011AABB220003 /* FocusDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0011AABB220004 /* FocusDetectionService.swift */; };
 		CC0011AABB220005 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0011AABB220006 /* OnboardingView.swift */; };
+		CC0011AABB220007 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0011AABB220008 /* SettingsStore.swift */; };
 		68B5D99185841B0369E526FB /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944C307898AF3E4FD9E04F3F /* AppEnvironment.swift */; };
 		69303A352BB3EB09A595EB30 /* SettingsWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC80C51C6126B7675FBA3A09 /* SettingsWindowView.swift */; };
 		6B2B04770C5F402A8D2E1F8A /* KeepAwakeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBAADE0663E81293FC5E40D3 /* KeepAwakeUITests.swift */; };
@@ -87,6 +88,7 @@
 		CC0011AABB220002 /* BatteryMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryMonitor.swift; sourceTree = "<group>"; };
 		CC0011AABB220004 /* FocusDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusDetectionService.swift; sourceTree = "<group>"; };
 		CC0011AABB220006 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		CC0011AABB220008 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		673FAB63DC0FCA0F12954B13 /* AddDurationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDurationSheet.swift; sourceTree = "<group>"; };
 		6B0F8F5DE54AF95CF094057C /* AboutTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTabView.swift; sourceTree = "<group>"; };
 		6D8FAE75A6300EAC9E78D1CE /* LaunchAtLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginManager.swift; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 				BB1122334455AABC /* NotificationManager.swift */,
 				CC0011AABB220002 /* BatteryMonitor.swift */,
 				CC0011AABB220004 /* FocusDetectionService.swift */,
+				CC0011AABB220008 /* SettingsStore.swift */,
 				70CB028633FC7FE8124E964E /* StatusItemController.swift */,
 				E983AFAB1D30C2346C7EE54F /* WakeAssertionController.swift */,
 			);
@@ -468,6 +471,7 @@
 				BB1122334455AABB /* NotificationManager.swift in Sources */,
 				CC0011AABB220001 /* BatteryMonitor.swift in Sources */,
 				CC0011AABB220003 /* FocusDetectionService.swift in Sources */,
+				CC0011AABB220007 /* SettingsStore.swift in Sources */,
 				CC0011AABB220005 /* OnboardingView.swift in Sources */,
 				407455B63D048CE6AC9B6ADB /* StatusItemController.swift in Sources */,
 				A80ED9FB5AA8763FEFAF9FCB /* WakeAssertionController.swift in Sources */,
