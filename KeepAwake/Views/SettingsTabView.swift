@@ -4,7 +4,6 @@ import SwiftUI
 struct SettingsTabView: View {
     @ObservedObject var controller: KeepAwakeController
     @ObservedObject var settings: AppSettings
-    let quitApp: () -> Void
 
     var body: some View {
         ScrollView {
@@ -92,16 +91,6 @@ struct SettingsTabView: View {
                         identifier: "settings.allowDisplaySleep"
                     )
                 }
-
-                HStack {
-                    Spacer()
-
-                    Button(role: .destructive, action: quitApp) {
-                        Label("Quit App", systemImage: "power")
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-                .padding(.top, 6)
             }
             .padding(.bottom, 8)
         }
