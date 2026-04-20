@@ -9,6 +9,7 @@ final class AppSettings: ObservableObject {
         static let batteryThreshold = "batteryThreshold"
         static let deactivateOnLowPowerMode = "deactivateOnLowPowerMode"
         static let allowDisplaySleep = "allowDisplaySleep"
+        static let showStatusLabel = "showStatusLabel"
         static let hasPresentedInitialSettingsWindow = "hasPresentedInitialSettingsWindow"
         static let durations = "durations"
         static let defaultDurationID = "defaultDurationID"
@@ -55,6 +56,12 @@ final class AppSettings: ObservableObject {
 
     @Published var allowDisplaySleep: Bool {
         didSet { userDefaults.set(allowDisplaySleep, forKey: Keys.allowDisplaySleep) }
+    }
+
+    /// When on, a live glanceable countdown (e.g. "☕ 42m") is shown next to
+    /// the icon in the menu bar while a timed session is active.
+    @Published var showStatusLabel: Bool {
+        didSet { userDefaults.set(showStatusLabel, forKey: Keys.showStatusLabel) }
     }
 
     @Published var hasPresentedInitialSettingsWindow: Bool {
@@ -109,6 +116,7 @@ final class AppSettings: ObservableObject {
         self.batteryThreshold = rawThreshold.clamped(to: Self.batteryRange)
         self.deactivateOnLowPowerMode = userDefaults.bool(forKey: Keys.deactivateOnLowPowerMode)
         self.allowDisplaySleep = userDefaults.bool(forKey: Keys.allowDisplaySleep)
+        self.showStatusLabel = userDefaults.bool(forKey: Keys.showStatusLabel)
         self.hasPresentedInitialSettingsWindow = userDefaults.bool(forKey: Keys.hasPresentedInitialSettingsWindow)
         self.availableDurations = durations
         self.defaultDurationID = durations.contains(where: { $0.id == savedDefaultID })
