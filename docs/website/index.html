@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KeepAwake — Keep your Mac awake, on demand</title>
+  <meta name="description" content="KeepAwake is a tiny macOS menu bar app that keeps your Mac awake for exactly as long as you need — presentations, downloads, screen sharing, and more. Free to download." />
+  <meta property="og:title" content="KeepAwake for Mac" />
+  <meta property="og:description" content="Keep your Mac awake on demand. One click. Battery-smart. Automation ready." />
+  <meta property="og:image" content="icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="icon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900;1,14..32,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-900: #050709;
+      --bg-800: #0a0d12;
+      --bg-700: #0f1318;
+      --bg-600: #141a22;
+      --bg-500: #1a2230;
+
+      --accent:      #4F9CF9;
+      --accent-2:    #7B6CF7;
+      --accent-warm: #F59E0B;
+      --accent-green:#34D399;
+      --accent-red:  #F87171;
+
+      --text-100: #f0f6fc;
+      --text-200: #cdd6e0;
+      --text-400: #8b949e;
+      --text-600: #525f6e;
+
+      --border-subtle: rgba(255,255,255,0.06);
+      --border-med:    rgba(255,255,255,0.10);
+      --border-accent: rgba(79,156,249,0.25);
+
+      --glass-bg:  rgba(255,255,255,0.035);
+      --glass-bg2: rgba(255,255,255,0.055);
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+
+      --shadow-glow: 0 0 60px rgba(79,156,249,0.12);
+      --shadow-card: 0 8px 32px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.05) inset;
+      --shadow-float: 0 30px 80px rgba(0,0,0,0.7), 0 0 100px rgba(79,156,249,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-900);
+      color: var(--text-100);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Noise & global glow layers ───────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Global mesh gradient ─────────────────────────────────── */
+    .mesh {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(79,156,249,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 10%, rgba(123,108,247,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 80%, rgba(52,211,153,0.04) 0%, transparent 60%);
+    }
+
+    section, nav, footer, header { position: relative; z-index: 1; }
+
+    /* ── Utility ──────────────────────────────────────────────── */
+    .gradient-text {
+      background: linear-gradient(135deg, var(--text-100) 0%, var(--text-200) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .accent-text {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* ── NAV ──────────────────────────────────────────────────── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      background: rgba(5,7,9,0.75);
+      position: sticky; top: 0; z-index: 200;
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-brand-icon-wrap {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, rgba(79,156,249,0.2), rgba(123,108,247,0.2));
+      border: 1px solid rgba(79,156,249,0.3);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    .nav-brand-icon-wrap img { width: 26px; height: 26px; border-radius: 6px; }
+
+    .nav-brand span {
+      font-size: 15px; font-weight: 700; color: var(--text-100);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+
+    .nav-link {
+      color: var(--text-400); font-size: 14px; font-weight: 500;
+      text-decoration: none; padding: 6px 12px; border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-link:hover { color: var(--text-100); background: var(--glass-bg); }
+
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff; font-size: 13px; font-weight: 700;
+      padding: 8px 18px; border-radius: 8px;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(79,156,249,0.25), 0 0 0 1px rgba(255,255,255,0.1) inset;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(79,156,249,0.4), 0 0 0 1px rgba(255,255,255,0.15) inset;
+    }
+    .nav-cta:active { transform: translateY(0); }
+
+    /* ── HERO ─────────────────────────────────────────────────── */
+    .hero {
+      min-height: calc(100vh - 64px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-orbs {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px);
+      animation: orbDrift 12s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(79,156,249,0.15), transparent 70%);
+      top: -200px; left: 50%; transform: translateX(-50%);
+      animation-duration: 14s;
+    }
+
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(123,108,247,0.12), transparent 70%);
+      top: 10%; right: -100px;
+      animation-delay: -4s; animation-duration: 16s;
+    }
+
+    .orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(52,211,153,0.08), transparent 70%);
+      bottom: 10%; left: -80px;
+      animation-delay: -8s; animation-duration: 18s;
+    }
+
+    @keyframes orbDrift {
+      from { transform: translateY(0) scale(1); }
+      to   { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .orb-1 { animation-name: orb1Drift; }
+    @keyframes orb1Drift {
+      from { opacity: 0.7; transform: translateX(-50%) scale(1); }
+      to   { opacity: 1;   transform: translateX(-50%) scale(1.08); }
+    }
+
+    /* ── Hero badge ───────────────────────────────────────────── */
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(79,156,249,0.08);
+      border: 1px solid rgba(79,156,249,0.2);
+      border-radius: 100px;
+      padding: 6px 16px 6px 10px;
+      margin-bottom: 32px;
+      font-size: 12px; font-weight: 600; color: var(--accent);
+      letter-spacing: 0.2px;
+      backdrop-filter: blur(10px);
+    }
+
+    .badge-dot {
+      width: 8px; height: 8px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { box-shadow: 0 0 6px var(--accent-green); transform: scale(1); }
+      50%       { box-shadow: 0 0 16px var(--accent-green); transform: scale(1.2); }
+    }
+
+    /* ── Hero icon ────────────────────────────────────────────── */
+    .hero-icon-wrap {
+      position: relative;
+      margin-bottom: 40px;
+      display: inline-block;
+    }
+
+    .hero-icon-ring {
+      position: absolute; inset: -28px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, rgba(79,156,249,0) 0%, rgba(79,156,249,0.4) 25%, rgba(123,108,247,0.4) 50%, rgba(79,156,249,0) 75%);
+      animation: ringRotate 6s linear infinite;
+      mask: radial-gradient(circle, transparent 54px, black 58px, black 62px, transparent 66px);
+      -webkit-mask: radial-gradient(circle, transparent 54px, black 58px, black 62px, transparent 66px);
+    }
+
+    @keyframes ringRotate { to { transform: rotate(360deg); } }
+
+    .hero-icon-glow {
+      position: absolute; inset: -40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(79,156,249,0.25) 0%, transparent 70%);
+      animation: glowPulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowPulse {
+      from { opacity: 0.6; transform: scale(0.92); }
+      to   { opacity: 1;   transform: scale(1.08); }
+    }
+
+    .hero-icon {
+      width: 128px; height: 128px;
+      border-radius: 30px;
+      position: relative; z-index: 1;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.12),
+        0 24px 64px rgba(0,0,0,0.7),
+        0 0 100px rgba(79,156,249,0.2);
+      animation: iconFloat 6s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    /* ── Steam particles ──────────────────────────────────────── */
+    .steam-container {
+      position: absolute;
+      top: -28px; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 60px;
+      pointer-events: none;
+    }
+
+    .steam {
+      position: absolute;
+      bottom: 0;
+      width: 8px;
+      background: linear-gradient(to top, rgba(255,255,255,0.5), transparent);
+      border-radius: 8px;
+      animation: steamRise 2.4s ease-out infinite;
+      filter: blur(3px);
+    }
+
+    .steam-1 { left: 20px; height: 30px; animation-delay: 0s; }
+    .steam-2 { left: 38px; height: 40px; animation-delay: 0.6s; }
+    .steam-3 { left: 56px; height: 26px; animation-delay: 1.2s; }
+
+    @keyframes steamRise {
+      0%   { transform: translateY(0) scaleX(1); opacity: 0.7; }
+      50%  { transform: translateY(-24px) scaleX(1.4); opacity: 0.4; }
+      100% { transform: translateY(-48px) scaleX(0.6); opacity: 0; }
+    }
+
+    /* ── Hero text ────────────────────────────────────────────── */
+    h1 {
+      font-size: clamp(44px, 7vw, 80px);
+      font-weight: 900;
+      letter-spacing: -3px;
+      line-height: 1.02;
+      margin-bottom: 24px;
+    }
+
+    h1 .line-1 {
+      display: block;
+      background: linear-gradient(135deg, var(--text-100) 0%, var(--text-200) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    h1 .line-2 {
+      display: block;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-400);
+      max-width: 520px;
+      margin: 0 auto 44px;
+      font-weight: 400; line-height: 1.75;
+    }
+
+    /* ── Hero actions ─────────────────────────────────────────── */
+    .hero-actions {
+      display: flex; align-items: center; gap: 14px;
+      flex-wrap: wrap; justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--accent) 0%, #3b7dd8 100%);
+      color: #fff; font-size: 15px; font-weight: 700;
+      padding: 14px 28px; border-radius: var(--radius-md);
+      text-decoration: none;
+      box-shadow: 0 8px 32px rgba(79,156,249,0.35), 0 0 0 1px rgba(255,255,255,0.12) inset;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative; overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+      border-radius: inherit;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 48px rgba(79,156,249,0.5), 0 0 0 1px rgba(255,255,255,0.15) inset;
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--text-400); font-size: 14px; font-weight: 500;
+      padding: 13px 22px; border-radius: var(--radius-md);
+      text-decoration: none;
+      background: var(--glass-bg);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(10px);
+      transition: all 0.25s;
+    }
+    .btn-ghost:hover {
+      color: var(--text-100);
+      border-color: var(--border-med);
+      background: var(--glass-bg2);
+      transform: translateY(-1px);
+    }
+
+    .hero-note {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: 12px; color: var(--text-600);
+      margin-top: 8px;
+    }
+
+    /* ── App mockup ───────────────────────────────────────────── */
+    .mockup-section {
+      width: 100%; max-width: 440px;
+      margin: 64px auto 0;
+      position: relative;
+    }
+
+    .mockup-glow {
+      position: absolute; inset: -40px;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(79,156,249,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .mockup-window {
+      background: rgba(15,19,24,0.92);
+      border: 1px solid var(--border-med);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.05) inset,
+        0 40px 100px rgba(0,0,0,0.7),
+        0 0 80px rgba(79,156,249,0.07);
+      backdrop-filter: blur(20px);
+      position: relative;
+      animation: windowFloat 8s ease-in-out infinite;
+    }
+
+    @keyframes windowFloat {
+      0%, 100% { transform: translateY(0) rotate(0.3deg); }
+      50%       { transform: translateY(-10px) rotate(-0.3deg); }
+    }
+
+    .win-titlebar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.025);
+    }
+
+    .win-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .win-dot.red    { background: #FF5F57; box-shadow: 0 0 6px rgba(255,95,87,0.5); }
+    .win-dot.yellow { background: #FFBD2E; box-shadow: 0 0 6px rgba(255,189,46,0.5); }
+    .win-dot.green  { background: #28C840; box-shadow: 0 0 6px rgba(40,200,64,0.5); }
+
+    .win-title {
+      flex: 1; text-align: center;
+      font-size: 12px; font-weight: 600; color: var(--text-600);
+      letter-spacing: 0.3px;
+    }
+
+    /* Active status header */
+    .mb-active-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .status-indicator {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(52,211,153,0.1);
+      border: 1px solid rgba(52,211,153,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .status-dot-live {
+      width: 10px; height: 10px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: livePulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { box-shadow: 0 0 6px var(--accent-green); }
+      50%       { box-shadow: 0 0 18px rgba(52,211,153,0.8); }
+    }
+
+    .mb-status-info { flex: 1; }
+    .mb-status-label { font-size: 13px; font-weight: 700; color: var(--accent-green); }
+    .mb-status-time  { font-size: 11px; color: var(--text-400); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+    .mb-stop-btn {
+      background: rgba(248,113,113,0.1);
+      border: 1px solid rgba(248,113,113,0.25);
+      border-radius: 8px; padding: 7px 14px;
+      color: var(--accent-red); font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .mb-stop-btn:hover { background: rgba(248,113,113,0.2); }
+
+    /* Progress ring */
+    .progress-section {
+      padding: 18px 18px 14px;
+      display: flex; align-items: center; gap: 16px;
+    }
+
+    .ring-wrap { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
+
+    .ring-svg { width: 52px; height: 52px; transform: rotate(-90deg); }
+
+    .ring-track {
+      fill: none;
+      stroke: rgba(255,255,255,0.06);
+      stroke-width: 4;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: url(#ringGrad);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 126;
+      stroke-dashoffset: 38;
+      transition: stroke-dashoffset 1s ease;
+    }
+
+    .ring-label {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: var(--accent);
+    }
+
+    .progress-info { flex: 1; }
+    .progress-title { font-size: 13px; font-weight: 600; color: var(--text-200); }
+    .progress-sub   { font-size: 11px; color: var(--text-400); margin-top: 3px; }
+
+    /* Quick buttons */
+    .quick-btns {
+      display: flex; gap: 8px;
+      padding: 0 18px 14px;
+    }
+
+    .qbtn {
+      flex: 1; text-align: center;
+      padding: 9px 6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      font-size: 13px; font-weight: 700; color: var(--text-200);
+      cursor: pointer; transition: all 0.2s;
+    }
+
+    .qbtn.active {
+      background: rgba(79,156,249,0.12);
+      border-color: rgba(79,156,249,0.35);
+      color: var(--accent);
+    }
+
+    .qbtn:hover { background: rgba(255,255,255,0.07); }
+
+    .mb-divider { height: 1px; background: var(--border-subtle); margin: 0 18px; }
+
+    .mb-menu-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 18px;
+      color: var(--text-400); font-size: 13px;
+    }
+
+    .mb-menu-row svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.7; }
+    .mb-menu-row:last-child { padding-bottom: 16px; }
+
+    /* ── Section shared styles ────────────────────────────────── */
+    .section-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 18px;
+    }
+
+    .section-eyebrow::before, .section-eyebrow::after {
+      content: '';
+      display: block; width: 20px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--accent));
+    }
+    .section-eyebrow::after {
+      background: linear-gradient(to left, transparent, var(--accent));
+    }
+
+    .section-h2 {
+      font-size: clamp(30px, 4.5vw, 48px);
+      font-weight: 900; letter-spacing: -1.5px;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, var(--text-100) 0%, var(--text-200) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .section-sub {
+      color: var(--text-400); font-size: 17px;
+      max-width: 480px; margin: 0 auto 64px;
+      line-height: 1.7;
+    }
+
+    /* ── FEATURES (Bento Grid) ────────────────────────────────── */
+    .features {
+      padding: 100px 24px;
+      max-width: 1200px; margin: 0 auto;
+      text-align: center;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: auto;
+      gap: 16px;
+    }
+
+    .bento-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+      text-align: left;
+    }
+
+    .bento-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .bento-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(79,156,249,0.06);
+    }
+
+    .bento-card .card-glow {
+      position: absolute;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0; transition: opacity 0.4s;
+      filter: blur(40px);
+    }
+
+    .bento-card:hover .card-glow { opacity: 1; }
+
+    /* Grid positions */
+    .bento-card-1 { grid-column: span 5; }
+    .bento-card-2 { grid-column: span 7; }
+    .bento-card-3 { grid-column: span 4; }
+    .bento-card-4 { grid-column: span 4; }
+    .bento-card-5 { grid-column: span 4; }
+    .bento-card-6 { grid-column: span 12; display: flex; align-items: center; gap: 48px; }
+
+    .feat-icon-wrap {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 20px;
+      position: relative;
+    }
+
+    .feat-icon-wrap::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      background: inherit;
+      filter: blur(12px);
+      opacity: 0.6; z-index: -1;
+    }
+
+    .icon-blue   { background: rgba(79,156,249,0.15); border: 1px solid rgba(79,156,249,0.25); }
+    .icon-purple { background: rgba(123,108,247,0.15); border: 1px solid rgba(123,108,247,0.25); }
+    .icon-amber  { background: rgba(245,158,11,0.15);  border: 1px solid rgba(245,158,11,0.25); }
+    .icon-green  { background: rgba(52,211,153,0.15);  border: 1px solid rgba(52,211,153,0.25); }
+    .icon-red    { background: rgba(248,113,113,0.15); border: 1px solid rgba(248,113,113,0.25); }
+    .icon-cyan   { background: rgba(34,211,238,0.15);  border: 1px solid rgba(34,211,238,0.25); }
+
+    .bento-title {
+      font-size: 18px; font-weight: 800; letter-spacing: -0.4px;
+      color: var(--text-100); margin-bottom: 10px;
+    }
+
+    .bento-desc {
+      font-size: 14px; color: var(--text-400); line-height: 1.7;
+    }
+
+    /* Wide card override */
+    .bento-card-6 .feat-icon-wrap { margin-bottom: 0; flex-shrink: 0; }
+    .bento-card-6 .card-text { flex: 1; }
+
+    /* Mini stat inside card */
+    .mini-stat {
+      display: inline-flex; align-items: baseline; gap: 4px;
+      margin-top: 16px;
+    }
+
+    .mini-stat-num {
+      font-size: 36px; font-weight: 900; letter-spacing: -1px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .mini-stat-label { font-size: 13px; color: var(--text-400); }
+
+    /* Battery viz */
+    .battery-viz {
+      display: flex; align-items: center; gap: 8px; margin-top: 20px;
+    }
+
+    .battery-body {
+      width: 60px; height: 26px;
+      border: 2px solid rgba(52,211,153,0.6);
+      border-radius: 5px; position: relative;
+      display: flex; align-items: center; padding: 3px;
+    }
+
+    .battery-body::after {
+      content: '';
+      position: absolute; right: -8px;
+      top: 50%; transform: translateY(-50%);
+      width: 4px; height: 12px;
+      background: rgba(52,211,153,0.6);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .battery-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--accent-green), rgba(52,211,153,0.7));
+      border-radius: 2px;
+      width: 75%;
+    }
+
+    .battery-label { font-size: 11px; color: var(--accent-green); font-weight: 700; }
+
+    /* ── HOW IT WORKS ─────────────────────────────────────────── */
+    .how {
+      padding: 100px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .how::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent, rgba(15,19,24,0.5), transparent);
+      pointer-events: none;
+    }
+
+    .how-inner {
+      max-width: 900px; margin: 0 auto;
+      text-align: center;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 0;
+    }
+
+    .step-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      text-align: left; position: relative;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .step-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(79,156,249,0.06);
+    }
+
+    .step-num-badge {
+      position: absolute; top: 28px; right: 28px;
+      width: 36px; height: 36px;
+      background: rgba(79,156,249,0.1);
+      border: 1px solid rgba(79,156,249,0.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 900; color: var(--accent);
+    }
+
+    .step-icon-lg {
+      font-size: 36px; margin-bottom: 20px; display: block;
+    }
+
+    .step-title {
+      font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+      color: var(--text-100); margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 14px; color: var(--text-400); line-height: 1.7;
+    }
+
+    .kbd {
+      display: inline-flex; align-items: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-bottom: 2px solid rgba(255,255,255,0.1);
+      border-radius: 5px; padding: 1px 8px;
+      font-size: 12px; font-weight: 600; color: var(--text-200);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      vertical-align: middle;
+    }
+
+    /* ── CTA ──────────────────────────────────────────────────── */
+    .cta-section {
+      padding: 120px 24px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+
+    .cta-bg-orb {
+      position: absolute;
+      width: 800px; height: 800px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(79,156,249,0.08) 0%, transparent 60%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .cta-inner {
+      max-width: 700px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+
+    .cta-inner h2 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 900; letter-spacing: -2.5px;
+      margin-bottom: 20px; line-height: 1.05;
+      background: linear-gradient(135deg, var(--text-100) 0%, rgba(240,246,252,0.7) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .cta-inner p {
+      color: var(--text-400); font-size: 18px;
+      margin-bottom: 44px; line-height: 1.7;
+    }
+
+    .cta-actions { display: flex; align-items: center; justify-content: center; gap: 14px; }
+
+    .cta-meta {
+      display: flex; align-items: center; justify-content: center;
+      gap: 24px; margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .cta-meta-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text-600);
+    }
+
+    .cta-meta-item svg { width: 14px; height: 14px; color: var(--accent-green); }
+
+    /* ── FOOTER ───────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 40px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center; gap: 24px;
+    }
+
+    .footer-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+
+    .footer-brand img { width: 24px; height: 24px; border-radius: 6px; }
+
+    .footer-brand span {
+      font-size: 14px; font-weight: 700; color: var(--text-400);
+    }
+
+    .footer-links {
+      display: flex; gap: 28px;
+    }
+
+    .footer-links a {
+      color: var(--text-600); font-size: 13px;
+      text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text-200); }
+
+    .footer-right {
+      text-align: right;
+    }
+
+    .footer-copy {
+      font-size: 12px; color: var(--text-600);
+    }
+
+    .footer-copy a {
+      color: inherit; text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .footer-copy a:hover { color: var(--text-400); }
+
+    /* ── Scroll-triggered fade-in ─────────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .bento-card-1,
+      .bento-card-2 { grid-column: span 12; }
+      .bento-card-3,
+      .bento-card-4,
+      .bento-card-5 { grid-column: span 6; }
+      .bento-card-6 { grid-column: span 12; flex-direction: column; gap: 24px; }
+    }
+
+    @media (max-width: 640px) {
+      nav { padding: 0 20px; }
+      footer { grid-template-columns: 1fr; text-align: center; }
+      .footer-right { text-align: center; }
+      .footer-links { justify-content: center; flex-wrap: wrap; gap: 16px; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .bento-card-3,
+      .bento-card-4,
+      .bento-card-5 { grid-column: span 12; }
+      h1 { letter-spacing: -2px; }
+    }
+
+    /* ── Extra polish: scrollbar ──────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-900); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-600); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--bg-500); }
+
+    /* ── Separator ────────────────────────────────────────────── */
+    .divider {
+      max-width: 1200px; margin: 0 auto;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border-subtle), transparent);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Mesh gradient layer -->
+<div class="mesh" aria-hidden="true"></div>
+
+<!-- ── NAV ─────────────────────────────────────────────────── -->
+<nav aria-label="Site navigation">
+  <a href="#" class="nav-brand">
+    <div class="nav-brand-icon-wrap">
+      <img src="icon.png" alt="KeepAwake icon" />
+    </div>
+    <span>KeepAwake</span>
+  </a>
+
+  <div class="nav-right">
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#how" class="nav-link">How it works</a>
+    <a href="https://github.com/adhamhaithameid/KeepAwake/releases" class="nav-cta" id="nav-download">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 4h14v-2H5v2z"/></svg>
+      Download free
+    </a>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────── -->
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="hero-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Icon -->
+  <div class="hero-icon-wrap reveal">
+    <div class="hero-icon-glow" aria-hidden="true"></div>
+    <div class="hero-icon-ring" aria-hidden="true"></div>
+    <img src="icon.png" alt="KeepAwake app icon" class="hero-icon" />
+    <div class="steam-container" aria-hidden="true">
+      <div class="steam steam-1"></div>
+      <div class="steam steam-2"></div>
+      <div class="steam steam-3"></div>
+    </div>
+  </div>
+
+  <div class="hero-badge reveal reveal-delay-1" aria-label="Free macOS app">
+    <span class="badge-dot"></span>
+    Free · macOS 13 Ventura +
+  </div>
+
+  <h1 id="hero-heading" class="reveal reveal-delay-2">
+    <span class="line-1">Your Mac, wide awake.</span>
+    <span class="line-2">On demand.</span>
+  </h1>
+
+  <p class="hero-sub reveal reveal-delay-3">
+    A lightweight menu bar utility that keeps your Mac from sleeping for exactly as long as you need — presentations, downloads, screen sharing, and more.
+  </p>
+
+  <div class="hero-actions reveal reveal-delay-4">
+    <a href="https://github.com/adhamhaithameid/KeepAwake/releases" class="btn-primary" id="hero-download">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 4h14v-2H5v2z"/></svg>
+      Download for Mac
+    </a>
+    <a href="https://github.com/adhamhaithameid/KeepAwake" class="btn-ghost" id="hero-github">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.48 2 12c0 4.418 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.071 1.532 1.03 1.532 1.03.892 1.529 2.341 1.088 2.91.833.09-.646.349-1.087.635-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.104-.253-.447-1.27.097-2.646 0 0 .84-.269 2.75 1.025A9.565 9.565 0 0 1 12 6.836a9.56 9.56 0 0 1 2.5.336c1.908-1.294 2.747-1.025 2.747-1.025.546 1.376.202 2.393.1 2.646.64.698 1.027 1.591 1.027 2.682 0 3.842-2.337 4.687-4.565 4.935.36.309.678.919.678 1.852 0 1.338-.012 2.414-.012 2.742 0 .267.18.578.688.48A10.012 10.012 0 0 0 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      View on GitHub
+    </a>
+  </div>
+
+  <p class="hero-note reveal">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+    No account · No subscription · No tracking
+  </p>
+
+  <!-- Live app mockup -->
+  <div class="mockup-section reveal" aria-label="App interface preview" role="img">
+    <div class="mockup-glow" aria-hidden="true"></div>
+    <div class="mockup-window">
+
+      <svg height="0" width="0" aria-hidden="true" style="position:absolute">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4F9CF9"/>
+            <stop offset="100%" stop-color="#7B6CF7"/>
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <!-- Titlebar -->
+      <div class="win-titlebar">
+        <div class="win-dot red"></div>
+        <div class="win-dot yellow"></div>
+        <div class="win-dot green"></div>
+        <span class="win-title">KeepAwake</span>
+      </div>
+
+      <!-- Active header -->
+      <div class="mb-active-header">
+        <div class="status-indicator">
+          <div class="status-dot-live"></div>
+        </div>
+        <div class="mb-status-info">
+          <div class="mb-status-label">Active</div>
+          <div class="mb-status-time">42m 17s remaining</div>
+        </div>
+        <div class="mb-stop-btn" role="presentation">Stop</div>
+      </div>
+
+      <!-- Progress ring -->
+      <div class="progress-section">
+        <div class="ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 52 52" aria-hidden="true">
+            <circle class="ring-track" cx="26" cy="26" r="20"/>
+            <circle class="ring-progress" cx="26" cy="26" r="20"/>
+          </svg>
+          <div class="ring-label">70%</div>
+        </div>
+        <div class="progress-info">
+          <div class="progress-title">1 hour session</div>
+          <div class="progress-sub">Screen sleep blocked</div>
+        </div>
+      </div>
+
+      <!-- Quick buttons -->
+      <div class="quick-btns" role="presentation">
+        <div class="qbtn">15m</div>
+        <div class="qbtn active">1h ✦</div>
+        <div class="qbtn">4h</div>
+        <div class="qbtn">∞</div>
+      </div>
+
+      <div class="mb-divider" aria-hidden="true"></div>
+
+      <div class="mb-menu-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+        Settings…
+      </div>
+      <div class="mb-menu-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18.36 6.64A9 9 0 1 1 5.64 17.36"/><polyline points="22 2 8 16"/></svg>
+        Quit KeepAwake
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── FEATURES ──────────────────────────────────────────────── -->
+<section class="features" id="features" aria-labelledby="features-heading">
+  <div class="section-eyebrow reveal" aria-hidden="true">Features</div>
+  <h2 class="section-h2 reveal reveal-delay-1" id="features-heading">Everything you need.<br>Nothing you don't.</h2>
+  <p class="section-sub reveal reveal-delay-2">Built for real people, real workflows, and real Macs. One tool. Zero friction.</p>
+
+  <div class="bento-grid">
+
+    <!-- Card 1: One-click -->
+    <div class="bento-card bento-card-1 reveal reveal-delay-1">
+      <div class="card-glow" style="background:rgba(79,156,249,0.3); top:-60px; left:-40px;"></div>
+      <div class="feat-icon-wrap icon-blue">☕</div>
+      <div class="bento-title">One-click activation</div>
+      <div class="bento-desc">Left-click the menu bar icon to start your default duration instantly. No menus, no dialogs — just one click and your Mac stays awake.</div>
+      <div class="mini-stat">
+        <span class="mini-stat-num">1</span>
+        <span class="mini-stat-label">click to activate</span>
+      </div>
+    </div>
+
+    <!-- Card 2: Flexible durations -->
+    <div class="bento-card bento-card-2 reveal reveal-delay-2">
+      <div class="card-glow" style="background:rgba(123,108,247,0.3); top:-40px; right:-40px;"></div>
+      <div class="feat-icon-wrap icon-purple">⏱</div>
+      <div class="bento-title">Flexible session lengths</div>
+      <div class="bento-desc">Built-in presets from 15 minutes to 1 day, plus an indefinite mode. Add your own custom durations and pin your favourites as quick buttons. Your workflow, your timings.</div>
+    </div>
+
+    <!-- Card 3: Battery -->
+    <div class="bento-card bento-card-3 reveal reveal-delay-1">
+      <div class="card-glow" style="background:rgba(52,211,153,0.25); bottom:-40px; left:-40px;"></div>
+      <div class="feat-icon-wrap icon-green">🔋</div>
+      <div class="bento-title">Battery-aware</div>
+      <div class="bento-desc">Set a threshold and KeepAwake stops automatically when charge drops below it.</div>
+      <div class="battery-viz">
+        <div class="battery-body">
+          <div class="battery-fill"></div>
+        </div>
+        <span class="battery-label">75% — Active</span>
+      </div>
+    </div>
+
+    <!-- Card 4: Automation -->
+    <div class="bento-card bento-card-4 reveal reveal-delay-2">
+      <div class="card-glow" style="background:rgba(245,158,11,0.2); top:-40px; right:-40px;"></div>
+      <div class="feat-icon-wrap icon-amber">🌙</div>
+      <div class="bento-title">Automation-ready</div>
+      <div class="bento-desc">Auto-activates when Focus Mode or Screen Sharing starts.</div>
+    </div>
+
+    <!-- Card 5: Notifications -->
+    <div class="bento-card bento-card-5 reveal reveal-delay-3">
+      <div class="card-glow" style="background:rgba(248,113,113,0.2); top:-40px; left:-40px;"></div>
+      <div class="feat-icon-wrap icon-red">🔔</div>
+      <div class="bento-title">Expiry alerts</div>
+      <div class="bento-desc">Get a banner 5 min before your session ends, with an Extend +30m button built in.</div>
+    </div>
+
+    <!-- Card 6: Power Nap (wide) -->
+    <div class="bento-card bento-card-6 reveal">
+      <div class="card-glow" style="background:rgba(34,211,238,0.2); top:50%; left:-40px;"></div>
+      <div class="feat-icon-wrap icon-cyan">💤</div>
+      <div class="card-text">
+        <div class="bento-title">Power Nap support</div>
+        <div class="bento-desc">Allow Power Nap lets Time Machine, iCloud Drive, and push email run in the background while your session is active — backed up, synced, and awake all at once.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── HOW IT WORKS ───────────────────────────────────────────── -->
+<section class="how" id="how" aria-labelledby="how-heading">
+  <div class="how-inner">
+    <div class="section-eyebrow reveal" aria-hidden="true">How it works</div>
+    <h2 class="section-h2 reveal reveal-delay-1" id="how-heading">Up and running in 30 seconds.</h2>
+    <p class="section-sub reveal reveal-delay-2">No account. No setup wizard. Just download and click.</p>
+
+    <div class="steps-grid">
+
+      <div class="step-card reveal reveal-delay-1">
+        <div class="step-num-badge">1</div>
+        <span class="step-icon-lg" aria-hidden="true">⬇</span>
+        <div class="step-title">Download and open</div>
+        <p class="step-desc">Grab the latest release, drag it to Applications, and open it. The <strong>☕</strong> icon appears in your menu bar — that's it. No installer wizard.</p>
+      </div>
+
+      <div class="step-card reveal reveal-delay-2">
+        <div class="step-num-badge">2</div>
+        <span class="step-icon-lg" aria-hidden="true">👆</span>
+        <div class="step-title">Click to activate</div>
+        <p class="step-desc"><strong>Left-click</strong> to start your default session. Or press <kbd class="kbd">⌥ click</kbd> for the fastest trigger. <strong>Right-click</strong> for all options and settings.</p>
+      </div>
+
+      <div class="step-card reveal reveal-delay-3">
+        <div class="step-num-badge">3</div>
+        <span class="step-icon-lg" aria-hidden="true">📊</span>
+        <div class="step-title">Watch the countdown</div>
+        <p class="step-desc">The menu header shows a live ring with remaining time. Optionally, a compact label like <strong>☕ 42m</strong> sits right in your menu bar at a glance.</p>
+      </div>
+
+      <div class="step-card reveal reveal-delay-4">
+        <div class="step-num-badge">4</div>
+        <span class="step-icon-lg" aria-hidden="true">✅</span>
+        <div class="step-title">Done — back to normal</div>
+        <p class="step-desc">When time's up, KeepAwake stops automatically. Your Mac returns to its normal sleep schedule. Zero cleanup required.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── CTA ────────────────────────────────────────────────────── -->
+<section class="cta-section" aria-labelledby="cta-heading">
+  <div class="cta-bg-orb" aria-hidden="true"></div>
+  <div class="cta-inner">
+    <h2 id="cta-heading" class="reveal">
+      Ready to stay<br>
+      <span class="accent-text">wide awake?</span>
+    </h2>
+    <p class="reveal reveal-delay-1">Free to download. No subscription. No account. Works out of the box on macOS 13 Ventura and later.</p>
+
+    <div class="cta-actions">
+      <a href="https://github.com/adhamhaithameid/KeepAwake/releases" class="btn-primary" id="cta-download">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 4h14v-2H5v2z"/></svg>
+        Download KeepAwake — it's free
+      </a>
+      <a href="https://buymeacoffee.com/adhamhaithameid" class="btn-ghost" id="cta-support">
+        ☕ Buy me a coffee
+      </a>
+    </div>
+
+    <div class="cta-meta">
+      <div class="cta-meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        No account required
+      </div>
+      <div class="cta-meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        Open source
+      </div>
+      <div class="cta-meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        macOS 13+ compatible
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────────────────── -->
+<footer>
+  <a href="#" class="footer-brand">
+    <img src="icon.png" alt="KeepAwake" />
+    <span>KeepAwake</span>
+  </a>
+
+  <nav class="footer-links" aria-label="Footer links">
+    <a href="https://github.com/adhamhaithameid/KeepAwake">GitHub</a>
+    <a href="../privacy.md">Privacy</a>
+    <a href="../faq.md">FAQ</a>
+    <a href="https://buymeacoffee.com/adhamhaithameid">Support ☕</a>
+  </nav>
+
+  <p class="footer-copy footer-right">
+    Made with ☕ by <a href="https://github.com/adhamhaithameid">Adham Haitham</a>
+    · PolyForm Noncommercial
+  </p>
+</footer>
+
+<script>
+  /* ── Intersection Observer for scroll reveals ─────────────── */
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+
+  /* ── Live countdown timer in mockup ──────────────────────── */
+  let totalSeconds = 42 * 60 + 17;
+  const timeEl = document.querySelector('.mb-status-time');
+
+  setInterval(() => {
+    if (totalSeconds <= 0) totalSeconds = 3600;
+    totalSeconds--;
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    if (timeEl) timeEl.textContent = `${m}m ${s.toString().padStart(2,'0')}s remaining`;
+  }, 1000);
+
+  /* ── Mouse-follow glow on bento cards ────────────────────── */
+  document.querySelectorAll('.bento-card, .step-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const glow = card.querySelector('.card-glow');
+      if (glow) {
+        glow.style.left = (x - 100) + 'px';
+        glow.style.top  = (y - 100) + 'px';
+      }
+    });
+  });
+
+  /* ── Animate ring progress on page load ──────────────────── */
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.querySelector('.ring-progress')?.style && (
+        document.querySelector('.ring-progress').style.strokeDashoffset = '38'
+      );
+    }, 600);
+  });
+</script>
+
+</body>
+</html>
