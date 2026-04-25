@@ -6,6 +6,10 @@ protocol ActivationSessionManaging: AnyObject {
     var lastStopReason: StopReason? { get }
     func start(duration: ActivationDuration, options: SessionOptions) async
     func stop(reason: StopReason) async
+    /// Synchronous teardown for use in `applicationWillTerminate`.
+    /// Must never use async/await or DispatchSemaphore — the main thread is blocked
+    /// by AppKit during termination and any re-entrancy will deadlock.
+    func deactivateSync()
 }
 
 @MainActor
@@ -106,6 +110,24 @@ final class ActivationSessionController: ObservableObject, ActivationSessionMana
         assertions.deactivate()
         activeSession = nil
         lastStopReason = reason
+    }
+
+    /// Synchronous teardown called from `applicationWillTerminate`.
+    ///
+    /// `applicationWillTerminate` runs on the main thread with AppKit holding the
+    /// run loop. Any `await` or `DispatchSemaphore.wait()` here would deadlock
+    /// because the @MainActor executor is blocked. We therefore cancel Tasks
+    /// (non-blocking) and call `IOPMAssertionRelease` directly (synchronous IOKit
+    /// call — safe from any thread).
+    func deactivateSync() {
+        expirationTask?.cancel(); expirationTask = nil
+        warningTask?.cancel();    warningTask = nil
+        monitorTask?.cancel();    monitorTask = nil
+        powerStateObserver?.cancel(); powerStateObserver = nil
+        batteryMonitor.stop()
+        assertions.deactivate()   // IOPMAssertionRelease — synchronous, thread-safe
+        activeSession = nil
+        lastStopReason = .appTermination
     }
 
     // MARK: - Power rule evaluation
