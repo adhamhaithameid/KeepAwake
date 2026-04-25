@@ -45,6 +45,11 @@ enum AppEnvironment {
         let statusItemController = StatusItemController(controller: controller)
         let onboardingManager = OnboardingWindowManager()
 
+        // Wire the "View Welcome Guide" action (UX-7).
+        controller.onShowWelcomeGuide = { [weak onboardingManager] in
+            onboardingManager?.show(settings: settings)
+        }
+
         return KeepAwakeAppEnvironment(
             controller: controller,
             settingsWindowManager: settingsWindowManager,
