@@ -10,6 +10,15 @@ final class KeepAwakeController: ObservableObject {
     @Published var selectedDurationID: ActivationDuration.ID?
     @Published var isShowingAddDurationSheet = false
     @Published var statusMessage = "Ready"
+    /// Set when an IOKit power assertion fails to be created (SE-7).
+    /// Displayed as a transient error banner in the menu header.
+    @Published var lastAssertionError: String? = nil
+
+    /// Called when the user requests to re-show the welcome/onboarding guide (UX-7).
+    /// Wired up in AppEnvironment to `OnboardingWindowManager.show`.
+    var onShowWelcomeGuide: (() -> Void)?
+    /// Called when a timed session expires (UX-5 — triggers icon flash).
+    var onSessionExpired: (() -> Void)?
 
     private let sessionController: ActivationSessionManaging
     private let windowManager: SettingsWindowManaging
@@ -112,6 +121,19 @@ final class KeepAwakeController: ObservableObject {
         objectWillChange.send()
     }
 
+    /// Synchronous teardown for use **only** from `applicationWillTerminate`.
+    ///
+    /// AppKit calls `applicationWillTerminate` on the main thread while the run
+    /// loop is blocked, so `await` and `DispatchSemaphore.wait()` both deadlock.
+    /// This method cancels all async tasks (non-blocking) and calls
+    /// `IOPMAssertionRelease` synchronously — which is all that’s actually needed
+    /// to release the power assertion before the process exits.
+    func terminateSync() {
+        focusService.stop()
+        sessionController.deactivateSync()
+        statusMessage = "Stopped"
+    }
+
     func handlePrimaryClick() async {
         if isActive {
             await stopActiveSession()
@@ -128,8 +150,21 @@ final class KeepAwakeController: ObservableObject {
     func activate(duration: ActivationDuration) async {
         selectedDurationID = duration.id
         lastHandledStopReason = nil
+        lastAssertionError = nil
         await sessionController.start(duration: duration, options: settings.sessionOptions)
-        statusMessage = duration.isIndefinite ? "Active indefinitely" : "Active for \(duration.menuTitle)"
+        // SE-7: If the session didn't actually start (IOKit assertion failed),
+        // surface a brief error message so the user knows why.
+        if !isActive {
+            lastAssertionError = "Could not create power assertion. Check System Preferences → Energy Saver."
+            statusMessage = "Failed to start session"
+            // Auto-clear the error banner after 6 seconds.
+            Task {
+                try? await Task.sleep(for: .seconds(6))
+                if self.lastAssertionError != nil { self.lastAssertionError = nil }
+            }
+        } else {
+            statusMessage = duration.isIndefinite ? "Active indefinitely" : "Active for \(duration.menuTitle)"
+        }
         objectWillChange.send()
     }
 
@@ -165,6 +200,13 @@ final class KeepAwakeController: ObservableObject {
 
     func open(_ link: ExternalLink) {
         linkOpener.open(link.url)
+    }
+
+    /// Re-shows the onboarding welcome guide (UX-7).
+    /// Resets the completion flag so the window will reappear.
+    func showWelcomeGuide() {
+        settings.hasCompletedOnboarding = false
+        onShowWelcomeGuide?()
     }
 
     // MARK: - Focus Detection
@@ -214,6 +256,9 @@ final class KeepAwakeController: ObservableObject {
               reason != .appTermination,
               reason != .replaced else { return }
         lastHandledStopReason = reason
+        // Clear the selected-duration highlight so the Durations tab doesn't
+        // show a stale active ring after an auto-stop (SE-6).
+        selectedDurationID = nil
         if let autoReason = reason {
             notifications.notifyAutoStop(reason: autoReason)
             switch autoReason {
@@ -223,6 +268,8 @@ final class KeepAwakeController: ObservableObject {
                 statusMessage = "Stopped — battery below threshold"
             case .expired:
                 statusMessage = "Session ended"
+                // UX-5: Notify listener (StatusItemController) to flash the icon.
+                onSessionExpired?()
             default: break
             }
             objectWillChange.send()
