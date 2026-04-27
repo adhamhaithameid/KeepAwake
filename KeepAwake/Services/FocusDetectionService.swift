@@ -35,12 +35,21 @@ final class FocusDetectionService {
 
     // MARK: - Start / Stop
 
+    /// Whether distributed observers and the fallback poll are currently active.
+    /// Guards against stacking duplicate observers if `start()` is called more
+    /// than once without an intervening `stop()` (SE-3).
+    private var isRunning = false
+
     func start() {
+        guard !isRunning else { return }
+        isRunning = true
         registerDistributedObservers()
         startFallbackPoll()
     }
 
     func stop() {
+        guard isRunning else { return }
+        isRunning = false
         unregisterDistributedObservers()
         fallbackPollTask?.cancel()
         fallbackPollTask = nil
