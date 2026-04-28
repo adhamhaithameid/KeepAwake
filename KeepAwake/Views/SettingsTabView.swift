@@ -36,6 +36,24 @@ struct SettingsTabView: View {
                         identifier: "settings.activateOnLaunch"
                     )
 
+                    // UX-9: Warn when "Activate on Launch" is enabled but the
+                    // default duration would silently do nothing (totalSeconds == 0).
+                    if settings.activateOnLaunch,
+                       settings.availableDurations.first(where: { $0.id == settings.defaultDurationID })?.totalSeconds == 0 {
+                        HStack(spacing: 8) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(KeepAwakePalette.orange)
+                                .font(.system(size: 12))
+                            Text("No valid default duration is set. Go to the Durations tab to pick one.")
+                                .font(.system(size: 11))
+                                .foregroundStyle(KeepAwakePalette.orange)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .padding(.leading, 26)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                        .accessibilityLabel("Warning: no valid default duration set for Activate on Launch")
+                    }
+
                     clickableToggleRow(
                         title: "Show Countdown in Menu Bar",
                         detail: "Display a live glanceable label (e.g. ☕ 42m) next to the icon while a session is active.",
@@ -138,6 +156,41 @@ struct SettingsTabView: View {
                         isOn: $settings.autoActivateOnScreenSharing,
                         identifier: "settings.autoActivateOnScreenSharing"
                     )
+                }
+                // MARK: Notifications
+
+                KeepAwakePanel {
+                    Text("Notifications")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(KeepAwakePalette.ink)
+                        .accessibilityAddTraits(.isHeader)
+
+                    // Deep-link into the Notifications pane for this app (UX-8).
+                    Button {
+                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+                            NSWorkspace.shared.open(url)
+                        }
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Notification Settings")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundStyle(KeepAwakePalette.ink)
+                                Text("Configure when KeepAwake can send you alerts.")
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(KeepAwakePalette.mutedInk)
+                            }
+                            Spacer()
+                            Image(systemName: "arrow.up.right.square")
+                                .foregroundStyle(Color.accentColor)
+                                .font(.system(size: 13))
+                        }
+                        .contentShape(Rectangle())
+                        .padding(.vertical, 4)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Open Notification Settings in System Settings")
+                    .accessibilityHint("Opens the macOS Notifications preference pane for KeepAwake")
                 }
             }
             .padding(.bottom, 8)
@@ -250,11 +303,19 @@ private struct BatteryThresholdControl: View {
         }
     }
 
+    /// Colour for the battery threshold value readout.
+    ///
+    /// ## Colour scale rationale (UX-6)
+    /// A **low** threshold (e.g. 10 %) is lenient — the session runs until the
+    /// battery is almost empty, which is rarely a problem. A **high** threshold
+    /// (e.g. 90 %) is aggressive — it stops the session very early, which may
+    /// surprise the user. The scale therefore reads: green = relaxed,
+    /// amber = moderate, red = aggressive (inverted from the previous version).
     private var thresholdColor: Color {
         switch threshold {
-        case ..<21: return .red
-        case 21..<51: return KeepAwakePalette.orange
-        default: return .green
+        case 71...: return .red           // Very aggressive: stops above 70 %
+        case 41...: return KeepAwakePalette.orange   // Moderate: 41–70 %
+        default:    return .green         // Lenient: 40 % and below
         }
     }
 }
