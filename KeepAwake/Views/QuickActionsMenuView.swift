@@ -6,10 +6,13 @@ import SwiftUI
 /// • Shows the 3 pinned durations.
 /// • If the default duration is NOT one of the pinned ones, a 4th button appears.
 /// • The default button is highlighted with an accent border + tinted fill.
+/// • The **active** session's duration button gets a green highlight (UX-4).
 /// • Each button has a spring "bounce" press animation via BounceButtonStyle.
 struct QuickActionsMenuView: View {
     let quickDurations: [ActivationDuration]
     let defaultDurationID: String
+    /// ID of the duration whose session is currently running, or nil if inactive.
+    var activeDurationID: String? = nil
     let activate: (ActivationDuration) -> Void
 
     /// Extra default button — only when the default isn't already in quick slots.
@@ -37,36 +40,55 @@ struct QuickActionsMenuView: View {
 
     private func quickButton(for duration: ActivationDuration) -> some View {
         let isDefault = duration.id == defaultDurationID
+        let isRunning = duration.id == activeDurationID
         let title = shortTitle(for: duration)
-        let a11yLabel = isDefault
-            ? "\(duration.menuTitle), default duration"
-            : duration.menuTitle
+
+        // Active session → green. Default → accent. Otherwise → neutral.
+        let tintColor: Color = isRunning ? .green : (isDefault ? .accentColor : .primary)
+        let bgOpacity: Double = isRunning ? 0.14 : (isDefault ? 0.12 : 0.07)
+        let borderOpacity: Double = isRunning ? 0.7 : (isDefault ? 0.6 : 0.12)
+        let borderWidth: Double = (isRunning || isDefault) ? 2 : 1
+
+        let a11yLabel: String
+        if isRunning {
+            a11yLabel = "\(duration.menuTitle), currently active"
+        } else if isDefault {
+            a11yLabel = "\(duration.menuTitle), default duration"
+        } else {
+            a11yLabel = duration.menuTitle
+        }
 
         return Button {
             activate(duration)
         } label: {
-            Text(title)
-                .font(.system(
-                    size: duration.isIndefinite ? 22 : 16,
-                    weight: .semibold,
-                    design: duration.isIndefinite ? .rounded : .default
-                ))
-                .foregroundStyle(isDefault ? Color.accentColor : Color.primary)
-                .frame(maxWidth: .infinity)
-                .frame(width: 54, height: 58)
-                .background {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(isDefault
-                            ? Color.accentColor.opacity(0.12)
-                            : Color.primary.opacity(0.07))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .strokeBorder(
-                                    isDefault ? Color.accentColor.opacity(0.6) : Color.primary.opacity(0.12),
-                                    lineWidth: isDefault ? 2 : 1
-                                )
-                        }
-                }
+            VStack(spacing: 2) {
+                Text(title)
+                    .font(.system(
+                        size: duration.isIndefinite ? 22 : 16,
+                        weight: .semibold,
+                        design: duration.isIndefinite ? .rounded : .default
+                    ))
+                    .foregroundStyle(tintColor)
+                // Small "●" indicator dot when this duration is the running session
+                Circle()
+                    .fill(Color.green)
+                    .frame(width: 5, height: 5)
+                    .opacity(isRunning ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.2), value: isRunning)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(width: 54, height: 58)
+            .background {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(tintColor.opacity(bgOpacity))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .strokeBorder(
+                                tintColor.opacity(borderOpacity),
+                                lineWidth: borderWidth
+                            )
+                    }
+            }
         }
         // Spring bounce — 1.0 → 0.88 → 1.0 with a springy overshoot
         .buttonStyle(BounceButtonStyle())
@@ -82,6 +104,7 @@ struct QuickActionsMenuView: View {
         return duration.menuTitle
     }
 }
+
 
 // MARK: - BounceButtonStyle
 
