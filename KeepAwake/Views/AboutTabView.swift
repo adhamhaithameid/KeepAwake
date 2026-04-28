@@ -48,6 +48,23 @@ struct AboutTabView: View {
 
             Spacer()
 
+            // ── Secondary actions ──────────────────────────────────────────
+            Button {
+                controller.showWelcomeGuide()
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 12, weight: .medium))
+                    Text("View Welcome Guide")
+                        .font(.system(size: 12, weight: .medium))
+                }
+                .foregroundStyle(KeepAwakePalette.mutedInk)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("View Welcome Guide")
+            .accessibilityHint("Re-opens the onboarding screen that explains how to use KeepAwake")
+            .padding(.bottom, 4)
+
             VStack(spacing: 4) {
                 Button {
                     controller.open(.profile)
