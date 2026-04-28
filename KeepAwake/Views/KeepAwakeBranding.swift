@@ -48,33 +48,39 @@ struct KeepAwakePanel<Content: View>: View {
 
 // MARK: - Brand mark
 
-/// Shows the actual app icon (brand-mark.png, bundled in Resources/).
+/// Shows the actual app icon / brand mark.
 ///
-/// `brand-mark.png` is a loose bundle resource, not an asset catalog entry,
-/// so it is loaded via `Bundle.main.url(forResource:withExtension:)`.
-/// If the file is unavailable (e.g. during Swift Previews without a full
-/// bundle), the view falls back to an SF Symbol cup on a dark background.
+/// ## Loading strategy (in priority order):
+/// 1. **Asset catalog** — `NSImage(named: "AppIcon")` is always available in a
+///    built app because Xcode compiles the `AppIcon.appiconset` into the bundle.
+///    This is the most reliable path and works in both the main app and
+///    SwiftUI Previews with a compiled bundle.
+/// 2. **Loose bundle resource** — `brand-mark.png` copied by the "Copy App Resources"
+///    build script. Covers edge cases where the asset catalog entry isn't named "AppIcon".
+/// 3. **SF Symbol fallback** — always available; used only when neither of the
+///    above paths produces an image (e.g. unit test host without resources).
 struct KeepAwakeBrandMark: View {
     var size: CGFloat = 64
 
     var body: some View {
         Group {
-            if let url = Bundle.main.url(forResource: "brand-mark", withExtension: "png"),
-               let nsImage = NSImage(contentsOf: url) {
-                // Real icon — already carries the macOS rounded-square shape.
-                Image(nsImage: nsImage)
+            if let img = loadBrandImage() {
+                Image(nsImage: img)
                     .resizable()
                     .interpolation(.high)
                     .scaledToFit()
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: size * 0.22, style: .continuous)
+                    )
             } else {
-                // Fallback for environments where the bundle is incomplete.
+                // Fallback for environments where no bundle resources are available.
                 ZStack {
                     RoundedRectangle(cornerRadius: size * 0.22, style: .continuous)
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    Color(red: 0.10, green: 0.13, blue: 0.22),
-                                    Color(red: 0.08, green: 0.10, blue: 0.18),
+                                    Color(red: 0.44, green: 0.65, blue: 0.82),
+                                    Color(red: 0.36, green: 0.57, blue: 0.74),
                                 ],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
@@ -82,7 +88,7 @@ struct KeepAwakeBrandMark: View {
                         )
                     Image(systemName: "cup.and.saucer.fill")
                         .font(.system(size: size * 0.45, weight: .medium))
-                        .foregroundStyle(Color(red: 0.31, green: 0.76, blue: 0.97))
+                        .foregroundStyle(Color.white)
                 }
             }
         }
@@ -90,7 +96,18 @@ struct KeepAwakeBrandMark: View {
         .shadow(color: .black.opacity(0.20), radius: 12, y: 6)
         .accessibilityHidden(true)
     }
+
+    /// Tries all known loading paths in order.
+    private func loadBrandImage() -> NSImage? {
+        // 1. Asset catalog (AppIcon — always compiled into the bundle)
+        if let img = NSImage(named: "AppIcon") { return img }
+        // 2. Loose bundle resource (brand-mark.png)
+        if let url = Bundle.main.url(forResource: "brand-mark", withExtension: "png"),
+           let img = NSImage(contentsOf: url) { return img }
+        return nil
+    }
 }
+
 
 // MARK: - Convenience wrapper
 
