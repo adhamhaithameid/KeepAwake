@@ -54,7 +54,8 @@ struct OnboardingView: View {
                         }
                     }
                     .offset(x: -CGFloat(page) * geo.size.width)
-                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: page)
+                    // IA-4: Tuned spring — snappier response, slight bounce on fast Macs.
+                    .animation(.spring(response: 0.32, dampingFraction: 0.72), value: page)
                 }
                 .frame(height: 360)
                 .clipped()
