@@ -7,9 +7,12 @@ struct SettingsWindowView: View {
         ZStack(alignment: .top) {
             KeepAwakeAmbientBackground()
 
-            VStack(spacing: 18) {
-                tabBar
-                    .padding(.top, 24)
+            // App icon branding at top of settings window
+            KeepAwakeBranding()
+                .frame(width: 64, height: 64)
+                .padding(.top, 12)
+                .accessibilityHidden(true)
+                .padding(.bottom, 8)
 
                 Group {
                     switch controller.selectedTab {
@@ -27,6 +30,8 @@ struct SettingsWindowView: View {
                         AboutTabView(controller: controller)
                     }
                 }
+                .transition(.opacity)
+                .animation(.easeInOut(duration: 0.15), value: controller.selectedTab)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
                 // Bottom bar: status message + Quit button (hidden on About tab)
@@ -39,10 +44,10 @@ struct SettingsWindowView: View {
                         Spacer()
 
                         Button(role: .destructive) {
-                            Task {
-                                await controller.handleTermination()
-                                NSApp.terminate(nil)
-                            }
+                            // Do NOT call handleTermination() here — applicationWillTerminate
+                            // owns all cleanup via terminateSync(). Calling both causes a
+                            // double-teardown that releases the IOKit assertion twice.
+                            NSApp.terminate(nil)
                         } label: {
                             Label("Quit", systemImage: "power")
                                 .font(.system(size: 12, weight: .medium))
