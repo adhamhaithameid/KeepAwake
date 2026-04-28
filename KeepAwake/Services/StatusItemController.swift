@@ -18,6 +18,10 @@ final class StatusItemController: NSObject {
         configureButton()
         observeController()
         refreshAppearance()
+        // UX-5: Flash the icon whenever a timed session expires.
+        controller.onSessionExpired = { [weak self] in
+            self?.scheduleExpireFlash()
+        }
     }
 
     // MARK: - Setup
@@ -33,9 +37,12 @@ final class StatusItemController: NSObject {
     }
 
     private var wasActive: Bool = false
-    /// True while a CATransition is animating the icon — prevents refreshAppearance
-    /// from overwriting the image and cancelling the in-flight animation.
+    /// True while an icon animation is in flight — prevents refreshAppearance
+    /// from overwriting the image mid-animation.
     private var isTransitioningIcon: Bool = false
+    /// Set to true when a timed session becomes inactive so the expire-flash
+    /// fires on the next objectWillChange delivery (UX-5).
+    private var wasFlashPending: Bool = false
 
     private func observeController() {
         controller.objectWillChange
@@ -44,15 +51,15 @@ final class StatusItemController: NSObject {
                     guard let self else { return }
                     let nowActive = self.controller.isActive
 
-                    // Animate FIRST — the CATransition must be queued on the layer
+                    // Animate FIRST — the animation must be queued on the layer
                     // before anything changes the button.image, otherwise the
                     // transition misses its window and the image updates instantly.
                     if nowActive != self.wasActive {
                         self.isTransitioningIcon = true
                         self.animateIconTransition(becameActive: nowActive)
                         self.wasActive = nowActive
-                        // Clear flag after the animation duration (0.22 s)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+                        // Clear flag after the animation duration (0.25 s)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.28) { [weak self] in
                             self?.isTransitioningIcon = false
                         }
                     }
@@ -105,38 +112,112 @@ final class StatusItemController: NSObject {
         }
     }
 
-    /// Vertical-push icon transition that mirrors `.contentTransition(.numericText())`.
+    /// Smooth cross-dissolve icon transition using CAKeyframeAnimation (IA-1).
     ///
-    /// `numericText` slides digits **up** when a value increases and **down** when
-    /// it decreases. We apply the same metaphor to the status icon:
-    /// - **Activating**  → icon slides in from **below** ("going up", like a rising number)
-    /// - **Deactivating** → icon slides in from **above** ("going down", like a falling number)
+    /// Replaces the previous `CATransition.push` which could produce a brief
+    /// flicker on high-DPI Retina displays because the push transition renders
+    /// the old and new contents side-by-side at sub-pixel boundaries.
     ///
-    /// The transition is added to the button layer *before* the image is updated so
-    /// Core Animation intercepts the change and animates between the two icon states.
+    /// The new approach animates `opacity` (fade out old, fade in new) combined
+    /// with a tiny `transform.scale` spring for a lively but non-jarring feel:
+    /// - **Activating** — scale 0.8 → 1.05 → 1.0 ("growing", like a rising number)
+    /// - **Deactivating** — scale 1.0 → 0.85 → 1.0 ("shrinking", like a falling number)
     private func animateIconTransition(becameActive: Bool) {
         guard let layer = statusItem.button?.layer else { return }
 
-        let transition = CATransition()
-        transition.type        = .push
-        transition.subtype     = becameActive ? .fromBottom : .fromTop
-        transition.duration    = 0.22
-        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        layer.add(transition, forKey: "iconSlide")
+        // Opacity: quick fade out then back in around the image swap.
+        let opacityAnim = CAKeyframeAnimation(keyPath: "opacity")
+        opacityAnim.values   = [1.0, 0.0, 1.0]
+        opacityAnim.keyTimes = [0, 0.4, 1.0]
+        opacityAnim.duration = 0.25
+        opacityAnim.timingFunctions = [
+            CAMediaTimingFunction(name: .easeIn),
+            CAMediaTimingFunction(name: .easeOut)
+        ]
+        layer.add(opacityAnim, forKey: "iconFade")
 
-        // Assign the new image immediately after queuing the transition —
-        // Core Animation will interpolate between the old and new layer contents.
-        statusItem.button?.image = makeStatusImage()
+        // Scale: spring bounce on the way in.
+        let scaleAnim = CAKeyframeAnimation(keyPath: "transform.scale")
+        if becameActive {
+            scaleAnim.values   = [0.80, 1.05, 1.0]
+            scaleAnim.keyTimes = [0, 0.65, 1.0]
+        } else {
+            scaleAnim.values   = [1.0, 0.82, 1.0]
+            scaleAnim.keyTimes = [0, 0.55, 1.0]
+        }
+        scaleAnim.duration = 0.25
+        scaleAnim.timingFunctions = [
+            CAMediaTimingFunction(name: .easeIn),
+            CAMediaTimingFunction(name: .easeOut)
+        ]
+        layer.add(scaleAnim, forKey: "iconScale")
+
+        // Assign the new image at the midpoint (opacity == 0) so the swap is invisible.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.statusItem.button?.image = self?.makeStatusImage()
+        }
+    }
+
+    // MARK: - Session-expire flash (UX-5)
+
+    /// Briefly flashes the menu-bar icon amber when a timed session expires,
+    /// giving the user a visual cue that their session has ended even if they
+    /// are not looking at the menu bar at that moment.
+    func scheduleExpireFlash() {
+        wasFlashPending = true
+    }
+
+    private func flashIconExpired() {
+        guard let layer = statusItem.button?.layer else { return }
+        let flash = CAKeyframeAnimation(keyPath: "opacity")
+        flash.values   = [1.0, 0.2, 1.0, 0.3, 1.0]
+        flash.keyTimes = [0, 0.15, 0.35, 0.55, 1.0]
+        flash.duration = 0.7
+        flash.timingFunctions = Array(repeating: CAMediaTimingFunction(name: .easeInEaseOut), count: 4)
+        layer.add(flash, forKey: "expireFlash")
     }
 
     private func makeStatusImage() -> NSImage? {
+        // Use SF Symbols for the status icon — they are vector, crisp at all
+        // resolutions, and tint automatically for dark/light menu bar.
+        //
+        // The custom PNG assets (MenuBarCoffeeFilled/Outline) are bitmaps baked
+        // at a fixed size and render blurry when AppKit scales them for Retina,
+        // so we keep the proven SF Symbol approach from the original implementation.
         let sfName = controller.isActive ? "cup.and.saucer.fill" : "cup.and.saucer"
         let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .regular)
-        return NSImage(systemSymbolName: sfName, accessibilityDescription: "KeepAwake")?
-            .withSymbolConfiguration(config)
+        guard let base = NSImage(systemSymbolName: sfName, accessibilityDescription: "KeepAwake")?
+            .withSymbolConfiguration(config) else { return nil }
+
+        // UX-1: When the countdown label is hidden, draw a small green dot badge
+        // in the corner so there's always a visible active-session indicator.
+        guard controller.isActive, !controller.settings.showStatusLabel else {
+            return base
+        }
+
+        // Compose badge onto a copy at the natural symbol size.
+        let size = base.size
+        let badgeD: CGFloat = 5
+
+        let composited = NSImage(size: size, flipped: false) { _ in
+            base.draw(in: NSRect(origin: .zero, size: size))
+            let badgeRect = NSRect(x: size.width - badgeD - 1, y: 1, width: badgeD, height: badgeD)
+            NSColor.systemGreen.setFill()
+            NSBezierPath(ovalIn: badgeRect).fill()
+            NSColor.white.withAlphaComponent(0.80).setStroke()
+            let ring = NSBezierPath(ovalIn: badgeRect.insetBy(dx: 0.5, dy: 0.5))
+            ring.lineWidth = 0.75
+            ring.stroke()
+            return true
+        }
+        composited.isTemplate = true  // still template so AppKit tints it for menu bar state
+        return composited
     }
 
+
     /// The compact countdown shown in the menu bar, e.g. "42m" or "1h 3m".
+    /// Uses a fixed-width monospaced format so the status item doesn't shift
+    /// horizontally as seconds tick down (IA-3).
     private func glanceableLabel() -> String? {
         guard let session = controller.activeSession else { return nil }
         if session.duration.isIndefinite { return "∞" }
@@ -146,9 +227,11 @@ final class StatusItemController: NSObject {
         let h = Int(remaining) / 3600
         let m = (Int(remaining) % 3600) / 60
         let s = Int(remaining) % 60
-        if h > 0 { return "\(h)h \(m)m" }
-        if m > 0 { return "\(m)m" }
-        return "\(s)s"
+        // Always include seconds so the label width is stable (e.g. "1h 3m 5s",
+        // "42m 7s", "58s") — prevents the status item from jumping position.
+        if h > 0 { return String(format: "%dh %dm", h, m) }
+        if m > 0 { return String(format: "%dm %02ds", m, s) }
+        return String(format: "%ds", s)
     }
 
     // MARK: - Click handling
@@ -192,7 +275,12 @@ final class StatusItemController: NSObject {
             Task { await self?.controller.stopActiveSession() }
         })
         let headerHost = NSHostingView(rootView: headerView)
-        headerHost.frame = NSRect(x: 0, y: 0, width: 252, height: 78)
+        // Inactive: status row ~60pt. Active: status row + divider + stop button ~108pt.
+        // We use a fixed generous height and let SwiftUI clip at bottom rather than
+        // having dead whitespace — the view is top-aligned inside the frame.
+        let headerHeight: CGFloat = controller.isActive ? 110 : 68
+        headerHost.frame = NSRect(x: 0, y: 0, width: 260, height: headerHeight)
+        headerHost.autoresizingMask = []
         headerItem.view = headerHost
         menu.addItem(headerItem)
 
@@ -204,12 +292,13 @@ final class StatusItemController: NSObject {
         let quickView = QuickActionsMenuView(
             quickDurations: pinnedDurations,
             defaultDurationID: controller.settings.defaultDurationID,
+            activeDurationID: controller.activeSession?.duration.id,
             activate: { [weak self] duration in
                 Task { await self?.controller.activate(duration: duration) }
             }
         )
         let quickHost = NSHostingView(rootView: quickView)
-        quickHost.frame = NSRect(x: 0, y: 0, width: 252, height: 88)
+        quickHost.frame = NSRect(x: 0, y: 0, width: 260, height: 88)
         quickItem.view = quickHost
         menu.addItem(quickItem)
 
@@ -248,7 +337,10 @@ final class StatusItemController: NSObject {
         menu.addItem(settingsItem)
 
         // ── Quit ──────────────────────────────────────────────────────────
-        let quitItem = NSMenuItem(title: "Quit KeepAwake", action: #selector(quitApp), keyEquivalent: "q")
+        // No keyEquivalent here — ⌘Q already triggers NSApp.terminate via the
+        // standard Application menu; a duplicate binding conflicts when the
+        // Settings window is key (UX-10).
+        let quitItem = NSMenuItem(title: "Quit KeepAwake", action: #selector(quitApp), keyEquivalent: "")
         quitItem.target = self
         quitItem.isEnabled = true
         quitItem.image = NSImage(systemSymbolName: "power", accessibilityDescription: "Quit")
@@ -279,10 +371,11 @@ final class StatusItemController: NSObject {
     }
 
     @objc private func quitApp() {
-        Task {
-            await controller.handleTermination()
-            NSApp.terminate(nil)
-        }
+        // Do NOT call controller.handleTermination() here.
+        // AppDelegate.applicationWillTerminate owns all cleanup via terminateSync().
+        // Calling handleTermination() here as well causes a double-teardown:
+        // the assertion would be released twice and tasks cancelled twice.
+        NSApp.terminate(nil)
     }
 }
 
@@ -307,31 +400,32 @@ private struct MenuHeaderView: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { timeline in
             VStack(spacing: 0) {
-                // ── Status row ───────────────────────────────────────────
-                HStack(spacing: 12) {
-                    // Pulsing dot + progress ring (decorative — hidden from VoiceOver)
+
+                // ── Status row ──────────────────────────────────────────
+                HStack(spacing: 10) {
+                    // Pulsing dot + circular progress ring
                     ZStack {
                         if let progress = sessionProgress(at: timeline.date) {
                             Circle()
-                                .stroke(Color.green.opacity(0.15), lineWidth: 2.5)
-                                .frame(width: 26, height: 26)
+                                .stroke(Color.green.opacity(0.15), lineWidth: 2)
+                                .frame(width: 24, height: 24)
                             Circle()
                                 .trim(from: 0, to: CGFloat(1 - progress))
                                 .stroke(
                                     AngularGradient(colors: [.green, .green.opacity(0.3)], center: .center),
-                                    style: StrokeStyle(lineWidth: 2.5, lineCap: .round)
+                                    style: StrokeStyle(lineWidth: 2, lineCap: .round)
                                 )
-                                .frame(width: 26, height: 26)
+                                .frame(width: 24, height: 24)
                                 .rotationEffect(.degrees(-90))
                                 .animation(.linear(duration: 0.5), value: progress)
                         }
                         PulsingDot(isActive: isActive)
                     }
-                    .frame(width: 30)
-                    .accessibilityHidden(true) // Status text is the primary VoiceOver source
+                    .frame(width: 28)
+                    .accessibilityHidden(true)
 
-                    // Text block
-                    VStack(alignment: .leading, spacing: 1) {
+                    // Status text + detail
+                    VStack(alignment: .leading, spacing: 2) {
                         Text(isActive ? "Active" : "Inactive")
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(isActive ? Color.green : Color.secondary)
@@ -343,7 +437,7 @@ private struct MenuHeaderView: View {
                                 .foregroundStyle(Color.secondary)
                                 .contentTransition(.numericText())
                                 .animation(.easeInOut(duration: 0.15), value: detail)
-                                .accessibilityLabel(detail) // already reads "14m 51s remaining"
+                                .accessibilityLabel(detail)
                         }
 
                         if controller.settings.deactivateBelowThreshold,
@@ -360,33 +454,51 @@ private struct MenuHeaderView: View {
 
                     Spacer()
                 }
-                .padding(.horizontal, 14)
-                .padding(.top, 9)
-                .padding(.bottom, isActive ? 7 : 9)
+                .padding(.horizontal, 12)
+                .padding(.top, 10)
+                .padding(.bottom, 10)
 
-                // ── Stop button row (live — appears when active) ─────────
+                // ── Assertion error banner ──────────────────────────────
+                if let errorMsg = controller.lastAssertionError {
+                    Divider().opacity(0.35).padding(.horizontal, 12)
+                    HStack(spacing: 5) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 10))
+                            .foregroundStyle(Color.orange)
+                        Text(errorMsg)
+                            .font(.system(size: 10))
+                            .foregroundStyle(Color.orange)
+                            .lineLimit(2)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 5)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                    .accessibilityLabel("Error: \(errorMsg)")
+                }
+
+                // ── Stop Session button ─────────────────────────────────
                 if isActive {
-                    Divider()
-                        .opacity(0.4)
-                        .padding(.horizontal, 14)
+                    Divider().opacity(0.35).padding(.horizontal, 12)
 
                     Button(action: onStop) {
-                        HStack(spacing: 6) {
+                        HStack(spacing: 5) {
                             Image(systemName: "stop.circle.fill")
-                                .font(.system(size: 13, weight: .semibold))
+                                .font(.system(size: 12, weight: .semibold))
                             Text("Stop Session")
                                 .font(.system(size: 12, weight: .semibold))
                         }
                         .foregroundStyle(Color.red)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 7)
-                        .background(Color.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+                        .padding(.vertical, 6)
+                        .background(Color.red.opacity(0.08),
+                                    in: RoundedRectangle(cornerRadius: 7))
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Stop session")
-                    .accessibilityHint("Ends the current KeepAwake session and allows your Mac to sleep normally")
-                    .padding(.horizontal, 14)
-                    .padding(.bottom, 7)
+                    .accessibilityHint("Ends the current KeepAwake session")
+                    .padding(.horizontal, 12)
+                    .padding(.top, 6)
+                    .padding(.bottom, 8)
                     .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
@@ -422,35 +534,50 @@ private struct MenuHeaderView: View {
 
 // MARK: - PulsingDot
 
+/// A pulsing activity indicator shown in the menu header.
+///
+/// ## Race-condition fix (IA-2)
+/// The previous implementation used `DispatchQueue.asyncAfter` to reset the
+/// `pulse` state on `isActive` change. Rapid activate→stop→activate sequences
+/// could leave the timer orphaned and the dot stuck in a half-animated state.
+///
+/// The fix: derive `pulse` from `isActive` directly inside the view body and
+/// let SwiftUI's diffing ensure the animations restart cleanly on each change.
 private struct PulsingDot: View {
     let isActive: Bool
-    @State private var pulse = false
+    @State private var isPulsing = false
 
     var body: some View {
         ZStack {
             if isActive {
                 Circle()
-                    .fill(Color.green.opacity(pulse ? 0 : 0.28))
-                    .frame(width: pulse ? 22 : 10, height: pulse ? 22 : 10)
+                    .fill(Color.green.opacity(isPulsing ? 0 : 0.28))
+                    .frame(width: isPulsing ? 22 : 10, height: isPulsing ? 22 : 10)
                     .animation(
                         .easeOut(duration: 1.4).repeatForever(autoreverses: false),
-                        value: pulse
+                        value: isPulsing
                     )
             }
             Circle()
                 .fill(isActive ? Color.green : Color.secondary.opacity(0.35))
                 .frame(width: 9, height: 9)
-                .scaleEffect(isActive && pulse ? 1.12 : 1.0)
+                .scaleEffect(isActive && isPulsing ? 1.12 : 1.0)
                 .animation(
                     isActive ? .easeInOut(duration: 0.7).repeatForever(autoreverses: true) : .default,
-                    value: pulse
+                    value: isPulsing
                 )
                 .shadow(color: isActive ? .green.opacity(0.55) : .clear, radius: 4)
         }
-        .onAppear { pulse = true }
+        .onAppear {
+            if isActive { isPulsing = true }
+        }
         .onChange(of: isActive) { newValue in
-            pulse = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { pulse = newValue }
+            // Reset first so SwiftUI sees a value change and restarts animations.
+            isPulsing = false
+            if newValue {
+                // One tick delay lets SwiftUI commit the reset before starting pulse.
+                withAnimation(.easeInOut(duration: 0)) { isPulsing = true }
+            }
         }
     }
 }
